@@ -1,0 +1,5099 @@
+-- leaked by stinker da goat🤑
+local pKS6qzcaqB, tbl
+
+do
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptpastebin/Blox-Fruits/refs/heads/main/core.luau"))()
+    pKS6qzcaqB = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloxfruitsnokey/Arcylic/refs/heads/main/Eclipse/ui.luau"))().new("Eclipse Hub : discord.gg/pKS6qzcaqB", "by @Eclipse")
+    pKS6qzcaqB:SetToggleKey(Enum.KeyCode.RightControl)
+    local Main = pKS6qzcaqB:CreateSection("Main")
+
+    tbl = {
+        Info = Main:CreateTab("Info And Status", "rbxassetid://10723415903"),
+        Main = Main:CreateTab("Farming", "rbxassetid://7733960981"),
+        Settings = Main:CreateTab("Setting", "rbxassetid://7734053495"),
+        Fish = Main:CreateTab("Fishing", "rbxassetid://127664059821666"),
+        Quests = Main:CreateTab("Quest And Item", "rbxassetid://13075622619"),
+        SeaEvent = Main:CreateTab("Sea Event", "rbxassetid://10747376931"),
+        Race = Main:CreateTab("Mirage And Race", "rbxassetid://11162889532"),
+        Prehistoric = Main:CreateTab("Volcano Event", "rbxassetid://10734981750"),
+        Esp = Main:CreateTab("Stats And Esp", "rbxassetid://7040410130"),
+        Raids = Main:CreateTab("Fruit And Raid", "rbxassetid://11155986081"),
+        Combat = Main:CreateTab("Local Player", "rbxassetid://13075651575"),
+        Travel = Main:CreateTab("Teleport", "rbxassetid://10723434557"),
+        Shop = Main:CreateTab("Shopping", "rbxassetid://6031265976"),
+        Misc = Main:CreateTab("Miscellaneous", "rbxassetid://10709783577"),
+    }
+
+    pKS6qzcaqB:CreateSection("Settings"):CreateTab("Config", "rbxassetid://10734898355"):CreateConfigSection()
+    tbl.Info:CreateSection("Status Server")
+    local v = tbl.Info:CreateParagraph({Title = "Time Zone", Content = ""})
+    local v2 = tbl.Info:CreateParagraph({Title = "Game Time", Content = ""})
+
+    UpdateOS = function()
+        local v3 = os.date("*t")
+        local n = v3.hour % 24
+        local str = n < 12 and "AM" or "PM"
+        local str2 = string.format("%02i:%02i:%02i %s", (n - 1) % 12 + 1, v3.min, v3.sec, str)
+        local str3 = string.format("%02d/%02d/%04d", v3.day, v3.month, v3.year)
+        local LocalizationService = game:GetService("LocalizationService")
+        local localPlayer = game:GetService("Players").LocalPlayer
+        local countryRegionCode
+
+        if getgenv().countryRegionCode then
+            countryRegionCode = getgenv().countryRegionCode
+        else
+            local ok, countryRegionCode2 = pcall(function()
+                return LocalizationService:GetCountryRegionForPlayerAsync(localPlayer)
+            end)
+
+            countryRegionCode = countryRegionCode2
+
+            if ok then
+                getgenv().countryRegionCode = countryRegionCode2
+            else
+                getgenv().countryRegionCode = "Unknown"
+            end
+        end
+
+        v:SetContent(str3 .. " - " .. str2 .. " [ " .. countryRegionCode .. " ]")
+    end
+
+    spawn(function()
+        while true do
+            UpdateOS()
+            wait(1)
+        end
+    end)
+
+    UpdateGameTime = function()
+        local n = math.floor(workspace.DistributedGameTime + 0.5)
+        local n2 = math.floor(n / 3600) % 24
+        local n3 = math.floor(n / 60) % 60
+        local n4 = math.floor(n / 1) % 60
+        v2:SetContent(n2 .. " Hour (h) " .. n3 .. " Minute (m) " .. n4 .. " Second (s)")
+    end
+
+    spawn(function()
+        while true do
+            UpdateGameTime()
+            wait(1)
+        end
+    end)
+
+    local v3 = tbl.Info:CreateParagraph({Title = "Mirage Island", Content = "Status: "})
+    local str = ""
+
+    spawn(function()
+        pcall(function()
+            while true do
+                wait(1)
+                local flag = game.Workspace._WorldOrigin.Locations:FindFirstChild("Mirage Island") ~= nil
+                local status = flag and "✅" or "❌"
+
+                if status ~= str then
+                    v3:SetContent("Status: " .. status)
+                    str = status
+                end
+            end
+        end)
+    end)
+
+    local v4 = tbl.Info:CreateParagraph({Title = "Kitsune Island", Content = "Status: "})
+    local str2 = ""
+
+    spawn(function()
+        while task.wait(1) do
+            pcall(function()
+                local kitsuneIsland = game:GetService("Workspace").Map:FindFirstChild("KitsuneIsland")
+                local status = kitsuneIsland and "✅" or "❌"
+
+                if status ~= str2 then
+                    v4:SetContent("Status: " .. status)
+                    str2 = status
+                end
+            end)
+        end
+    end)
+
+    local v5 = tbl.Info:CreateParagraph({Title = "Prehistoric Island", Content = "Status: "})
+    local str3 = ""
+
+    task.spawn(function()
+        while task.wait(1) do
+            pcall(function()
+                local prehistoricIsland = game.Workspace._WorldOrigin.Locations:FindFirstChild("Prehistoric Island")
+                local status = prehistoricIsland and "✅" or "❌"
+
+                if status ~= str3 then
+                    v5:SetContent("Status: " .. status)
+                    str3 = status
+                end
+            end)
+        end
+    end)
+
+    local v6 = tbl.Info:CreateParagraph({Title = "Frozen Dimension", Content = "Status: "})
+    local str4 = ""
+
+    spawn(function()
+        while wait(1) do
+            pcall(function()
+                local frozenDimension = game.Workspace._WorldOrigin.Locations:FindFirstChild("Frozen Dimension")
+                local status = frozenDimension and "✅" or "❌"
+
+                if status ~= str4 then
+                    v6:SetContent("Status: " .. status)
+                    str4 = status
+                end
+            end)
+        end
+    end)
+
+    local v7 = tbl.Info:CreateParagraph({Title = "Cake Prince", Content = ""})
+
+    spawn(function()
+        while wait(1) do
+            local ok, result = pcall(function()
+                return game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("CakePrinceSpawner")
+            end)
+
+            local str5 = "Cake Prince: ✅"
+
+            if ok and type(result) == "string" and string.len(result) >= 86 then
+                str5 = "Killed: " .. string.sub(result, 39, 41)
+            end
+
+            v7:SetContent(str5)
+        end
+    end)
+
+    local v8 = tbl.Info:CreateParagraph({Title = "Rip Indra", Content = "Status: "})
+    local str5 = ""
+
+    spawn(function()
+        while wait(1) do
+            pcall(function()
+                local ripIndraTrueForm = game:GetService("ReplicatedStorage"):FindFirstChild("rip_indra True Form")
+                local status = (ripIndraTrueForm or game:GetService("Workspace").Enemies:FindFirstChild("rip_indra")) and "✅" or "❌"
+
+                if status ~= str5 then
+                    v8:SetContent("Status: " .. status)
+                    str5 = status
+                end
+            end)
+        end
+    end)
+
+    local v9 = tbl.Info:CreateParagraph({Title = "Dough King", Content = "Status: "})
+    local str6 = ""
+
+    spawn(function()
+        while wait(1) do
+            pcall(function()
+                local doughKing = game:GetService("ReplicatedStorage"):FindFirstChild("Dough King")
+                local status = (doughKing or game:GetService("Workspace").Enemies:FindFirstChild("Dough King")) and "✅" or "❌"
+
+                if status ~= str6 then
+                    v9:SetContent("Status: " .. status)
+                    str6 = status
+                end
+            end)
+        end
+    end)
+
+    local v10 = tbl.Info:CreateParagraph({Title = "Full Moon", Content = ""})
+
+    task.spawn(function()
+        while task.wait(1) do
+            pcall(function()
+                local moonTextureId = game:GetService("Lighting").Sky.MoonTextureId
+                local str7 = "Moon: 0/5"
+
+                if moonTextureId == "http://www.roblox.com/asset/?id=9709149431" then
+                    str7 = "Moon: 5/5 (Full Moon) ✅"
+                elseif moonTextureId == "http://www.roblox.com/asset/?id=9709149052" then
+                    str7 = "Moon: 4/5"
+                elseif moonTextureId == "http://www.roblox.com/asset/?id=9709143733" then
+                    str7 = "Moon: 3/5"
+                elseif moonTextureId == "http://www.roblox.com/asset/?id=9709150401" then
+                    str7 = "Moon: 2/5"
+                elseif moonTextureId == "http://www.roblox.com/asset/?id=9709149680" then
+                    str7 = "Moon: 1/5"
+                end
+
+                v10:SetContent(str7)
+            end)
+        end
+    end)
+
+    local v11 = tbl.Info:CreateParagraph({Title = "Legendary Sword", Content = "Status: "})
+
+    spawn(function()
+        while wait(5) do
+            pcall(function()
+                local tbl2 = {}
+
+                for i, v12 in ipairs({"Shizu", "Saishi", "Oroshi"}) do
+                    if GetWP(v12) then
+                        table.insert(tbl2, v12 .. " ✅")
+                    end
+                end
+
+                local setContent = v11.SetContent
+                local str7 = #tbl2 > 0 and table.concat(tbl2, ", ") or "Not Found"
+                setContent(v11, str7)
+            end)
+        end
+    end)
+
+    local v12 = tbl.Info:CreateParagraph({Title = "Bone", Content = ""})
+
+    spawn(function()
+        while wait(1) do
+            pcall(function()
+                local response = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Check")
+                v12:SetContent("You Have: " .. tostring(response) .. " Bones")
+            end)
+        end
+    end)
+
+    local rfSubmarineWorkerSpeak = replicated.Modules.Net["RF/SubmarineWorkerSpeak"]
+
+    local v13 = tbl.Main:CreateDropdown({
+        Name = "Select Weapon",
+        Options = {"Melee", "Sword", "Blox Fruit", "Gun"},
+        Default = "Melee",
+        Callback = function(chooseWP)
+            _G.ChooseWP = chooseWP
+        end,
+    })
+
+    WeaponDropdown = v13
+    tbl.Main:CreateSection("Farming")
+
+    local v14 = tbl.Main:CreateToggle({
+        Name = "Auto Farm Level",
+        Description = "",
+        Default = false,
+        Callback = function(level)
+            _G.Level = level
+
+            if not level then
+                alreadyTeleported = false
+                teleporting = false
+            end
+        end,
+    })
+
+    FarmLevel = v14
+
+    local v15 = tbl.Main:CreateToggle({
+        Name = "Auto Farm Nearest",
+        Description = "",
+        Default = false,
+        Callback = function(autoFarmNear)
+            _G.AutoFarmNear = autoFarmNear
+        end,
+    })
+
+    ClosetMons = v15
+
+    local v16 = tbl.Main:CreateToggle({
+        Name = "Auto Factory Raid",
+        Description = "",
+        Default = false,
+        Callback = function(autoFactory)
+            _G.AutoFactory = autoFactory
+        end,
+    })
+
+    FactoryRaids = v16
+
+    local v17 = tbl.Main:CreateToggle({
+        Name = "Auto Pirate Raid",
+        Description = "",
+        Default = false,
+        Callback = function(autoRaidCastle)
+            _G.AutoRaidCastle = autoRaidCastle
+        end,
+    })
+
+    CastleRaids = v17
+
+    local v18 = tbl.Main:CreateToggle({
+        Name = "Auto Farm Ectoplasm",
+        Description = "",
+        Default = false,
+        Callback = function(autoEctoplasm)
+            _G.AutoEctoplasm = autoEctoplasm
+        end,
+    })
+
+    Ecto = v18
+    tbl.Main:CreateSection("Chest")
+
+    local v19 = tbl.Main:CreateToggle({
+        Name = "Auto Farm Chest",
+        Description = "",
+        Default = false,
+        Callback = function(autoFarmChest)
+            _G.AutoFarmChest = autoFarmChest
+        end,
+    })
+
+    ChestTW = v19
+
+    local v20 = tbl.Main:CreateToggle({
+        Name = "Auto Chest Bypass",
+        Description = "",
+        Default = false,
+        Callback = function(autoChestBP)
+            _G.AutoChestBP = autoChestBP
+
+            if autoChestBP then
+                local localPlayer = game:GetService("Players").LocalPlayer
+                local flag = false
+                local tbl2 = {}
+                local flag2 = true
+
+                local function fn()
+                    if not localPlayer.Character then
+                        localPlayer.CharacterAdded:Wait()
+                    end
+
+                    localPlayer.Character:WaitForChild("HumanoidRootPart")
+                    return localPlayer.Character
+                end
+
+                local function fn2()
+                    if flag2 then
+                        flag2 = false
+
+                        for k, descendant in pairs(game:GetDescendants()) do
+                            if descendant.Name:find("Chest") and descendant.ClassName == "Part" then
+                                table.insert(tbl2, descendant)
+                            end
+                        end
+                    end
+
+                    local tbl3 = {}
+
+                    for k, v20 in pairs(tbl2) do
+                        if v20:FindFirstChild("TouchInterest") then
+                            table.insert(tbl3, v20)
+                        end
+                    end
+
+                    local lowerTorso = fn().LowerTorso
+
+                    table.sort(tbl3, function(arg, arg2)
+                        local flag3 = (lowerTorso.Position - arg.Position).Magnitude < (lowerTorso.Position - arg2.Position).Magnitude
+                        return flag3
+                    end)
+
+                    return tbl3
+                end
+
+                local function fn3()
+                    if flag then
+                        return
+                    end
+                    flag = true
+
+                    task.spawn(function()
+                        while _G.AutoChestBP and localPlayer.Character and localPlayer.Character.Parent do
+                            local v20 = fn2()
+
+                            if #v20 > 0 then
+                                fn().HumanoidRootPart.CFrame = v20[1].CFrame
+                            end
+
+                            task.wait(0.1)
+                        end
+
+                        flag = false
+                    end)
+                end
+
+                localPlayer.CharacterAdded:Connect(function()
+                    fn()
+                    task.wait(0.5)
+
+                    if _G.AutoChestBP then
+                        fn3()
+                    end
+                end)
+
+                fn3()
+            end
+        end,
+    })
+
+    ChestBP = v20
+
+    local v21 = tbl.Main:CreateToggle({
+        Name = "Stop Items",
+        Description = "",
+        Default = true,
+        Callback = function(stopWhenChalice)
+            _G.StopWhenChalice = stopWhenChalice
+        end,
+    })
+
+    StopI = v21
+    tbl.Main:CreateSection("Collect Berry")
+
+    local v22 = tbl.Main:CreateToggle({
+        Name = "Auto Farm Berry",
+        Description = "",
+        Default = false,
+        Callback = function(autoBerry)
+            _G.AutoBerry = autoBerry
+        end,
+    })
+
+    Berry = v22
+
+    local v23 = tbl.Main:CreateToggle({
+        Name = "Auto Farm Berry + Hop",
+        Description = "",
+        Default = false,
+        Callback = function(autoBerryH)
+            _G.AutoBerryH = autoBerryH
+        end,
+    })
+
+    BerryH = v23
+    tbl.Main:CreateSection("Farm Mob")
+
+    if World1 then
+        tbl.Main:CreateDropdown({
+            Name = "Select Mob",
+            Default = Bandit,
+            Options = {
+                "Bandit",
+                "Monkey",
+                "Gorilla",
+                "Pirate",
+                "Brute",
+                "Desert Bandit",
+                "Desert Officer",
+                "Snow Bandit",
+                "Snowman",
+                "Chief Petty Officer",
+                "Sky Bandit",
+                "Dark Master",
+                "Toga Warrior",
+                "Gladiator",
+                "Military Soldier",
+                "Military Spy",
+                "Fishman Warrior",
+                "Fishman Commando",
+                "God's Guard",
+                "Shanda",
+                "Royal Squad",
+                "Royal Soldier",
+                "Galley Pirate",
+                "Galley Captain",
+            },
+            Callback = function(selectMob)
+                getgenv().SelectMob = selectMob
+            end,
+        })
+    end
+
+    if World2 then
+        tbl.Main:CreateDropdown({
+            Name = "Select Mob",
+            Default = Raider,
+            Options = {
+                "Raider",
+                "Mercenary",
+                "Swan Pirate",
+                "Factory Staff",
+                "Marine Lieutenant",
+                "Marine Captain",
+                "Zombie",
+                "Vampire",
+                "Snow Trooper",
+                "Winter Warrior",
+                "Lab Subordinate",
+                "Horned Warrior",
+                "Magma Ninja",
+                "Lava Pirate",
+                "Ship Deckhand",
+                "Ship Engineer",
+                "Ship Steward",
+                "Ship Officer",
+                "Eclipsetic Warrior",
+                "Snow Lurker",
+                "Sea Soldier",
+                "Water Fighter",
+            },
+            Callback = function(selectMob)
+                getgenv().SelectMob = selectMob
+            end,
+        })
+    end
+
+    if World3 then
+        tbl.Main:CreateDropdown({
+            Name = "Select Mob",
+            Options = {
+                "Pirate Millionaire",
+                "Dragon Crew Warrior",
+                "Dragon Crew Eclipseher",
+                "Female Islander",
+                "Giant Islander",
+                "Marine Commodore",
+                "Marine Rear Admiral",
+                "Fishman Raider",
+                "Fishman Captain",
+                "Forest Pirate",
+                "Mythological Pirate",
+                "Jungle Pirate",
+                "Musketeer Pirate",
+                "Reborn Skeleton",
+                "Living Zombie",
+                "Demonic Soul",
+                "Posessed Mummy",
+                "Peanut Scout",
+                "Peanut President",
+                "Ice Cream Chef",
+                "Ice Cream Commander",
+                "Cookie Crafter",
+                "Cake Guard",
+                "Baking Staff",
+                "Head Baker",
+                "Cocoa Warrior",
+                "Chocolate Bar Battler",
+                "Sweet Thief",
+                "Candy Rebel",
+                "Candy Pirate",
+                "Snow Demon",
+                "Isle Outlaw",
+                "Island Boy",
+                "Sun-kissed Warrior",
+                "Isle Champion",
+            },
+            Callback = function(selectMob)
+                getgenv().SelectMob = selectMob
+            end,
+        })
+    end
+
+    tbl.Main:CreateToggle({
+        Name = "Auto Kill Mob",
+        Default = false,
+        Callback = function(autoKillMob)
+            _G.AutoKillMob = autoKillMob
+        end,
+    })
+
+    tbl.Main:CreateSection("Farm All Island")
+
+    tbl.Main:CreateDropdown({
+        Name = "Select Island",
+        Options = (function()
+            local tbl2 = {}
+            local v24 = pairs
+            local island = Core.Island
+            local tbl3 = island or {}
+
+            for k in v24(tbl3) do
+                table.insert(tbl2, k)
+            end
+
+            table.sort(tbl2)
+            return tbl2
+        end)(),
+        Callback = function(selectIsland)
+            _G.SelectIsland = selectIsland
+        end,
+    })
+
+    rfSubmarineWorkerSpeak = Core.Island
+
+    tbl.Main:CreateToggle({
+        Name = "Auto Farm All Island",
+        Default = false,
+        Callback = function(autoFarmIsland)
+            _G.AutoFarmIsland = autoFarmIsland
+        end,
+    })
+
+    tbl.Main:CreateSection("Farm Elite Hunter")
+    local v24 = tbl.Main:CreateParagraph({Title = "Elites Process", Content = ""})
+
+    spawn(function()
+        while wait(Sec) do
+            pcall(function()
+                local response = replicated.Remotes.CommF_:InvokeServer("EliteHunter", "Progress")
+                local setContent = v24.SetContent
+                local v25 = tostring
+                local n = response or 0
+                setContent(v24, "Elite Progress : " .. v25(n))
+            end)
+        end
+    end)
+
+    local v25 = tbl.Main:CreateParagraph({Title = "Elite Spawn", Content = "Status: "})
+
+    spawn(function()
+        local str7 = ""
+
+        while wait(1) do
+            local diablo = game:GetService("ReplicatedStorage"):FindFirstChild("Diablo")
+            local str8 = (diablo or game:GetService("ReplicatedStorage"):FindFirstChild("Deandre") or game:GetService("ReplicatedStorage"):FindFirstChild("Urban") or game:GetService("Workspace").Enemies:FindFirstChild("Diablo") or game:GetService("Workspace").Enemies:FindFirstChild("Deandre") or game:GetService("Workspace").Enemies:FindFirstChild("Urban")) and "✅" or "❌"
+
+            local ok, result = pcall(function()
+                return game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("EliteHunter", "Progress")
+            end)
+
+            local v26 = tostring
+            local n = ok and result or 0
+            local v27 = v26(n)
+
+            if str8 ~= str7 then
+                v25:SetContent("Status: " .. str8 .. " | Killed: " .. v27)
+                str7 = str8
+            end
+        end
+    end)
+
+    local v26 = tbl.Main:CreateToggle({
+        Name = "Auto Farm Elite",
+        Description = "",
+        Default = false,
+        Callback = function(farmEliteHunt)
+            _G.FarmEliteHunt = farmEliteHunt
+        end,
+    })
+
+    EliteQ = v26
+
+    local v27 = tbl.Main:CreateToggle({
+        Name = "Auto Farm Elite + Hop",
+        Description = "",
+        Default = false,
+        Callback = function(farmEliteH)
+            _G.FarmEliteH = farmEliteH
+        end,
+    })
+
+    EliteH = v27
+    tbl.Main:CreateSection("Farm Rip Indra")
+
+    tbl.Main:CreateToggle({
+        Name = "Auto Attack Rip Indra",
+        Description = "",
+        Default = false,
+        Callback = function(autoRipIngay)
+            _G.AutoRipIngay = autoRipIngay
+        end,
+    })
+
+    tbl.Main:CreateToggle({
+        Name = "Auto Unlocked Haki",
+        Description = "",
+        Default = false,
+        Callback = function(autoUnHaki)
+            _G.AutoUnHaki = autoUnHaki
+        end,
+    })
+
+    tbl.Main:CreateSection("Farming Cake")
+    local v28 = tbl.Main:CreateParagraph({Title = "Cake Princes", Content = ""})
+
+    spawn(function()
+        while wait(0.2) do
+            pcall(function()
+                local v29 = string.match(replicated.Remotes.CommF_:InvokeServer("CakePrinceSpawner"), "%d+")
+
+                if v29 then
+                    local setContent = v28.SetContent
+                    local n = 500 - tonumber(v29)
+                    local killed = n or 0
+                    setContent(v28, "Killed : " .. killed)
+                end
+            end)
+        end
+    end)
+
+    local v29 = tbl.Main:CreateToggle({
+        Name = "Auto Farm Cake Prince",
+        Description = "",
+        Default = false,
+        Callback = function(autoCakePrince)
+            _G.Auto_Cake_Prince = autoCakePrince
+        end,
+    })
+
+    Cake = v29
+
+    local v30 = tbl.Main:CreateToggle({
+        Name = "Accept Quests",
+        Description = "",
+        Default = false,
+        Callback = function(acceptQuestC)
+            _G.AcceptQuestC = acceptQuestC
+        end,
+    })
+
+    CakeQ = v30
+
+    local v31 = tbl.Main:CreateToggle({
+        Name = "Auto Summon Cake Prince",
+        Description = "",
+        Default = false,
+        Callback = function(autoSpawnCP)
+            _G.AutoSpawnCP = autoSpawnCP
+        end,
+    })
+
+    CakeSM = v31
+
+    tbl.Main:CreateToggle({
+        Name = "Auto Dough King [Fully]",
+        Default = false,
+        Callback = function(autoDoughKing)
+            _G.AutoDoughKing = autoDoughKing
+        end,
+    })
+
+    tbl.Main:CreateToggle({
+        Name = "Auto Farm Dough King",
+        Default = false,
+        Callback = function(autoAttackDoughKing)
+            _G.AutoAttackDoughKing = autoAttackDoughKing
+        end,
+    })
+
+    tbl.Main:CreateToggle({
+        Name = "Auto Farm Dough King + Hop",
+        Default = false,
+        Callback = function(autoHopDough)
+            _G.AutoHop_Dough = autoHopDough
+        end,
+    })
+
+    tbl.Main:CreateSection("Farming Bone")
+    local v32 = tbl.Main:CreateParagraph({Title = "Bones", Content = ""})
+
+    spawn(function()
+        while wait(1) do
+            pcall(function()
+                local response = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Check")
+                v32:SetContent("Bones : " .. tostring(response))
+            end)
+        end
+    end)
+
+    tbl.Main:CreateToggle({
+        Name = "Auto Farm Bone",
+        Description = "",
+        Default = false,
+        Callback = function(autoFarmBone)
+            _G.AutoFarm_Bone = autoFarmBone
+        end,
+    })
+
+    local v33 = tbl.Main:CreateToggle({
+        Name = "Accept Quests",
+        Description = "",
+        Default = false,
+        Callback = function(acceptQuestB)
+            _G.AcceptQuestB = acceptQuestB
+        end,
+    })
+
+    BoneQ = v33
+
+    tbl.Main:CreateToggle({
+        Name = "Auto Soul Reaper",
+        Description = "",
+        Default = false,
+        Callback = function(autoHytHallow)
+            _G.AutoHytHallow = autoHytHallow
+        end,
+    })
+
+    local v34 = tbl.Main:CreateToggle({
+        Name = "Auto Random Bones",
+        Description = "",
+        Default = false,
+        Callback = function(autoRandomBone)
+            _G.Auto_Random_Bone = autoRandomBone
+        end,
+    })
+
+    RanBone = v34
+
+    local v35 = tbl.Main:CreateToggle({
+        Name = "Auto Try Luck Gravestone",
+        Description = "",
+        Default = false,
+        Callback = function(tryLucky)
+            _G.TryLucky = tryLucky
+        end,
+    })
+
+    Lucky = v35
+
+    local v36 = tbl.Main:CreateToggle({
+        Name = "Auto Pray Gravestone",
+        Description = "",
+        Default = false,
+        Callback = function(praying)
+            _G.Praying = praying
+        end,
+    })
+
+    Pray = v36
+    tbl.Main:CreateSection("Tyrant of the Skies")
+    local v37 = tbl.Main:CreateParagraph({Title = "Boss Spawn", Content = ""})
+
+    spawn(function()
+        pcall(function()
+            while wait(1) do
+                if workspace.Enemies:FindFirstChild("Tyrant of the Skies") then
+                    v37:SetContent("✅")
+                else
+                    v37:SetContent("❌")
+                end
+            end
+        end)
+    end)
+
+    local v38 = tbl.Main:CreateParagraph({Title = "Check Status Eyes", Content = ""})
+
+    task.spawn(function()
+        local flag = false
+
+        while task.wait(1) do
+            local ok, result, result2 = pcall(Check_Eye)
+
+            if ok then
+                v38:SetContent("Eyes: " .. result .. "/4")
+
+                if result2 and not flag then
+                    flag = true
+                elseif not result2 then
+                    flag = false
+                end
+            end
+        end
+    end)
+
+    local v39 = tbl.Main:CreateToggle({
+        Name = "Auto Farm Boss TOTS",
+        Description = "",
+        Default = false,
+        Callback = function(farmTyrant)
+            _G.FarmTyrant = farmTyrant
+        end,
+    })
+
+    FarmTyrant = v39
+
+    local v40 = tbl.Main:CreateToggle({
+        Name = "Auto Summon Boss",
+        Description = "",
+        Default = false,
+        Callback = function(farmPhaBinh)
+            _G.FarmPhaBinh = farmPhaBinh
+        end,
+    })
+
+    FarmPhaBinh = v40
+    tbl.Main:CreateSection("Farm Material")
+
+    local v41 = tbl.Main:CreateDropdown({
+        Name = "Choose Material",
+        Description = "",
+        Options = MaterialList,
+        Callback = function(selectMaterial)
+            getgenv().SelectMaterial = selectMaterial
+        end,
+    })
+
+    Test = v41
+
+    local v42 = tbl.Main:CreateToggle({
+        Name = "Auto Farm Materials",
+        Description = "",
+        Default = false,
+        Callback = function(autoMaterial)
+            getgenv().AutoMaterial = autoMaterial
+        end,
+    })
+
+    Toggle = v42
+    tbl.Main:CreateSection("Farm Boss")
+
+    local v43 = tbl.Main:CreateDropdown({
+        Name = "Select Boss",
+        Description = "",
+        Options = BossList,
+        Callback = function(findBoss)
+            _G.FindBoss = findBoss
+        end,
+    })
+
+    BossDropdown = v43
+
+    local v44 = tbl.Main:CreateToggle({
+        Name = "Auto Farm Boss",
+        Description = "",
+        Default = false,
+        Callback = function(farmBoss)
+            _G.FarmBoss = farmBoss
+        end,
+    })
+
+    FarmBoss = v44
+
+    local v45 = tbl.Main:CreateToggle({
+        Name = "Accept Quests",
+        Description = "",
+        Default = true,
+        Callback = function(acceptQuestBoss)
+            _G.AcceptQuestBoss = acceptQuestBoss
+        end,
+    })
+
+    BossQ = v45
+
+    local v46 = tbl.Main:CreateToggle({
+        Name = "Auto Farm All Boss",
+        Default = false,
+        Callback = function(autoFarmAllBoss)
+            _G.AutoFarmAllBoss = autoFarmAllBoss
+        end,
+    })
+
+    FarmAllBoss = v46
+    tbl.Main:CreateSection("Farming Mastery")
+
+    tbl.Main:CreateDropdown({
+        Name = "Choose Island",
+        Description = "",
+        Options = {"Cake", "Bone"},
+        Default = Bone,
+        Callback = function(arg)
+            SelectIsland = arg
+        end,
+    })
+
+    tbl.Main:CreateSlider({
+        Title = "NPC Health % Switch to Weapon",
+        Description = "Switches to mastery weapon moves when NPC HP drops below this percent",
+        Min = 10,
+        Max = 95,
+        Default = 70,
+        Callback = function(masteryHealthPct)
+            _G.MasteryHealthPct = masteryHealthPct
+        end,
+    })
+
+    tbl.Main:CreateDropdown({
+        Name = "Select Skills to Use",
+        Description = "Select which skills to spam (locked skills are auto-skipped)",
+        Options = {"Z", "X", "C", "V", "F", "Y"},
+        Default = {"Z", "X", "C", "V", "F"},
+        MultiSelect = true,
+        Callback = function(selectedMasterySkills)
+            _G.SelectedMasterySkills = selectedMasterySkills
+        end,
+    })
+
+    tbl.Main:CreateToggle({
+        Name = "Auto Mastery Fruits",
+        Description = "",
+        Default = false,
+        Callback = function(farmMasteryDev)
+            _G.FarmMastery_Dev = farmMasteryDev
+        end,
+    })
+
+    tbl.Main:CreateToggle({
+        Name = "Auto Mastery Gun",
+        Description = "",
+        Default = false,
+        Callback = function(farmMasteryG)
+            _G.FarmMastery_G = farmMasteryG
+        end,
+    })
+
+    tbl.Main:CreateToggle({
+        Name = "Auto Mastery All Sword",
+        Description = "",
+        Default = false,
+        Callback = function(farmMasteryS)
+            _G.FarmMastery_S = farmMasteryS
+        end,
+    })
+
+    require(game.ReplicatedStorage.EventConfig.MagnetEvent26)
+    tbl.Main:CreateSection("Update 30 / Magnet Token")
+    local v47 = tbl.Main:CreateParagraph({Title = "Magnet Event Status", Content = "Loading..."})
+    local v48 = tbl.Main:CreateParagraph({Title = "Status", Content = "Status : Idle"})
+
+    SetMagnetStatus = function(status)
+        if v48 and v48.SetContent then
+            pcall(function()
+                v48:SetContent("Status : " .. status)
+            end)
+        end
+    end
+
+    task.spawn(function()
+        while task.wait(1) do
+            pcall(function()
+                local now = os.time()
+                local v49 = os.date("*t", now)
+                local min = v49.min
+                local sec = v49.sec
+                local flag = min >= 0 and min < 10
+                local flag2 = false
+
+                for k, child in pairs(workspace.Enemies:GetChildren()) do
+                    if child:IsA("Model") and (child:GetAttribute("MagnetEnemy") == true or string.find(string.lower(child.Name), "magnetized")) then
+                        flag2 = true
+                        break
+                    end
+                end
+
+                local str7
+
+                if flag2 then
+                    local n = (10 - min) * 60 - sec
+                    local n2 = n
+
+                    if n < 0 then
+                        n2 = 0
+                    end
+
+                    local n3 = math.floor(n2 / 60)
+                    str7 = string.format("%s ACTIVE - Time Left: %02d:%02d (✅ Enemies Found)", "🟢", n3, n2 % 60)
+                elseif flag then
+                    local n = (10 - min) * 60 - sec
+                    local n2 = n
+
+                    if n < 0 then
+                        n2 = 0
+                    end
+
+                    local n3 = math.floor(n2 / 60)
+                    str7 = string.format("%s ACTIVE - Time Left: %02d:%02d", "🟢", n3, n2 % 60)
+                else
+                    local n = (60 - min) * 60 - sec
+                    local n2 = n
+
+                    if n <= 0 then
+                        n2 = 0
+                    end
+
+                    local n3 = math.floor(n2 / 60)
+                    str7 = string.format("%s INACTIVE - Next Event: %02d:%02d", "🔴", n3, n2 % 60)
+                end
+
+                v47:SetContent(str7)
+            end)
+        end
+    end)
+
+    local v49 = _G
+    local magnetEventSpawnIndex = _G.MagnetEventSpawnIndex
+    local magnetEventSpawnIndex2 = magnetEventSpawnIndex or 1
+    v49.MagnetEventSpawnIndex = magnetEventSpawnIndex2
+
+    tbl.Main:CreateToggle({
+        Name = "Auto Farm Magnet Token",
+        Default = false,
+        Callback = function(autoMagnetToken)
+            _G.AutoMagnetToken = autoMagnetToken
+            local v50 = SetMagnetStatus
+            local str7 = autoMagnetToken and "Starting..." or "Idle"
+            v50(str7)
+
+            if not autoMagnetToken then
+                _G.MagnetEventSpawnIndex = 1
+            end
+        end,
+    })
+
+    tbl.Settings:CreateSection("Settings / Configure")
+
+    local v50 = tbl.Settings:CreateToggle({
+        Name = "Fast Attack",
+        Description = "",
+        Default = true,
+        Callback = function(seriality)
+            _G.Seriality = seriality
+        end,
+    })
+
+    Initialize = v50
+
+    local v51 = tbl.Settings:CreateToggle({
+        Name = "Bring Mobs",
+        Description = "",
+        Default = true,
+        Callback = function(arg)
+            _B = arg
+        end,
+    })
+
+    Bringmob = v51
+
+    tbl.Settings:CreateToggle({
+        Name = "Auto Hop Server with time",
+        Default = false,
+        Callback = function(autoHopServer)
+            _G.AutoHopServer = autoHopServer
+
+            if not autoHopServer then
+                _G.HopTimer = nil
+            end
+        end,
+    })
+
+    tbl.Settings:CreateSlider({
+        Name = "Hop Delay (Minutes)",
+        Min = 5,
+        Max = 120,
+        Default = 30,
+        Increment = 1,
+        Callback = function(arg)
+            _G.HopDelay = arg * 60
+        end,
+    })
+
+    tbl.Settings:CreateToggle({
+        Name = "Auto Set Spawn Point",
+        Default = false,
+        Callback = function(set)
+            getgenv().Set = set
+
+            if set then
+                pcall(function()
+                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("SetSpawnPoint")
+                end)
+            end
+        end,
+    })
+
+    local v52 = tbl.Settings:CreateToggle({
+        Name = "Auto Turn on Buso",
+        Description = "",
+        Default = true,
+        Callback = function(arg)
+            Boud = arg
+        end,
+    })
+
+    BusuAura = v52
+
+    tbl.Settings:CreateToggle({
+        Name = "Auto Haki Observation",
+        Default = false,
+        Callback = function(observation)
+            getgenv().Observation = observation
+        end,
+    })
+
+    local v53 = tbl.Settings:CreateToggle({
+        Name = "Auto Turn on Race V3",
+        Description = "",
+        Default = false,
+        Flag = "AutoTurnonRaceV3",
+        Callback = function(raceClickAutov3)
+            _G.RaceClickAutov3 = raceClickAutov3
+        end,
+    })
+
+    RaceV3Aura = v53
+
+    local v54 = tbl.Settings:CreateToggle({
+        Name = "Auto Turn on Race V4",
+        Description = "",
+        Default = false,
+        Callback = function(raceClickAutov4)
+            _G.RaceClickAutov4 = raceClickAutov4
+        end,
+    })
+
+    RaceV4Aura = v54
+
+    local v55 = tbl.Settings:CreateToggle({
+        Name = "Auto Turn on Spin  xyz",
+        Description = "",
+        Default = false,
+        Callback = function(arg)
+            RandomCFrame = arg
+        end,
+    })
+
+    RandomAround = v55
+
+    local v56 = tbl.Settings:CreateToggle({
+        Name = "Safe Mode",
+        Description = "",
+        Default = false,
+        Callback = function(safemode)
+            _G.Safemode = safemode
+        end,
+    })
+
+    SafeModes = v56
+
+    local v57 = tbl.Settings:CreateToggle({
+        Name = "Remove Hit VFX",
+        Description = "Removes slash and sword visual effects for better visibility",
+        Default = false,
+        Callback = function(destroyHit)
+            _G.DestroyHit = destroyHit
+        end,
+    })
+
+    DisableHitVFX = v57
+    rfSubmarineWorkerSpeak = {"SlashHit", "CurvedRing", "SwordSlash", "SlashTail"}
+
+    local v58 = tbl.Settings:CreateToggle({
+        Name = "Remove Death & Respawned VFX",
+        Description = "",
+        Default = false,
+        Callback = function(arg)
+            RDeath = arg
+        end,
+    })
+
+    RmvVFX = v58
+
+    local v59 = tbl.Settings:CreateToggle({
+        Name = "Disable Notify",
+        Description = "",
+        Default = false,
+        Callback = function(arg)
+            RemoveDamage = arg
+        end,
+    })
+
+    DisblesNotify = v59
+
+    tbl.Settings:CreateToggle({
+        Name = "Anti AFK",
+        Default = true,
+        Callback = function(arg)
+            if arg then
+                local VirtualUser = game:GetService("VirtualUser")
+
+                repeat
+                    wait()
+                until game:IsLoaded()
+
+                game:GetService("Players").LocalPlayer.Idled:Connect(function()
+                    VirtualUser:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+                    wait(1)
+                    VirtualUser:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+                end)
+            end
+        end,
+    })
+
+    tbl.Settings:CreateToggle({
+        Name = "Auto Anti - Admin Join Server",
+        Description = "",
+        Default = true,
+        Callback = function(hopServerAdmin)
+            getgenv().HopServerAdmin = hopServerAdmin
+        end,
+    })
+
+    tbl.Settings:CreateToggle({
+        Name = "No Clip",
+        Default = false,
+        Callback = function(noClip)
+            getgenv().NoClip = noClip
+        end,
+    })
+
+    tbl.Esp:CreateSection("Stats Upgrade")
+
+    local v60 = tbl.Esp:CreateSlider({
+        Name = "Stats Value",
+        Description = "",
+        Default = 10,
+        Min = 0,
+        Max = 1000,
+        Rounding = 1,
+        Callback = function(arg)
+            pSats = arg
+        end,
+    })
+
+    StatusSelect = v60
+
+    local v61 = tbl.Esp:CreateToggle({
+        Name = "Auto Melee",
+        Description = "",
+        Default = false,
+        Callback = function(autoMelee)
+            _G.Auto_Melee = autoMelee
+        end,
+    })
+
+    StatsUpg = v61
+
+    local v62 = tbl.Esp:CreateToggle({
+        Name = "Auto Swords",
+        Description = "",
+        Default = false,
+        Callback = function(autoSword)
+            _G.Auto_Sword = autoSword
+        end,
+    })
+
+    StatsUpg = v62
+
+    local v63 = tbl.Esp:CreateToggle({
+        Name = "Auto Gun",
+        Description = "",
+        Default = false,
+        Callback = function(autoGun)
+            _G.Auto_Gun = autoGun
+        end,
+    })
+
+    StatsUpg = v63
+
+    local v64 = tbl.Esp:CreateToggle({
+        Name = "Auto Blox Fruit",
+        Description = "",
+        Default = false,
+        Callback = function(autoDevilFruit)
+            _G.Auto_DevilFruit = autoDevilFruit
+        end,
+    })
+
+    StatsUpg = v64
+
+    local v65 = tbl.Esp:CreateToggle({
+        Name = "Auto Defense",
+        Description = "",
+        Default = false,
+        Callback = function(autoDefense)
+            _G.Auto_Defense = autoDefense
+        end,
+    })
+
+    StatsUpg = v65
+    tbl.Fish:CreateSection("Fishing")
+
+    tbl.Fish:CreateDropdown({
+        Name = "Select Fishing Rod",
+        Description = "",
+        Options = {
+            "Fishing Rod",
+            "Gold Rod",
+            "Shark Rod",
+            "Shell Rod",
+            "Treasure Rod",
+        },
+        Default = "Fishing Rod",
+        Callback = function(selectedRod)
+            _G.SelectedRod = selectedRod
+        end,
+    })
+
+    local v66 = tbl.Fish:CreateDropdown({
+        Name = "Select Bait",
+        Description = "",
+        Options = {
+            "Basic Bait",
+            "Kelp Bait",
+            "Good Bait",
+            "Abyssal Bait",
+            "Frozen Bait",
+            "Epic Bait",
+            "Carnivore Bait",
+        },
+        Default = "Basic Bait",
+        Callback = function(selectedBait)
+            _G.SelectedBait = selectedBait
+
+            if _G.AutoBuyBait then
+                pcall(function()
+                    Remotes.RFCraft:InvokeServer("Craft", _G.SelectedBait, {})
+                end)
+            end
+        end,
+    })
+
+    BaitDropdown = v66
+
+    local v67 = tbl.Fish:CreateToggle({
+        Name = "Auto Buy Bait",
+        Description = "",
+        Default = false,
+        Callback = function(autoBuyBait)
+            _G.AutoBuyBait = autoBuyBait
+
+            if autoBuyBait then
+                pcall(function()
+                    Remotes.RFCraft:InvokeServer("Craft", _G.SelectedBait, {})
+                end)
+            end
+        end,
+    })
+
+    BuyBaitToggle = v67
+
+    local v68 = tbl.Fish:CreateToggle({
+        Name = "Auto Fishing",
+        Description = "",
+        Default = false,
+        Callback = function(autoFishing)
+            _G.AutoFishing = autoFishing
+        end,
+    })
+
+    FishingToggle = v68
+
+    local v69 = tbl.Fish:CreateToggle({
+        Name = "Auto Quest Fishing",
+        Description = "",
+        Default = false,
+        Callback = function(autoFishingQuest)
+            _G.AutoFishingQuest = autoFishingQuest
+        end,
+    })
+
+    FishingQ = v69
+
+    local v70 = tbl.Fish:CreateToggle({
+        Name = "Auto Complete Quest",
+        Description = "",
+        Default = false,
+        Callback = function(autoQuestComplete)
+            _G.AutoQuestComplete = autoQuestComplete
+
+            if autoQuestComplete then
+                pcall(function()
+                    Remotes.RFJobsRemoteFunction:InvokeServer("FishingNPC", "FinishQuest")
+                end)
+            end
+        end,
+    })
+
+    QuestToggle = v70
+
+    local v71 = tbl.Fish:CreateToggle({
+        Name = "Auto Sell Fish",
+        Description = "",
+        Default = false,
+        Callback = function(autoSellFish)
+            _G.AutoSellFish = autoSellFish
+
+            if autoSellFish then
+                pcall(function()
+                    Remotes.RFJobsRemoteFunction:InvokeServer("FishingNPC", "SellFish")
+                end)
+            end
+        end,
+    })
+
+    SellFishToggle = v71
+
+    local v72 = tbl.Fish:CreateToggle({
+        Name = "Auto Spam Skill Z",
+        Description = "",
+        Default = false,
+        Callback = function(autoSkillZ)
+            _G.AutoSkillZ = autoSkillZ
+        end,
+    })
+
+    SpamSkillZ = v72
+
+    local v73 = tbl.Quests:CreateToggle({
+        Name = "Auto Quest Sea 2",
+        Description = "",
+        Default = false,
+        Callback = function(travelDres)
+            _G.TravelDres = travelDres
+        end,
+    })
+
+    TravelDress = v73
+
+    local v74 = tbl.Quests:CreateToggle({
+        Name = "Auto Quest Sea 3",
+        Description = "",
+        Default = false,
+        Callback = function(autoZou)
+            _G.AutoZou = autoZou
+        end,
+    })
+
+    Zou = v74
+    tbl.Quests:CreateSection("Tushita + Yama")
+
+    local v75 = tbl.Quests:CreateToggle({
+        Name = "Auto Tushita Sword",
+        Description = "",
+        Default = false,
+        Callback = function(autoTushita)
+            _G.Auto_Tushita = autoTushita
+        end,
+    })
+
+    Q = v75
+
+    local v76 = tbl.Quests:CreateToggle({
+        Name = "Auto Yama Sword",
+        Description = "",
+        Default = false,
+        Callback = function(autoYama)
+            _G.Auto_Yama = autoYama
+        end,
+    })
+
+    Q = v76
+    tbl.Quests:CreateSection("Skull Guitars / Misc")
+    local v77 = tbl.Quests:CreateParagraph({Title = "Skull Guitar Quests", Content = ""})
+
+    spawn(function()
+        while wait(0.2) do
+            pcall(function()
+                if Quest1 == true then
+                    v77:SetContent("Quest Number : Quest1")
+                elseif Quest2 == true then
+                    v77:SetContent("Quest Number : Quest2")
+                elseif Quest3 == true then
+                    v77:SetContent("Quest Number : Quest3")
+                elseif Quest4 == true then
+                    v77:SetContent("Quest Number : Quest4")
+                elseif GetWP("Skull Guitar") then
+                    v77:SetContent("Quest Number : Collect!!")
+                else
+                    v77:SetContent("Quest Number : No Quest!!")
+                end
+            end)
+        end
+    end)
+
+    tbl.Quests:CreateToggle({
+        Name = "Auto Skull Guitar",
+        Description = "",
+        Default = false,
+        Callback = function(autoSoulGuitar)
+            _G.Auto_Soul_Guitar = autoSoulGuitar
+        end,
+    })
+
+    tbl.Quests:CreateToggle({
+        Name = "Auto Farm Material Skull Guitar",
+        Description = "",
+        Default = false,
+        Callback = function(autoMatSoul)
+            _G.AutoMatSoul = autoMatSoul
+        end,
+    })
+
+    tbl.Quests:CreateSection("Cursed Dual Katana")
+
+    local v78 = tbl.Quests:CreateParagraph({
+        Title = "Number Cursed dual katana quests",
+        Content = "Quest Numbers :",
+    })
+
+    spawn(function()
+        while wait(0.2) do
+            if QuestYama_1 == true then
+                v78:SetContent("Quest Numbers : yama quest 1")
+            elseif QuestYama_2 == true then
+                v78:SetContent("Quest Numbers : yama quest 2")
+            elseif QuestYama_3 == true then
+                v78:SetContent("Quest Numbers : yama quest 3")
+            elseif QuestTushita_1 == true then
+                v78:SetContent("Quest Numbers : tushita quest 1")
+            elseif QuestTushita_2 == true then
+                v78:SetContent("Quest Numbers : tushita quest 2")
+            elseif GetWP("Cursed Dual Katana") then
+                v78:SetContent("Quest Numbers : CDK done!!")
+            end
+        end
+    end)
+
+    local v79 = tbl.Quests:CreateToggle({
+        Name = "Auto Get CDK [ Last Quest ]",
+        Description = "",
+        Default = false,
+        Callback = function(cdk)
+            _G.CDK = cdk
+        end,
+    })
+
+    Q = v79
+
+    local v80 = tbl.Quests:CreateToggle({
+        Name = "Auto Yama CDK",
+        Description = "",
+        Default = false,
+        Callback = function(cdkYm)
+            _G.CDK_YM = cdkYm
+        end,
+    })
+
+    Q = v80
+
+    local v81 = tbl.Quests:CreateToggle({
+        Name = "Auto Tushita CDK",
+        Description = "",
+        Default = false,
+        Callback = function(cdkTs)
+            _G.CDK_TS = cdkTs
+        end,
+    })
+
+    Q = v81
+    tbl.Quests:CreateSection("True Triple Katana Sword")
+
+    tbl.Quests:CreateButton({
+        Name = "Buy Legendary Sword",
+        Description = "",
+        Callback = function()
+            replicated.Remotes.CommF_:InvokeServer("LegendarySwordDealer", "1")
+            replicated.Remotes.CommF_:InvokeServer("LegendarySwordDealer", "2")
+            replicated.Remotes.CommF_:InvokeServer("LegendarySwordDealer", "3")
+        end,
+    })
+
+    tbl.Quests:CreateButton({
+        Name = "Buy True Triple Katana Sword",
+        Description = "",
+        Callback = function()
+            replicated.Remotes.CommF_:InvokeServer("MysteriousMan", "2")
+        end,
+    })
+
+    local v82 = tbl.Quests:CreateToggle({
+        Name = "Tween to Legendary Sword Dealer",
+        Description = "",
+        Default = false,
+        Callback = function(tpLgS)
+            _G.Tp_LgS = tpLgS
+        end,
+    })
+
+    Q = v82
+    tbl.Quests:CreateSection("Pole / God Enal's")
+
+    local v83 = tbl.Quests:CreateToggle({
+        Name = "Auto Pole V1",
+        Description = "",
+        Default = false,
+        Callback = function(autoPole)
+            _G.AutoPole = autoPole
+        end,
+    })
+
+    Q = v83
+
+    local v84 = tbl.Quests:CreateToggle({
+        Name = "Auto Pole V2 [Beta]",
+        Description = "",
+        Default = false,
+        Callback = function(autoPoleV2)
+            _G.AutoPoleV2 = autoPoleV2
+        end,
+    })
+
+    Q = v84
+
+    tbl.Quests:CreateToggle({
+        Name = "Auto Saw Sword",
+        Description = "",
+        Default = false,
+        Callback = function(autoSaw)
+            _G.AutoSaw = autoSaw
+        end,
+    })
+
+    local v85 = tbl.Quests:CreateToggle({
+        Name = "Auto Saber Sword",
+        Description = "",
+        Default = false,
+        Callback = function(autoSaber)
+            _G.AutoSaber = autoSaber
+        end,
+    })
+
+    Q = v85
+
+    local v86 = tbl.Quests:CreateToggle({
+        Name = "Auto Cybrog",
+        Description = "",
+        Default = false,
+        Callback = function(autoColShad)
+            _G.AutoColShad = autoColShad
+        end,
+    })
+
+    Q = v86
+
+    local v87 = tbl.Quests:CreateToggle({
+        Name = "Auto Usoap's Hat",
+        Description = "",
+        Default = false,
+        Callback = function(autoGetUsoap)
+            _G.AutoGetUsoap = autoGetUsoap
+        end,
+    })
+
+    Q = v87
+
+    local v88 = tbl.Quests:CreateToggle({
+        Name = "Auto Bisento V2",
+        Description = "",
+        Default = false,
+        Callback = function(greybeard)
+            _G.Greybeard = greybeard
+        end,
+    })
+
+    Q = v88
+
+    local v89 = tbl.Quests:CreateToggle({
+        Name = "Auto Warden Sword",
+        Description = "",
+        Default = false,
+        Callback = function(wardenBoss)
+            _G.WardenBoss = wardenBoss
+        end,
+    })
+
+    Q = v89
+
+    local v90 = tbl.Quests:CreateToggle({
+        Name = "Auto Marine Coat",
+        Description = "",
+        Default = false,
+        Callback = function(marinesCoat)
+            _G.MarinesCoat = marinesCoat
+        end,
+    })
+
+    Q = v90
+
+    local v91 = tbl.Quests:CreateToggle({
+        Name = "Auto Swan Coat",
+        Description = "",
+        Default = false,
+        Callback = function(swanCoat)
+            _G.SwanCoat = swanCoat
+        end,
+    })
+
+    Q = v91
+    tbl.Quests:CreateSection("Rengoku Sword")
+
+    local v92 = tbl.Quests:CreateToggle({
+        Name = "Auto Rengoku Sword",
+        Description = "",
+        Default = false,
+        Callback = function(iceBossRen)
+            _G.IceBossRen = iceBossRen
+        end,
+    })
+
+    Q = v92
+
+    local v93 = tbl.Quests:CreateToggle({
+        Name = "Auto Key Rengoku",
+        Description = "",
+        Default = false,
+        Callback = function(keysRen)
+            _G.KeysRen = keysRen
+        end,
+    })
+
+    Q = v93
+
+    local v94 = tbl.Quests:CreateToggle({
+        Name = "Auto Dragon Trident",
+        Description = "",
+        Default = false,
+        Callback = function(autoTridentW2)
+            _G.AutoTridentW2 = autoTridentW2
+        end,
+    })
+
+    Q = v94
+
+    local v95 = tbl.Quests:CreateToggle({
+        Name = "Auto Long Sword",
+        Description = "",
+        Default = false,
+        Callback = function(longsWord)
+            _G.LongsWord = longsWord
+        end,
+    })
+
+    Q = v95
+
+    local v96 = tbl.Quests:CreateToggle({
+        Name = "Auto Black Spikey",
+        Description = "",
+        Default = false,
+        Callback = function(blackSpikey)
+            _G.BlackSpikey = blackSpikey
+        end,
+    })
+
+    Q = v96
+
+    local v97 = tbl.Quests:CreateToggle({
+        Name = "Auto Dark Blade V3",
+        Description = "",
+        Default = false,
+        Callback = function(darkBladev3)
+            _G.DarkBladev3 = darkBladev3
+        end,
+    })
+
+    Q = v97
+
+    local v98 = tbl.Quests:CreateToggle({
+        Name = "Auto Midnight Blade",
+        Description = "",
+        Default = false,
+        Callback = function(autoEcBoss)
+            _G.AutoEcBoss = autoEcBoss
+        end,
+    })
+
+    Q = v98
+
+    local v99 = tbl.Quests:CreateToggle({
+        Name = "Auto Darkbeard",
+        Description = "",
+        Default = false,
+        Callback = function(autoDefDarkCoat)
+            _G.Auto_Def_DarkCoat = autoDefDarkCoat
+        end,
+    })
+
+    Q = v99
+
+    local v100 = tbl.Quests:CreateToggle({
+        Name = "Auto Unlocked DonSwan",
+        Description = "",
+        Default = false,
+        Callback = function(autoDonAcces)
+            _G.Auto_DonAcces = autoDonAcces
+        end,
+    })
+
+    Q = v100
+
+    local v101 = tbl.Quests:CreateToggle({
+        Name = "Auto Swan Glasses",
+        Description = "",
+        Default = false,
+        Callback = function(autoSwanGG)
+            _G.Auto_SwanGG = autoSwanGG
+        end,
+    })
+
+    Q = v101
+    tbl.Quests:CreateSection("Cavender + Twin Hooks + Bigmom")
+
+    local v102 = tbl.Quests:CreateToggle({
+        Name = "Auto Bigmom",
+        Description = "",
+        Default = false,
+        Callback = function(autoBigmom)
+            _G.AutoBigmom = autoBigmom
+        end,
+    })
+
+    Q = v102
+
+    local v103 = tbl.Quests:CreateToggle({
+        Name = "Auto Canvendish Sword",
+        Description = "",
+        Default = false,
+        Callback = function(autoCavender)
+            _G.Auto_Cavender = autoCavender
+        end,
+    })
+
+    Q = v103
+
+    local v104 = tbl.Quests:CreateToggle({
+        Name = "Auto Twin Hooks",
+        Description = "",
+        Default = false,
+        Callback = function(twinHook)
+            _G.TwinHook = twinHook
+        end,
+    })
+
+    Q = v104
+
+    local v105 = tbl.Quests:CreateToggle({
+        Name = "Auto Serpent Bow",
+        Description = "",
+        Default = false,
+        Callback = function(autoSerpentBow)
+            _G.AutoSerpentBow = autoSerpentBow
+        end,
+    })
+
+    Q = v105
+
+    local v106 = tbl.Quests:CreateToggle({
+        Name = "Auto Lei Accessory",
+        Description = "",
+        Default = false,
+        Callback = function(autoKilo)
+            _G.AutoKilo = autoKilo
+        end,
+    })
+
+    Q = v106
+    tbl.Quests:CreateSection("Buso/Aura Colours")
+
+    local v107 = tbl.Quests:CreateToggle({
+        Name = "Auto Teleport Barista Cousin",
+        Description = "",
+        Default = false,
+        Callback = function(tpMasterA)
+            _G.Tp_MasterA = tpMasterA
+        end,
+    })
+
+    Q = v107
+
+    tbl.Quests:CreateButton({
+        Name = "Buy Buso Colors",
+        Description = "",
+        Callback = function()
+            replicated.Remotes.CommF_:InvokeServer("ColorsDealer", "2")
+        end,
+    })
+
+    local v108 = tbl.Quests:CreateToggle({
+        Name = "Auto Rainbow Colors",
+        Description = "",
+        Default = false,
+        Callback = function(autoRainbowHaki)
+            _G.Auto_Rainbow_Haki = autoRainbowHaki
+        end,
+    })
+
+    Q = v108
+
+    local v109 = tbl.Quests:CreateToggle({
+        Name = "Accept Rainbow Quest Faster",
+        Description = "",
+        Default = false,
+        Callback = function(getQFast)
+            _G.GetQFast = getQFast
+        end,
+    })
+
+    Q = v109
+    tbl.Quests:CreateSection("Instinct / Observation")
+
+    local v110 = tbl.Quests:CreateToggle({
+        Name = "Auto Farm Observation",
+        Description = "",
+        Default = false,
+        Callback = function(obsFarm)
+            _G.obsFarm = obsFarm
+        end,
+    })
+
+    Q = v110
+
+    local v111 = tbl.Quests:CreateToggle({
+        Name = "Auto Observation V2",
+        Description = "",
+        Default = false,
+        Callback = function(autoKenVTWO)
+            _G.AutoKenVTWO = autoKenVTWO
+        end,
+    })
+
+    Q = v111
+
+    local v112 = tbl.Quests:CreateToggle({
+        Name = "Auto Done Bartilo Quest",
+        Description = "",
+        Default = false,
+        Callback = function(bartiloQuest)
+            _G.Bartilo_Quest = bartiloQuest
+        end,
+    })
+
+    Bartilo = v112
+
+    local v113 = tbl.Quests:CreateToggle({
+        Name = "Auto Done Citizen Quest",
+        Description = "",
+        Default = false,
+        Callback = function(citizenQuest)
+            _G.CitizenQuest = citizenQuest
+        end,
+    })
+
+    CitizenQ = v113
+
+    local v114 = tbl.Quests:CreateToggle({
+        Name = "Auto Training Dummy",
+        Description = "",
+        Default = false,
+        Callback = function(dummyMan)
+            _G.DummyMan = dummyMan
+        end,
+    })
+
+    Q = v114
+    tbl.Quests:CreateSection("Fighting Melee Styles")
+
+    local v115 = tbl.Quests:CreateToggle({
+        Name = "Auto Superhuman",
+        Description = "",
+        Default = false,
+        Callback = function(autoSuperHuman)
+            _G.Auto_SuperHuman = autoSuperHuman
+        end,
+    })
+
+    SuperHuman = v115
+
+    local v116 = tbl.Quests:CreateToggle({
+        Name = "Auto DeathStep",
+        Description = "",
+        Default = false,
+        Callback = function(autoDeathStep)
+            _G.AutoDeathStep = autoDeathStep
+        end,
+    })
+
+    DeathStep = v116
+
+    local v117 = tbl.Quests:CreateToggle({
+        Name = "Auto Sharkman Karate",
+        Description = "",
+        Default = false,
+        Callback = function(autoSharkManKarate)
+            _G.Auto_SharkMan_Karate = autoSharkManKarate
+        end,
+    })
+
+    SharkManV2 = v117
+
+    local v118 = tbl.Quests:CreateToggle({
+        Name = "Auto ElectricClaw",
+        Description = "",
+        Default = false,
+        Callback = function(autoElectricClaw)
+            _G.Auto_Electric_Claw = autoElectricClaw
+        end,
+    })
+
+    ElectricClaw = v118
+
+    local v119 = tbl.Quests:CreateToggle({
+        Name = "Auto DragonTalon",
+        Description = "",
+        Default = false,
+        Callback = function(autoDragonTalon)
+            _G.AutoDragonTalon = autoDragonTalon
+        end,
+    })
+
+    DragonTalon = v119
+
+    local v120 = tbl.Quests:CreateToggle({
+        Name = "Auto Godhuman",
+        Description = "",
+        Default = false,
+        Callback = function(autoGodHuman)
+            _G.Auto_God_Human = autoGodHuman
+        end,
+    })
+
+    Godhuman = v120
+
+    local v121 = tbl.Quests:CreateToggle({
+        Name = "Auto SanguineArt",
+        Description = "",
+        Default = false,
+        Callback = function(snaguine)
+            _G.Snaguine = snaguine
+        end,
+    })
+
+    SanguineArt = v121
+    tbl.Race:CreateSection("Mystic Island / Full Moon")
+    local v122 = tbl.Race:CreateParagraph({Title = "FullMoon Status", Content = ""})
+    local v123 = tbl.Race:CreateParagraph({Title = "Mirage Island Status", Content = ""})
+
+    spawn(function()
+        while wait(0.2) do
+            if not workspace.Map:FindFirstChild("MysticIsland") and not workspace._WorldOrigin.Locations:FindFirstChild("Mirage Island") then
+                v123:SetContent("Mirage Island : False")
+            else
+                v123:SetContent("Mirage Island : True")
+            end
+        end
+    end)
+
+    spawn(function()
+        while wait(0.2) do
+            pcall(function()
+                local v124 = Getmoon()
+
+                if v124 == "http://www.roblox.com/asset/?id=9709135895" then
+                    v122:SetContent("Moon : 0 / 8")
+                elseif v124 == "http://www.roblox.com/asset/?id=9709139597" then
+                    v122:SetContent("Moon : 1 / 8")
+                elseif v124 == "http://www.roblox.com/asset/?id=9709143733" then
+                    v122:SetContent("Moon : 2 / 8")
+                elseif v124 == "http://www.roblox.com/asset/?id=9709149052" then
+                    v122:SetContent("Moon : 3 / 8 [ Next Night ]")
+                elseif v124 == "http://www.roblox.com/asset/?id=9709149431" then
+                    v122:SetContent("Moon : 4 / 8 [ Full Moon ]")
+                elseif v124 == "http://www.roblox.com/asset/?id=9709149680" then
+                    v122:SetContent("Moon : 5 / 8 [ Last Night ]")
+                elseif v124 == "http://www.roblox.com/asset/?id=9709150086" then
+                    v122:SetContent("Moon : 6 / 8")
+                elseif v124 == "http://www.roblox.com/asset/?id=9709150401" then
+                    v122:SetContent("Moon : 7 / 8")
+                end
+            end)
+        end
+    end)
+
+    tbl.Race:CreateToggle({
+        Name = "Auto Find Mirage Island",
+        Description = "",
+        Default = false,
+        Callback = function(findMirage)
+            _G.FindMirage = findMirage
+        end,
+    })
+
+    tbl.Race:CreateToggle({
+        Name = "Esp Mirage Island",
+        Description = "",
+        Value = false,
+        Callback = function(arg)
+            MirageIslandESP = arg
+
+            if MirageIslandESP then
+                task.spawn(function()
+                    while MirageIslandESP do
+                        if UpdateIslandMirageESP then
+                            UpdateIslandMirageESP()
+                        end
+
+                        task.wait(1)
+                    end
+                end)
+            elseif UpdateIslandMirageESP then
+                UpdateIslandMirageESP()
+            end
+        end,
+    })
+
+    tbl.Race:CreateToggle({
+        Name = "Auto Tween To Mirage Island",
+        Description = "",
+        Default = false,
+        Callback = function(autoMysticIsland)
+            _G.AutoMysticIsland = autoMysticIsland
+        end,
+    })
+
+    tbl.Race:CreateToggle({
+        Name = "Auto Tween To Highest Point",
+        Description = "",
+        Default = false,
+        Callback = function(highestMirage)
+            _G.HighestMirage = highestMirage
+        end,
+    })
+
+    tbl.Race:CreateToggle({
+        Name = "Auto Collect Gear",
+        Description = "",
+        Default = false,
+        Callback = function(tpgear)
+            _G.TPGEAR = tpgear
+        end,
+    })
+
+    tbl.Race:CreateToggle({
+        Name = "Change Transparency can see",
+        Description = "",
+        Default = false,
+        Callback = function(can)
+            _G.can = can
+        end,
+    })
+
+    tbl.Race:CreateToggle({
+        Name = "Auto Tween Advanced Fruit Dealer",
+        Description = "",
+        Default = false,
+        Callback = function(addealer)
+            _G.Addealer = addealer
+        end,
+    })
+
+    tbl.Race:CreateToggle({
+        Name = "Auto Collect Mirage Chest",
+        Description = "",
+        Default = false,
+        Callback = function(farmChestM)
+            _G.FarmChestM = farmChestM
+        end,
+    })
+
+    tbl.Race:CreateButton({
+        Name = "Talk With Stone",
+        Description = "",
+        Callback = function()
+            replicated:WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer("RaceV4Progress", "Begin")
+            replicated:WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer("RaceV4Progress", "Check")
+            replicated:WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer("RaceV4Progress", "Teleport")
+            replicated:WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer("RaceV4Progress", "Continue")
+        end,
+    })
+
+    tbl.Race:CreateToggle({
+        Name = "Auto Look At Moon",
+        Description = "",
+        Default = false,
+        Callback = function(arg)
+            LookM = arg
+        end,
+    })
+
+    tbl.Race:CreateToggle({
+        Name = "Look Moon + Auto V3",
+        Description = "",
+        Default = false,
+        Callback = function(arg)
+            LookMV3 = arg
+        end,
+    })
+
+    tbl.Race:CreateSection("Upgrade Races V2 And V3")
+
+    local v124 = tbl.Race:CreateToggle({
+        Name = "Auto Upgrade Mink",
+        Description = "",
+        Default = false,
+        Callback = function(autoMink)
+            _G.Auto_Mink = autoMink
+        end,
+    })
+
+    RaceMink = v124
+
+    local v125 = tbl.Race:CreateToggle({
+        Name = "Auto Upgrade Human",
+        Description = "",
+        Default = false,
+        Callback = function(autoHuman)
+            _G.Auto_Human = autoHuman
+        end,
+    })
+
+    RaceHuman = v125
+
+    local v126 = tbl.Race:CreateToggle({
+        Name = "Auto Upgrade Angel",
+        Description = "",
+        Default = false,
+        Callback = function(autoSkypiea)
+            _G.Auto_Skypiea = autoSkypiea
+        end,
+    })
+
+    RaceSky = v126
+
+    local v127 = tbl.Race:CreateToggle({
+        Name = "Auto Upgrade FishMan",
+        Description = "",
+        Default = false,
+        Callback = function(autoFish)
+            _G.Auto_Fish = autoFish
+        end,
+    })
+
+    RaceFish = v127
+    tbl.Race:CreateSection("Trials Quest V4")
+    local v128 = tbl.Race:CreateParagraph({Title = "Tiers V4 Status", Content = ""})
+
+    spawn(function()
+        pcall(function()
+            while wait(0.2) do
+                v128:SetContent("Tiers - V4 :  " .. plr.Data.Race.C.Value)
+            end
+        end)
+    end)
+
+    local v129 = tbl.Race:CreateToggle({
+        Name = "Auto Pull Lever",
+        Description = "",
+        Default = false,
+        Callback = function(lver)
+            _G.Lver = lver
+        end,
+    })
+
+    PullLv = v129
+
+    local v130 = tbl.Race:CreateToggle({
+        Name = "Auto Train V4",
+        Description = "",
+        Default = false,
+        Callback = function(acientOne)
+            _G.AcientOne = acientOne
+        end,
+    })
+
+    Train = v130
+
+    tbl.Race:CreateButton({
+        Name = "Teleport to Temple of Time",
+        Description = "",
+        Callback = function()
+            local localPlayer = game:GetService("Players").LocalPlayer
+            local character = localPlayer.Character
+            local humanoidRootPart = character and localPlayer.Character:FindFirstChild("HumanoidRootPart")
+
+            if humanoidRootPart then
+                humanoidRootPart.CFrame = CFrame.new(28286.35546875, 14895.3017578125, 102.62469482421875)
+            end
+
+            if not game:GetService("Workspace").Map:FindFirstChild("Temple of Time") and World3 then
+                local mapStash = game:GetService("ReplicatedStorage"):FindFirstChild("MapStash")
+
+                if mapStash and mapStash:FindFirstChild("Temple of Time") then
+                    mapStash["Temple of Time"].Parent = workspace.Map
+                end
+            end
+        end,
+    })
+
+    tbl.Race:CreateButton({
+        Name = "Teleport to Ancient One",
+        Description = "",
+        Callback = function()
+            local localPlayer = game:GetService("Players").LocalPlayer
+            local character = localPlayer.Character
+            local humanoidRootPart = character and localPlayer.Character:FindFirstChild("HumanoidRootPart")
+
+            if humanoidRootPart then
+                humanoidRootPart.CFrame = CFrame.new(28286.35546875, 14895.3017578125, 102.62469482421875)
+            end
+
+            if not game:GetService("Workspace").Map:FindFirstChild("Temple of Time") and World3 then
+                local mapStash = game:GetService("ReplicatedStorage"):FindFirstChild("MapStash")
+
+                if mapStash and mapStash:FindFirstChild("Temple of Time") then
+                    mapStash["Temple of Time"].Parent = workspace.Map
+                end
+            end
+
+            task.wait(2)
+            tween(CFrame.new(28981.552734375, 14888.4267578125, -120.245849609375))
+        end,
+    })
+
+    tbl.Race:CreateButton({
+        Name = "Teleport to Ancient Clock",
+        Description = "",
+        Callback = function()
+            local localPlayer = game:GetService("Players").LocalPlayer
+            local character = localPlayer.Character
+            local humanoidRootPart = character and localPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local cframe = CFrame.new(28286.35546875, 14895.3017578125, 102.62469482421875)
+            local cframe2 = CFrame.new(29549, 15069, -88)
+
+            if humanoidRootPart then
+                humanoidRootPart.CFrame = cframe
+            end
+
+            task.delay(2, function()
+                _tp(cframe2)
+            end)
+
+            if not workspace.Map:FindFirstChild("Temple of Time") and World3 then
+                local mapStash = game:GetService("ReplicatedStorage"):FindFirstChild("MapStash")
+
+                if mapStash and mapStash:FindFirstChild("Temple of Time") then
+                    mapStash["Temple of Time"].Parent = workspace.Map
+                end
+            end
+        end,
+    })
+
+    local v131 = tbl.Race:CreateToggle({
+        Name = "Auto Teleport to Race Doors",
+        Description = "",
+        Default = false,
+        Callback = function(tpDoor)
+            _G.TPDoor = tpDoor
+        end,
+    })
+
+    Doors = v131
+
+    local v132 = tbl.Race:CreateToggle({
+        Name = "Auto Complete Trial Race",
+        Description = "",
+        Default = false,
+        Callback = function(completeTrials)
+            _G.Complete_Trials = completeTrials
+        end,
+    })
+
+    Trials = v132
+
+    local v133 = tbl.Race:CreateToggle({
+        Name = "Auto Kill Player After Trial",
+        Description = "",
+        Default = false,
+        Callback = function(defeating)
+            _G.Defeating = defeating
+        end,
+    })
+
+    AutoKill = v133
+    tbl.Prehistoric:CreateSection("Dojo Quest")
+
+    tbl.Prehistoric:CreateButton({
+        Name = "Teleport To Dragon Dojo",
+        Description = "",
+        Callback = function()
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(5661.5322265625, 1013.0907592773438, -334.9649963378906))
+            _tp(CFrame.new(5814.42724609375, 1208.3267822265625, 884.5785522460938))
+        end,
+    })
+
+    local v134 = tbl.Prehistoric:CreateToggle({
+        Name = "Auto Dojo Trainer",
+        Description = "",
+        Default = false,
+        Callback = function(dojoo)
+            _G.Dojoo = dojoo
+        end,
+    })
+
+    DojoQ = v134
+
+    local v135 = tbl.Prehistoric:CreateToggle({
+        Name = "Auto Dragon Hunter",
+        Description = "",
+        Default = false,
+        Callback = function(farmBlazeEM)
+            _G.FarmBlazeEM = farmBlazeEM
+        end,
+    })
+
+    BlazeEM = v135
+    tbl.Prehistoric:CreateSection("Drago Trial")
+
+    local v136 = tbl.Prehistoric:CreateToggle({
+        Name = "Tween To Upgrade Droco Trial",
+        Description = "",
+        Default = false,
+        Callback = function(upgDrago)
+            _G.UPGDrago = upgDrago
+        end,
+    })
+
+    Toggle = v136
+
+    local v137 = tbl.Prehistoric:CreateToggle({
+        Name = "Auto Drago (V1)",
+        Description = "",
+        Default = false,
+        Callback = function(dragoV1)
+            _G.DragoV1 = dragoV1
+        end,
+    })
+
+    Toggle = v137
+
+    local v138 = tbl.Prehistoric:CreateToggle({
+        Name = "Auto Drago (V2)",
+        Description = "",
+        Default = false,
+        Callback = function(autoFireFlowers)
+            _G.AutoFireFlowers = autoFireFlowers
+        end,
+    })
+
+    fireflower = v138
+
+    local v139 = tbl.Prehistoric:CreateToggle({
+        Name = "Auto Drago (V3)",
+        Description = "",
+        Default = false,
+        Callback = function(dragoV3)
+            _G.DragoV3 = dragoV3
+        end,
+    })
+
+    Toggle = v139
+
+    local v140 = tbl.Prehistoric:CreateToggle({
+        Name = "Auto Relic Drago Trial [Beta]",
+        Description = "",
+        Default = false,
+        Callback = function(relic123)
+            _G.Relic123 = relic123
+        end,
+    })
+
+    Toggle = v140
+
+    local v141 = tbl.Prehistoric:CreateToggle({
+        Name = "Auto Train Drago v4",
+        Description = "",
+        Default = false,
+        Callback = function(trainDrago)
+            _G.TrainDrago = trainDrago
+        end,
+    })
+
+    Toggle = v141
+
+    local v142 = tbl.Prehistoric:CreateToggle({
+        Name = "Tween to Drago Trials",
+        Description = "",
+        Default = false,
+        Callback = function(tpDragoPrehis)
+            _G.TpDrago_Prehis = tpDragoPrehis
+        end,
+    })
+
+    dragoTpVolcano = v142
+
+    local v143 = tbl.Prehistoric:CreateToggle({
+        Name = "Swap Drago Race",
+        Description = "",
+        Default = false,
+        Callback = function(buyDrago)
+            _G.BuyDrago = buyDrago
+        end,
+    })
+
+    bdrago = v143
+
+    local v144 = tbl.Prehistoric:CreateToggle({
+        Name = "Upgrade Dragon Talon With Uzoth",
+        Description = "",
+        Default = false,
+        Callback = function(dtUzoth)
+            _G.DT_Uzoth = dtUzoth
+        end,
+    })
+
+    UpTalon = v144
+    tbl.Prehistoric:CreateSection("Volcanic Crafting")
+
+    tbl.Prehistoric:CreateButton({
+        Name = "Craft Dragonheart",
+        Description = "",
+        Callback = function()
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack({"CraftItem", "Craft", "Dragonheart"}))
+        end,
+    })
+
+    tbl.Prehistoric:CreateButton({
+        Name = "Craft Dragonstorm",
+        Description = "",
+        Callback = function()
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack({"CraftItem", "Craft", "Dragonstorm"}))
+        end,
+    })
+
+    tbl.Prehistoric:CreateButton({
+        Name = "Craft Dino Hood",
+        Description = "",
+        Callback = function()
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack({"CraftItem", "Craft", "DinoHood"}))
+        end,
+    })
+
+    tbl.Prehistoric:CreateButton({
+        Name = "Craft T-Rex Skull",
+        Description = "",
+        Callback = function()
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack({"CraftItem", "Craft", "TRexSkull"}))
+        end,
+    })
+
+    tbl.Prehistoric:CreateSection("Prehistoric Island")
+    local v145 = tbl.Prehistoric:CreateParagraph({Title = "Prehistoric Island Status", Content = ""})
+
+    spawn(function()
+        while wait(0.2) do
+            if not workspace.Map:FindFirstChild("PrehistoricIsland") and not workspace._WorldOrigin.Locations:FindFirstChild("Prehistoric Island") then
+                v145:SetContent("Prehistoric Island : False")
+            else
+                v145:SetContent("Prehistoric Island : True")
+            end
+        end
+    end)
+
+    tbl.Prehistoric:CreateButton({
+        Name = "Craft Volcanic Magnet",
+        Description = "",
+        Callback = function()
+            game:GetService("ReplicatedStorage").Modules.Net["RF/Craft"]:InvokeServer("PossibleHardcode", "Volcanic Magnet")
+        end,
+    })
+
+    tbl.Prehistoric:CreateToggle({
+        Name = "Craft Volcanic Magnet",
+        Default = false,
+        Callback = function(autoCraftVolcanic)
+            getgenv().AutoCraftVolcanic = autoCraftVolcanic
+        end,
+    })
+
+    tbl.Prehistoric:CreateToggle({
+        Name = "Auto Find Prehistoric Island",
+        Description = "",
+        Default = false,
+        Callback = function(prehisFind)
+            _G.Prehis_Find = prehisFind
+            PrehisUser.Find = prehisFind
+        end,
+    })
+
+    tbl.Prehistoric:CreateToggle({
+        Name = "Auto Start Prehistoric Event",
+        Default = false,
+        Callback = function(autoStartPrehistoric)
+            _G.AutoStartPrehistoric = autoStartPrehistoric
+        end,
+    })
+
+    tbl.Prehistoric:CreateToggle({
+        Name = "Auto Patch Prehistoric Event",
+        Description = "",
+        Default = false,
+        Callback = function(prehisSkills)
+            _G.Prehis_Skills = prehisSkills
+            PrehisUser.Skills = prehisSkills
+        end,
+    })
+
+    local v146 = tbl.Prehistoric:CreateToggle({
+        Name = "Kill Aura",
+        Description = "",
+        Default = false,
+        Callback = function(killAuraFull)
+            _G.KillAuraFull = killAuraFull
+        end,
+    })
+
+    Kaura = v146
+
+    local v147 = tbl.Prehistoric:CreateToggle({
+        Name = "Auto Collect Dino Bones",
+        Description = "",
+        Default = false,
+        Callback = function(prehisDb)
+            _G.Prehis_DB = prehisDb
+        end,
+    })
+
+    Vocan = v147
+
+    local v148 = tbl.Prehistoric:CreateToggle({
+        Name = "Auto Collect Dragon Eggs",
+        Description = "",
+        Default = false,
+        Callback = function(prehisDe)
+            _G.Prehis_DE = prehisDe
+            PrehisUser.DE = prehisDe
+        end,
+    })
+
+    Vocan = v148
+
+    local v149 = tbl.Prehistoric:CreateToggle({
+        Name = "Auto Reset When Complete Volcano",
+        Description = "",
+        Default = false,
+        Callback = function(resetPH)
+            _G.ResetPH = resetPH
+        end,
+    })
+
+    Toggle = v149
+    tbl.SeaEvent:CreateSection("Sea Event / Setting Sail")
+
+    tbl.SeaEvent:CreateButton({
+        Name = "Remove Lighting Effect",
+        Description = "",
+        Callback = function()
+            game:GetService("Lighting").BaseAtmosphere:Destroy()
+        end,
+    })
+
+    tbl.SeaEvent:CreateToggle({
+        Name = "Ship Speed Modifier",
+        Default = false,
+        Callback = function(speedBoat)
+            getgenv().SpeedBoat = speedBoat
+        end,
+    })
+
+    game:GetService("RunService").RenderStepped:Connect(function()
+        if getgenv().SpeedBoat then
+            local localPlayer = game:GetService("Players").LocalPlayer
+
+            if localPlayer.Character and localPlayer.Character:FindFirstChild("Humanoid") and localPlayer.Character.Humanoid.Sit then
+                for k, child in pairs(game:GetService("Workspace").Boats:GetChildren()) do
+                    local vehicleSeat = child:FindFirstChildWhichIsA("VehicleSeat")
+
+                    if vehicleSeat then
+                        vehicleSeat.MaxSpeed = SetSpeedBoat
+                    end
+                end
+            end
+        end
+    end)
+
+    tbl.SeaEvent:CreateSlider({
+        Name = "Ship Speed",
+        Min = 0,
+        Max = 1000,
+        Increment = 1,
+        Default = 300,
+        Callback = function(arg)
+            SetSpeedBoat = arg
+        end,
+    })
+
+    tbl.SeaEvent:CreateToggle({
+        Name = "Auto Press W",
+        Default = false,
+        Callback = function(autoPressW)
+            getgenv().AutoPressW = autoPressW
+        end,
+    })
+
+    tbl.SeaEvent:CreateToggle({
+        Name = "No Clip Ship",
+        Default = false,
+        Callback = function(noClipShip)
+            getgenv().NoClipShip = noClipShip
+        end,
+    })
+
+    tbl.SeaEvent:CreateSection("Crafting Items")
+
+    tbl.SeaEvent:CreateButton({
+        Name = "Craft SharkTooth",
+        Description = "",
+        Callback = function()
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack({"CraftItem", "Craft", "SharkTooth"}))
+        end,
+    })
+
+    tbl.SeaEvent:CreateButton({
+        Name = "Craft TerrorJaw",
+        Description = "",
+        Callback = function()
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack({"CraftItem", "Craft", "TerrorJaw"}))
+        end,
+    })
+
+    tbl.SeaEvent:CreateButton({
+        Name = "Craft SharkAnchor",
+        Description = "",
+        Callback = function()
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack({"CraftItem", "Craft", "SharkAnchor"}))
+        end,
+    })
+
+    tbl.SeaEvent:CreateButton({
+        Name = "Craft LeviathanCrown",
+        Description = "",
+        Callback = function()
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack({"CraftItem", "Craft", "LeviathanCrown"}))
+        end,
+    })
+
+    tbl.SeaEvent:CreateButton({
+        Name = "Craft LeviathanShield",
+        Description = "",
+        Callback = function()
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack({"CraftItem", "Craft", "LeviathanShield"}))
+        end,
+    })
+
+    tbl.SeaEvent:CreateButton({
+        Name = "Craft LeviathanBoat",
+        Description = "",
+        Callback = function()
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack({"CraftItem", "Craft", "LeviathanBoat"}))
+        end,
+    })
+
+    tbl.SeaEvent:CreateButton({
+        Name = "Craft LegendaryScroll",
+        Description = "",
+        Callback = function()
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack({"CraftItem", "Craft", "LegendaryScroll"}))
+        end,
+    })
+
+    tbl.SeaEvent:CreateButton({
+        Name = "Craft MythicalScroll",
+        Description = "",
+        Callback = function()
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack({"CraftItem", "Craft", "MythicalScroll"}))
+        end,
+    })
+
+    tbl.SeaEvent:CreateSection("Choose Sea Event")
+
+    local v150 = tbl.SeaEvent:CreateDropdown({
+        Name = "Select Boats",
+        Options = ListSeaBoat,
+        Callback = function(selectedBoat)
+            _G.SelectedBoat = selectedBoat
+        end,
+    })
+
+    Q = v150
+
+    tbl.SeaEvent:CreateButton({
+        Name = "Buy Boats",
+        Description = "",
+        Callback = function()
+            replicated.Remotes.CommF_:InvokeServer("BuyBoat", _G.SelectedBoat)
+        end,
+    })
+
+    local v151 = tbl.SeaEvent:CreateDropdown({
+        Name = "Select Sea Level",
+        Options = ListSeaZone,
+        Callback = function(dangerSc)
+            _G.DangerSc = dangerSc
+        end,
+    })
+
+    Q = v151
+
+    local v152 = tbl.SeaEvent:CreateToggle({
+        Name = "Auto Sail Boat",
+        Description = "",
+        Default = false,
+        Callback = function(sailBoats)
+            _G.SailBoats = sailBoats
+        end,
+    })
+
+    Q = v152
+    tbl.SeaEvent:CreateSection("Entity Sea Event")
+
+    tbl.SeaEvent:CreateToggle({
+        Name = "Auto Shark",
+        Description = "",
+        Default = false,
+        Callback = function(shark)
+            _G.Shark = shark
+        end,
+    })
+
+    tbl.SeaEvent:CreateToggle({
+        Name = "Auto Piranha",
+        Description = "",
+        Default = false,
+        Callback = function(piranha)
+            _G.Piranha = piranha
+        end,
+    })
+
+    tbl.SeaEvent:CreateToggle({
+        Name = "Auto Terror Shark",
+        Description = "",
+        Default = false,
+        Callback = function(terrorShark)
+            _G.TerrorShark = terrorShark
+        end,
+    })
+
+    tbl.SeaEvent:CreateToggle({
+        Name = "Auto Fish Crew Member",
+        Description = "",
+        Default = false,
+        Callback = function(mobCrew)
+            _G.MobCrew = mobCrew
+        end,
+    })
+
+    tbl.SeaEvent:CreateToggle({
+        Name = "Auto Haunted Crew Member",
+        Description = "",
+        Default = false,
+        Callback = function(hcm)
+            _G.HCM = hcm
+        end,
+    })
+
+    tbl.SeaEvent:CreateToggle({
+        Name = "Auto Attack PirateGrandBrigade",
+        Description = "",
+        Default = false,
+        Callback = function(pgb)
+            _G.PGB = pgb
+        end,
+    })
+
+    tbl.SeaEvent:CreateToggle({
+        Name = "Auto Attack Fish Boat",
+        Description = "",
+        Default = false,
+        Callback = function(fishBoat)
+            _G.FishBoat = fishBoat
+        end,
+    })
+
+    tbl.SeaEvent:CreateToggle({
+        Name = "Auto Attack Sea Beast",
+        Description = "",
+        Default = false,
+        Callback = function(seaBeast1)
+            _G.SeaBeast1 = seaBeast1
+        end,
+    })
+
+    tbl.SeaEvent:CreateSection("Kitsune Island / Event")
+    local v153 = tbl.SeaEvent:CreateParagraph({Title = "Kitsune Island Status", Content = ""})
+
+    spawn(function()
+        while wait(0.2) do
+            if not workspace.Map:FindFirstChild("KitsuneIsland") and not workspace._WorldOrigin.Locations:FindFirstChild("Kitsune Island") then
+                v153:SetContent("Kitsune Island : False")
+            else
+                v153:SetContent("Kitsune Island : True")
+            end
+        end
+    end)
+
+    tbl.SeaEvent:CreateToggle({
+        Name = "Auto Find Kitsune Island",
+        Description = "",
+        Default = false,
+        Callback = function(autofindKitIs)
+            _G.AutofindKitIs = autofindKitIs
+        end,
+    })
+
+    tbl.SeaEvent:CreateToggle({
+        Name = "Auto Teleport to Shrine Actived",
+        Description = "",
+        Default = false,
+        Callback = function(tweenShrine)
+            _G.tweenShrine = tweenShrine
+        end,
+    })
+
+    tbl.SeaEvent:CreateToggle({
+        Name = "Auto Collect Azure Ember",
+        Description = "",
+        Default = false,
+        Callback = function(collectEmber)
+            _G.Collect_Ember = collectEmber
+        end,
+    })
+
+    tbl.SeaEvent:CreateToggle({
+        Name = "Auto Trade Azure Ember",
+        Description = "",
+        Default = false,
+        Callback = function(tradeEmber)
+            _G.Trade_Ember = tradeEmber
+        end,
+    })
+
+    tbl.SeaEvent:CreateButton({
+        Name = "Trade Items Azure",
+        Description = "",
+        Callback = function()
+            replicated.Modules.Net:FindFirstChild("RF/KitsuneStatuePray"):InvokeServer()
+        end,
+    })
+
+    tbl.SeaEvent:CreateButton({
+        Name = "Talk with kitsune statue",
+        Description = "",
+        Callback = function()
+            replicated.Modules.Net:FindFirstChild("RE/TouchKitsuneStatue"):FireServer()
+        end,
+    })
+
+    tbl.SeaEvent:CreateSection("Frozen Dimension Event")
+    local v154 = tbl.SeaEvent:CreateParagraph({Title = "FrozenDimension Status", Content = ""})
+
+    spawn(function()
+        pcall(function()
+            while wait(0.2) do
+                if workspace._WorldOrigin.Locations:FindFirstChild("Frozen Dimension") then
+                    v154:SetContent("Frozen Dimension : True")
+                else
+                    v154:SetContent("Frozen Dimension : False")
+                end
+            end
+        end)
+    end)
+
+    local v155 = tbl.SeaEvent:CreateParagraph({Title = "Spy Status", Content = ""})
+
+    spawn(function()
+        while wait(0.2) do
+            pcall(function()
+                local v156 = string.match(replicated.Remotes.CommF_:InvokeServer("InfoLeviathan", "1"), "%d+")
+
+                if v156 then
+                    v155:SetContent("Spy Leviathan : " .. tostring(v156))
+
+                    if tonumber(v156) == 5 then
+                        v155:SetContent("Spy Leviathan : Already Done!!")
+                    end
+                end
+            end)
+        end
+    end)
+
+    tbl.SeaEvent:CreateButton({
+        Name = "Buy Spy",
+        Description = "",
+        Callback = function()
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("InfoLeviathan", "2")
+        end,
+    })
+
+    tbl.SeaEvent:CreateToggle({
+        Name = "Auto Teleport Frozen Dimension",
+        Description = "",
+        Default = false,
+        Callback = function(frozenTP)
+            _G.FrozenTP = frozenTP
+        end,
+    })
+
+    tbl.SeaEvent:CreateToggle({
+        Name = "Auto Drive To Hydra Island",
+        Description = "",
+        Default = false,
+        Callback = function(sailBoatHydra)
+            _G.SailBoat_Hydra = sailBoatHydra
+        end,
+    })
+
+    tbl.SeaEvent:CreateToggle({
+        Name = "Auto Attack Leviathan",
+        Description = "",
+        Default = false,
+        Callback = function(leviathan1)
+            _G.Leviathan1 = leviathan1
+        end,
+    })
+
+    tbl.Esp:CreateSection("Esp")
+
+    tbl.Esp:CreateToggle({
+        Name = "Esp Berry",
+        Description = "",
+        Default = false,
+        Callback = function(arg)
+            BerryEsp = arg
+
+            if arg then
+                task.spawn(function()
+                    while BerryEsp do
+                        berriesEsp()
+                        task.wait()
+                    end
+                end)
+            else
+                for i, child in ipairs(workspace:GetChildren()) do
+                    if child:IsA("Part") and child.Name:match("BerryEspPart_.*") then
+                        child:Destroy()
+                    end
+                end
+            end
+        end,
+    })
+
+    tbl.Esp:CreateToggle({
+        Name = "Esp Player",
+        Description = "",
+        Default = false,
+        Callback = function(arg)
+            PlayerEsp = arg
+
+            if arg then
+                task.spawn(function()
+                    while PlayerEsp do
+                        EspPly()
+                        task.wait()
+                    end
+                end)
+            else
+                local v156 = next
+                local children, v157 = game.Players:GetChildren()
+
+                for k, v158 in v156, children, v157 do
+                    pcall(function()
+                        if not isnil(v158.Character) and not isnil(v158.Character.Head) and v158.Character.Head:FindFirstChild("NameEsp" .. Number) then
+                            v158.Character.Head:FindFirstChild("NameEsp" .. Number):Destroy()
+                        end
+                    end)
+                end
+            end
+        end,
+    })
+
+    tbl.Esp:CreateToggle({
+        Name = "Esp Chest",
+        Description = "",
+        Default = false,
+        Callback = function(arg)
+            ChestESP = arg
+
+            if arg then
+                task.spawn(function()
+                    while ChestESP do
+                        ChestEsp()
+                        task.wait()
+                    end
+                end)
+            else
+                for i, v156 in ipairs(game:GetService("CollectionService"):GetTagged("_ChestTagged")) do
+                    local chestEspAttachment = v156:FindFirstChild("ChestEspAttachment")
+
+                    if chestEspAttachment then
+                        chestEspAttachment:Destroy()
+                    end
+                end
+            end
+        end,
+    })
+
+    tbl.Esp:CreateToggle({
+        Name = "Esp Fruit",
+        Description = "",
+        Default = false,
+        Callback = function(arg)
+            DevilFruitESP = arg
+
+            if arg then
+                task.spawn(function()
+                    while DevilFruitESP do
+                        DevEsp()
+                        task.wait()
+                    end
+                end)
+            else
+                local v156 = next
+                local children, v157 = workspace:GetChildren()
+
+                for k, v158 in v156, children, v157 do
+                    pcall(function()
+                        if v158:FindFirstChild("Handle") and v158.Handle:FindFirstChild("NameEsp" .. Number) then
+                            v158.Handle:FindFirstChild("NameEsp" .. Number):Destroy()
+                        end
+                    end)
+                end
+            end
+        end,
+    })
+
+    tbl.Esp:CreateToggle({
+        Name = "Esp Island",
+        Description = "",
+        Default = false,
+        Callback = function(arg)
+            IslandESP = arg
+
+            if arg then
+                task.spawn(function()
+                    while IslandESP do
+                        LocationEsp()
+                        task.wait()
+                    end
+                end)
+            else
+                local v156 = next
+                local children, v157 = workspace._WorldOrigin.Locations:GetChildren()
+
+                for k, v158 in v156, children, v157 do
+                    pcall(function()
+                        if v158:FindFirstChild("NameEsp") then
+                            v158:FindFirstChild("NameEsp"):Destroy()
+                        end
+                    end)
+                end
+            end
+        end,
+    })
+
+    tbl.Esp:CreateToggle({
+        Name = "Esp Flower",
+        Description = "",
+        Default = false,
+        Callback = function(arg)
+            FlowerESP = arg
+
+            if arg then
+                task.spawn(function()
+                    while FlowerESP do
+                        flowerEsp()
+                        task.wait()
+                    end
+                end)
+            else
+                for k, child in pairs(workspace:GetChildren()) do
+                    pcall(function()
+                        if (child.Name == "Flower2" or child.Name == "Flower1") and child:FindFirstChild("NameEsp" .. Number) then
+                            child:FindFirstChild("NameEsp" .. Number):Destroy()
+                        end
+                    end)
+                end
+            end
+        end,
+    })
+
+    tbl.Esp:CreateToggle({
+        Name = "Esp Legendary Sword",
+        Description = "",
+        Default = false,
+        Callback = function(arg)
+            LegenS = arg
+
+            if arg then
+                task.spawn(function()
+                    while LegenS do
+                        LegenSword()
+                        task.wait()
+                    end
+                end)
+            elseif workspace:FindFirstChild("Lgd") then
+                workspace:FindFirstChild("Lgd"):Destroy()
+            end
+        end,
+    })
+
+    tbl.Esp:CreateToggle({
+        Name = "Esp Haki Color",
+        Description = "",
+        Default = false,
+        Callback = function(arg)
+            ColorEsp = arg
+
+            if arg then
+                task.spawn(function()
+                    while ColorEsp do
+                        HakiClorEsp()
+                        task.wait()
+                    end
+                end)
+            elseif workspace:FindFirstChild("Gay") then
+                workspace:FindFirstChild("Gay"):Destroy()
+            end
+        end,
+    })
+
+    tbl.Esp:CreateToggle({
+        Name = "Esp Gear",
+        Description = "",
+        Default = false,
+        Callback = function(arg)
+            ESPGear = arg
+
+            if arg then
+                task.spawn(function()
+                    while ESPGear do
+                        gearEsp()
+                        task.wait()
+                    end
+                end)
+            else
+                local mysticIsland = workspace.Map:FindFirstChild("MysticIsland")
+                local v156 = pairs
+                local descendants = mysticIsland and mysticIsland:GetDescendants() or {}
+
+                for k, descendant in v156(descendants) do
+                    pcall(function()
+                        if descendant:FindFirstChild("NameEsp") then
+                            descendant:FindFirstChild("NameEsp"):Destroy()
+                        end
+                    end)
+                end
+            end
+        end,
+    })
+
+    tbl.Esp:CreateToggle({
+        Name = "Esp SeaEvent Island",
+        Description = "",
+        Default = false,
+        Callback = function(arg)
+            EspEventIsland = arg
+
+            if arg then
+                task.spawn(function()
+                    while EspEventIsland do
+                        EventIslandEsp()
+                        task.wait()
+                    end
+                end)
+            else
+                for k, child in pairs(workspace._WorldOrigin.Locations:GetChildren()) do
+                    pcall(function()
+                        if child:FindFirstChild("NameEsp") then
+                            child:FindFirstChild("NameEsp"):Destroy()
+                        end
+                    end)
+                end
+            end
+        end,
+    })
+
+    tbl.Esp:CreateToggle({
+        Name = "Esp Advanced Dealer",
+        Description = "",
+        Default = false,
+        Callback = function(arg)
+            advanEsp = arg
+
+            if arg then
+                task.spawn(function()
+                    while advanEsp do
+                        AdvanFruitEsp()
+                        task.wait()
+                    end
+                end)
+            elseif workspace:FindFirstChild("Adv") then
+                workspace:FindFirstChild("Adv"):Destroy()
+            end
+        end,
+    })
+
+    tbl.Raids:CreateSection("Fruits Options")
+    local v156 = tbl.Raids:CreateParagraph({Title = "Stock Fruit", Content = "Loading..."})
+
+    task.spawn(function()
+        while task.wait(60) do
+            pcall(function()
+                v156:SetContent(getFruitStock())
+            end)
+        end
+    end)
+
+    pcall(function()
+        v156:SetContent(getFruitStock())
+    end)
+
+    local v157 = tbl.Raids:CreateToggle({
+        Name = "Auto Random Fruit",
+        Description = "",
+        Default = false,
+        Callback = function(randomAuto)
+            _G.Random_Auto = randomAuto
+            _G.RandomFruitCooldown = nil
+        end,
+    })
+
+    RandomFF = v157
+
+    local v158 = tbl.Raids:CreateToggle({
+        Name = "Auto Drop Fruit",
+        Description = "",
+        Default = false,
+        Callback = function(dropFruit)
+            _G.DropFruit = dropFruit
+        end,
+    })
+
+    DropF = v158
+
+    local v159 = tbl.Raids:CreateToggle({
+        Name = "Auto Store Fruit",
+        Description = "",
+        Default = false,
+        Callback = function(storeF)
+            _G.StoreF = storeF
+        end,
+    })
+
+    StoredF = v159
+
+    local v160 = tbl.Raids:CreateToggle({
+        Name = "Auto Tween to Fruit",
+        Description = "",
+        Default = false,
+        Callback = function(twFruits)
+            _G.TwFruits = twFruits
+        end,
+    })
+
+    TwF = v160
+
+    local v161 = tbl.Raids:CreateToggle({
+        Name = "Auto Collect Fruit",
+        Description = "",
+        Default = false,
+        Callback = function(instanceF)
+            _G.InstanceF = instanceF
+        end,
+    })
+
+    BringF = v161
+
+    tbl.Raids:CreateDropdown({
+        Name = "Select Fruit Shop",
+        Options = {
+            "Rocket-Rocket",
+            "Spin-Spin",
+            "Blade-Blade",
+            "Spring-Spring",
+            "Bomb-Bomb",
+            "Smoke-Smoke",
+            "Spike-Spike",
+            "Flame-Flame",
+            "Ice-Ice",
+            "Sand-Sand",
+            "Dark-Dark",
+            "Eagle-Eagle",
+            "Diamond-Diamond",
+            "Light-Light",
+            "Rubber-Rubber",
+            "Ghost-Ghost",
+            "Magma-Magma",
+            "Quake-Quake",
+            "Buddha-Buddha",
+            "Love-Love",
+            "Creation-Creation",
+            "Spider-Spider",
+            "Sound-Sound",
+            "Phoenix-Phoenix",
+            "Portal-Portal",
+            "Lightning-Lightning",
+            "Pain-Pain",
+            "Blizzard-Blizzard",
+            "Gravity-Gravity",
+            "T-Rex-T-Rex",
+            "Mammoth-Mammoth",
+            "Dough-Dough",
+            "Shadow-Shadow",
+            "Venom-Venom",
+            "Gas-Gas",
+            "Control-Control",
+            "Spirit-Spirit",
+            "Leopard-Leopard",
+            "Yeti-Yeti",
+            "Kitsune-Kitsune",
+            "Dragon-Dragon",
+        },
+        Callback = function(selectFruit)
+            getgenv().SelectFruit = selectFruit
+        end,
+    })
+
+    tbl.Raids:CreateToggle({
+        Name = "Auto Buy Fruit Shop",
+        Default = false,
+        Callback = function(autoBuyFruitSniper)
+            getgenv().AutoBuyFruitSniper = autoBuyFruitSniper
+        end,
+    })
+
+    tbl.Raids:CreateSection("Dungeon Event / Raiding")
+
+    DungeonTables = {
+        "Flame",
+        "Ice",
+        "Quake",
+        "Light",
+        "Dark",
+        "String",
+        "Rumble",
+        "Magma",
+        "Human: Buddha",
+        "Sand",
+        "Bird: Phoenix",
+        "Dough",
+    }
+
+    local v162 = tbl.Raids:CreateDropdown({
+        Name = "Select Chip",
+        Description = "",
+        Options = DungeonTables,
+        Callback = function(selectChip)
+            _G.SelectChip = selectChip
+        end,
+    })
+
+    Q = v162
+
+    local v163 = tbl.Raids:CreateToggle({
+        Name = "Auto Select Dungeon Chip",
+        Description = "",
+        Default = false,
+        Callback = function(autoSelectDungeon)
+            _G.AutoSelectDungeon = autoSelectDungeon
+        end,
+    })
+
+    Q = v163
+
+    tbl.Raids:CreateToggle({
+        Name = "Get Fruit In Inventory Below 1M",
+        Default = false,
+        Callback = function(autoGetFruit)
+            getgenv().AutoGetFruit = autoGetFruit
+        end,
+    })
+
+    tbl.Raids:CreateButton({
+        Name = "Buy Dungeon Chips [Beli]",
+        Description = "",
+        Callback = function()
+            if not GetBP("Special Microchip") then
+                replicated.Remotes.CommF_:InvokeServer("RaidsNpc", "Select", _G.SelectChip)
+            end
+        end,
+    })
+
+    tbl.Raids:CreateButton({
+        Name = "Buy Dungeon Chips [Devil Fruit]",
+        Description = "",
+        Callback = function()
+            if GetBP("Special Microchip") then
+                return
+            end
+            local tbl2 = {}
+            local v164 = next
+            local response, v165 = replicated:WaitForChild("Remotes").CommF_:InvokeServer("GetFruits")
+
+            for k, v166 in v164, response, v165 do
+                if v166.Price <= 490000 then
+                    table.insert(tbl2, v166.Name)
+                end
+            end
+
+            local v166, v167, v168 = pairs(tbl2)
+            local v169 = v168
+            local v170 = v166
+            local v171 = v167
+
+            while true do
+                local v172, v173 = v170(v171, v169)
+                if v172 == nil then
+                    break
+                end
+
+                for k in pairs(DungeonTables) do
+                    if not GetBP("Special Microchip") then
+                        replicated.Remotes.CommF_:InvokeServer("LoadFruit", tostring(v173))
+                        replicated.Remotes.CommF_:InvokeServer("RaidsNpc", "Select", _G.SelectChip)
+                    end
+                end
+
+                v169 = v172
+            end
+        end,
+    })
+
+    local v164 = tbl.Raids:CreateToggle({
+        Name = "Auto Buy Chip [Beli]",
+        Description = "",
+        Default = false,
+        Callback = function(autoChipBeli)
+            _G.AutoChipBeli = autoChipBeli
+        end,
+    })
+
+    AutoChipBeli = v164
+
+    local v165 = tbl.Raids:CreateToggle({
+        Name = "Auto Buy Chip [Devil Fruit]",
+        Description = "",
+        Default = false,
+        Callback = function(autoChipFruit)
+            _G.AutoChipFruit = autoChipFruit
+        end,
+    })
+
+    AutoChipFruit = v165
+
+    local v166 = tbl.Raids:CreateToggle({
+        Name = "Auto Start Raid",
+        Description = "",
+        Default = false,
+        Callback = function(autoStartRaid)
+            _G.Auto_StartRaid = autoStartRaid
+        end,
+    })
+
+    StartR = v166
+
+    local v167 = tbl.Raids:CreateToggle({
+        Name = "Auto Raid + Next Island",
+        Description = "",
+        Default = false,
+        Callback = function(raiding)
+            _G.Raiding = raiding
+        end,
+    })
+
+    Raiding = v167
+
+    local v168 = tbl.Raids:CreateToggle({
+        Name = "Kill Aura (Island 4 & 5)",
+        Description = "",
+        Default = false,
+        Callback = function(killAuraRaid)
+            _G.KillAuraRaid = killAuraRaid
+        end,
+    })
+
+    KillAuraRaid = v168
+
+    tbl.Raids:CreateToggle({
+        Name = "Auto Awakening",
+        Description = "",
+        Default = false,
+        Callback = function(autoAwakener)
+            _G.Auto_Awakener = autoAwakener
+        end,
+    })
+
+    tbl.Raids:CreateToggle({
+        Name = "Auto Teleport To Lab",
+        Default = false,
+        Callback = function(tpLab)
+            _G.TpLab = tpLab
+
+            while _G.TpLab do
+                wait()
+
+                if _G.TpLab then
+                    if World2 and _G.TpLab then
+                        _tp(CFrame.new(-6438.73535, 250.645355, -4501.50684))
+                    elseif World3 and _G.TpLab then
+                        _tp(CFrame.new(-5046, 314, -2960))
+                    end
+                end
+            end
+        end,
+    })
+
+    tbl.Raids:CreateSection("Items Law/Order Sword")
+
+    tbl.Raids:CreateButton({
+        Name = "Buy Microchip Law",
+        Description = "",
+        Callback = function()
+            replicated.Remotes.CommF_:InvokeServer("BlackbeardReward", "Microchip", "2")
+        end,
+    })
+
+    tbl.Raids:CreateButton({
+        Name = "Start Law Raids",
+        Description = "",
+        Callback = function()
+            fireclickdetector(workspace.Map.CircleIsland.RaidSummon.Button.Main.ClickDetector)
+        end,
+    })
+
+    tbl.Raids:CreateToggle({
+        Name = "Auto Buy Microchip Law",
+        Description = "",
+        Default = false,
+        Callback = function(autoBuyMicrochipLaw)
+            getgenv().AutoBuyMicrochipLaw = autoBuyMicrochipLaw
+        end,
+    })
+
+    tbl.Raids:CreateToggle({
+        Name = "Auto Start Law Raids",
+        Description = "",
+        Default = false,
+        Callback = function(autoStartLawRaids)
+            getgenv().AutoStartLawRaids = autoStartLawRaids
+        end,
+    })
+
+    tbl.Raids:CreateToggle({
+        Name = "Auto Kill Law",
+        Description = "",
+        Default = false,
+        Callback = function(autoLawKak)
+            _G.AutoLawKak = autoLawKak
+        end,
+    })
+
+    tbl.Raids:CreateSection("Raids Dungeons")
+
+    tbl.Raids:CreateToggle({
+        Name = "Auto Farm Dungeon",
+        Description = "",
+        Default = false,
+        Callback = function(autoFarmDungeon)
+            _G.AutoFarmDungeon = autoFarmDungeon
+        end,
+    })
+
+    tbl.Raids:CreateToggle({
+        Name = "TP Exit (1)",
+        Default = false,
+        Callback = function(tpFloor1)
+            _G.TPFloor1 = tpFloor1
+        end,
+    })
+
+    tbl.Raids:CreateToggle({
+        Name = "TP Exit (2)",
+        Default = false,
+        Callback = function(tpFloor2)
+            _G.TPFloor2 = tpFloor2
+        end,
+    })
+
+    tbl.Raids:CreateToggle({
+        Name = "TP Exit (3)",
+        Default = false,
+        Callback = function(tpFloor3)
+            _G.TPFloor3 = tpFloor3
+        end,
+    })
+
+    tbl.Raids:CreateToggle({
+        Name = "TP Exit (4)",
+        Default = false,
+        Callback = function(tpFloor4)
+            _G.TPFloor4 = tpFloor4
+        end,
+    })
+
+    tbl.Combat:CreateSection("Combat / AimBot")
+end
+
+local v = tbl.Combat:CreateParagraph({Title = "All Players On Server", Content = ""})
+
+spawn(function()
+    while wait(Sec) do
+        pcall(function()
+            local n = #game:GetService("Players"):GetPlayers()
+
+            if n == 12 then
+                v:SetContent("All Players : " .. n .. " / 12 [Max]")
+            else
+                v:SetContent("All Players : " .. n .. " / 12")
+            end
+        end)
+    end
+end)
+
+local v2 = tbl.Combat:CreateParagraph({Title = "Aimbot Status", Content = ""})
+
+Checking_AimStatus = function()
+    if _G.AimCam then
+        return "Aimbot Camera"
+    end
+
+    if not _G.AimbotGun then
+        return ""
+    end
+    return "Aimbot Guns"
+end
+
+spawn(function()
+    while wait(0.2) do
+        pcall(function()
+            if _G.AimMethod then
+                if not _G.AimCam and not _G.AimbotGun then
+                    v2:SetContent("Aimbot - Skills : True")
+                else
+                    v2:SetContent("Aimbot - " .. Checking_AimStatus() .. " : True")
+                end
+            else
+                v2:SetContent("Aimbot - Skills : False")
+            end
+        end)
+    end
+end)
+
+tbl.Combat:CreateDropdown({
+    Name = "Select Players",
+    Description = "",
+    Options = PlrList,
+    Callback = function(playersList)
+        _G.PlayersList = playersList
+    end,
+})
+
+tbl.Combat:CreateToggle({
+    Name = "Teleport To Select Players",
+    Description = "",
+    Default = false,
+    Callback = function(tpPly)
+        _G.TpPly = tpPly
+    end,
+})
+
+tbl.Combat:CreateToggle({
+    Name = "Spectate Select Players",
+    Description = "",
+    Default = false,
+    Callback = function(arg)
+        SpectatePlys = arg
+    end,
+})
+
+tbl.Combat:CreateDropdown({
+    Name = "Select Aim Method",
+    Description = "",
+    Options = {"Aim Player", "Nearest Aim"},
+    Callback = function(arg)
+        ABmethod = arg
+    end,
+})
+
+tbl.Combat:CreateToggle({
+    Name = "Aimbot Method Skills",
+    Description = "",
+    Default = false,
+    Callback = function(aimMethod)
+        _G.AimMethod = aimMethod
+    end,
+})
+
+tbl.Combat:CreateToggle({
+    Name = "Aimbot Camera Closet Players",
+    Description = "",
+    Default = false,
+    Callback = function(aimCam)
+        _G.AimCam = aimCam
+    end,
+})
+
+tbl.Combat:CreateSection("Quests Players")
+
+tbl.Combat:CreateButton({
+    Name = "Get player quests",
+    Description = "",
+    Callback = function()
+        pcall(function()
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("PlayerHunter")
+        end)
+    end,
+})
+
+tbl.Combat:CreateToggle({
+    Name = "Auto Get PlayerQuest",
+    Description = "",
+    Default = false,
+    Callback = function(autoReceivePlayerQuest)
+        _G.AutoReceivePlayerQuest = autoReceivePlayerQuest
+    end,
+})
+
+tbl.Combat:CreateToggle({
+    Name = "Auto Kill Player Quest",
+    Description = "",
+    Default = false,
+    Callback = function(autoPlayerHunter)
+        _G.AutoPlayerHunter = autoPlayerHunter
+
+        if not autoPlayerHunter then
+            Useskill = false
+        end
+    end,
+})
+
+tbl.Combat:CreateToggle({
+    Name = "Auto Enable PvP",
+    Description = "",
+    Default = false,
+    Callback = function(autoPvP)
+        _G.AutoPvP = autoPvP
+    end,
+})
+
+tbl.Combat:CreateToggle({
+    Name = "Auto Safe Mode",
+    Default = false,
+    Callback = function(safeMode)
+        _G.SafeMode = safeMode
+    end,
+})
+
+tbl.Combat:CreateSection("LocalPlayer Settings")
+
+tbl.Combat:CreateToggle({
+    Name = "Enable Fly",
+    Default = false,
+    Callback = function(arg)
+        toggleFly(arg)
+    end,
+})
+
+tbl.Combat:CreateSlider({
+    Name = "Speed Fly Mode",
+    Min = 10,
+    Max = 200,
+    Default = 50,
+    Callback = function(arg)
+        updateFlySpeed(arg)
+    end,
+})
+
+tbl.Combat:CreateToggle({
+    Name = "Dash No Cooldown",
+    Default = false,
+    Callback = function(dodgeNoCD)
+        getgenv().DodgeNoCD = dodgeNoCD
+    end,
+})
+
+tbl.Combat:CreateToggle({
+    Name = "Instance Mink V3 [ INF ]",
+    Description = "",
+    Default = false,
+    Callback = function(arg)
+        InfAblities = arg
+    end,
+})
+
+tbl.Combat:CreateToggle({
+    Name = "Instance Energy [ INF ]",
+    Description = "",
+    Default = false,
+    Callback = function(arg)
+        infEnergy = arg
+
+        if arg then
+            getInfinity_Ability("Energy", infEnergy)
+        end
+    end,
+})
+
+tbl.Combat:CreateToggle({
+    Name = "Instance Soru [ INF ]",
+    Description = "",
+    Default = false,
+    Callback = function(infSoru)
+        _G.InfSoru = infSoru
+
+        if infSoru then
+            getInfinity_Ability("Soru", _G.InfSoru)
+        end
+    end,
+})
+
+tbl.Combat:CreateToggle({
+    Name = "Instance Observation Range [ INF ]",
+    Description = "",
+    Default = false,
+    Callback = function(infiniteObRange)
+        _G.InfiniteObRange = infiniteObRange
+
+        if infiniteObRange then
+            getInfinity_Ability("Observation", _G.InfiniteObRange)
+        end
+    end,
+})
+
+tbl.Combat:CreateToggle({
+    Name = "Ignore Same Teams",
+    Description = "",
+    Default = false,
+    Callback = function(noAimTeam)
+        _G.NoAimTeam = noAimTeam
+    end,
+})
+
+tbl.Combat:CreateToggle({
+    Name = "Accept Allies",
+    Description = "",
+    Default = false,
+    Callback = function(acceptAlly)
+        _G.AcceptAlly = acceptAlly
+    end,
+})
+
+tbl.Travel:CreateSection("Travel - Worlds")
+
+tbl.Travel:CreateButton({
+    Name = "Travel East Blue (World 1)",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("TravelMain")
+    end,
+})
+
+tbl.Travel:CreateButton({
+    Name = "Travel Dressrosa (World 2)",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("TravelDressrosa")
+    end,
+})
+
+tbl.Travel:CreateButton({
+    Name = "Travel Zou (World 3)",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("TravelZou")
+    end,
+})
+
+tbl.Travel:CreateSection("Travel - Island")
+Location = {}
+
+for k, child in pairs(workspace._WorldOrigin.Locations:GetChildren()) do
+    table.insert(Location, child.Name)
+end
+
+local v3 = tbl.Travel:CreateDropdown({
+    Name = "Select Travelling",
+    Description = "",
+    Options = Location,
+    Callback = function(island)
+        _G.Island = island
+    end,
+})
+
+Travelllll = v3
+
+local v4 = tbl.Travel:CreateToggle({
+    Name = "Auto Travel",
+    Description = "",
+    Default = false,
+    Callback = function(teleport)
+        local v4, v5, v6, v7, v8, v9, n
+        n = 1
+
+        while true do
+            if n == 1 then
+                _G.Teleport = teleport
+
+                if teleport then
+                    n = 2
+                else
+                    n = 6
+                end
+            elseif n == 2 then
+                v4, v5, v6 = pairs(workspace._WorldOrigin.Locations:GetChildren())
+                v7 = v6
+                n = 3
+            elseif n == 3 then
+                v8, v9 = v4(v5, v7)
+
+                if v8 == nil then
+                    n = 6
+                else
+                    n = 4
+                end
+            elseif n == 4 then
+                v7 = v8
+
+                if v9.Name == _G.Island then
+                    n = 5
+                else
+                    n = 3
+                end
+            elseif n == 5 then
+                wait()
+                _tp(v9.CFrame * CFrame.new(0, 30, 0))
+
+                if _G.Teleport and Root.CFrame ~= v9.CFrame then
+                    n = 5
+                else
+                    n = 3
+                end
+            elseif n == 6 then
+                return
+            end
+        end
+    end,
+})
+
+GoIsland = v4
+tbl.Travel:CreateSection("Travel - Portal")
+
+if World1 then
+    Location_Portal = {"Sky", "UnderWater"}
+elseif World2 then
+    Location_Portal = {"SwanRoom", "Cursed Ship"}
+elseif World3 then
+    Location_Portal = {
+        "Castle On The Sea",
+        "Mansion Cafe",
+        "Hydra Teleport",
+        "Canvendish Room",
+        "Temple of Time",
+    }
+end
+
+local v5 = tbl.Travel:CreateDropdown({
+    Name = "Select Portal",
+    Options = Location_Portal,
+    Callback = function(islandPt)
+        _G.Island_PT = islandPt
+    end,
+})
+
+PortalTP = v5
+
+tbl.Travel:CreateButton({
+    Name = "requestEntrance",
+    Description = "",
+    Callback = function()
+        if _G.Island_PT == "Sky" then
+            replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-7894, 5547, -380))
+        elseif _G.Island_PT == "UnderWater" then
+            replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(61163, 11, 1819))
+        elseif _G.Island_PT == "SwanRoom" then
+            replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(2285, 15, 905))
+        elseif _G.Island_PT == "Cursed Ship" then
+            replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(923, 126, 32852))
+        elseif _G.Island_PT == "Castle On The Sea" then
+            replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-5097.93164, 316.447021, -3142.66602, -0.405007899, -4.31682743e-08, 0.914313197, -1.90943332e-08, 1, 3.8755779e-08, -0.914313197, -1.76180437e-09, -0.405007899))
+        elseif _G.Island_PT == "Mansion Cafe" then
+            replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-12471.169921875, 374.94024658203, -7551.677734375))
+        elseif _G.Island_PT == "Hydra Teleport" then
+            replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(5643.45263671875, 1013.0858154296875, -340.51025390625))
+        elseif _G.Island_PT == "Canvendish Room" then
+            replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(5314.54638671875, 22.562219619750977, -127.06755065917969))
+        elseif _G.Island_PT == "Temple of Time" then
+            replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(28310.0234, 14895.1123, 109.456741, -0.469690144, -2.85620132e-08, -0.882831335, -3.23509219e-08, 1, -1.51411736e-08, 0.882831335, 2.14487486e-08, -0.469690144))
+        end
+    end,
+})
+
+tbl.Travel:CreateSection("Travel - NPCs")
+
+for k, child in pairs(replicated.NPCs:GetChildren()) do
+    table.insert(NPCList, child.Name)
+end
+
+local v6 = tbl.Travel:CreateDropdown({
+    Name = "Select NPCs",
+    Options = NPCList,
+    Callback = function(arg)
+        NPClist = arg
+    end,
+})
+
+NPCsPos = v6
+
+local v7 = tbl.Travel:CreateToggle({
+    Name = "Auto Tween to NPC",
+    Description = "",
+    Default = false,
+    Callback = function(tpNpc)
+        _G.TPNpc = tpNpc
+    end,
+})
+
+GoNPCs = v7
+tbl.Shop:CreateSection("Shop Options")
+
+tbl.Shop:CreateButton({
+    Name = "Buy Buso",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyHaki", "Buso")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Geppo",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyHaki", "Geppo")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Soru",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyHaki", "Soru")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Ken",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("KenTalk", "Buy")
+    end,
+})
+
+tbl.Shop:CreateSection("Fighting - Style")
+
+tbl.Shop:CreateButton({
+    Name = "Buy Black Leg",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyBlackLeg")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Electro",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyElectro")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Fishman Karate",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyFishmanKarate")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy DragonClaw",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BlackbeardReward", "DragonClaw", "2")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Superhuman",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuySuperhuman")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Death Step",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyDeathStep")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Sharkman Karate",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuySharkmanKarate")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy ElectricClaw",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyElectricClaw")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy DragonTalon",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyDragonTalon")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Godhuman",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyGodhuman")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy SanguineArt",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuySanguineArt")
+    end,
+})
+
+tbl.Shop:CreateSection("Accessory")
+
+tbl.Shop:CreateButton({
+    Name = "Buy Tomoe Ring",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyItem", "Tomoe Ring")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Black Cape",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyItem", "Black Cape")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Swordsman Hat",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyItem", "Swordsman Hat")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Bizarre Rifle",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("Ectoplasm", "Buy", 1)
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Ghoul Mask",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("Ectoplasm", "Buy", 2)
+    end,
+})
+
+tbl.Shop:CreateSection("Weapon World1")
+
+tbl.Shop:CreateButton({
+    Name = "Buy Cutlass",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyItem", "Cutlass")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Katana",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyItem", "Katana")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Iron Mace",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyItem", "Iron Mace")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Duel Katana",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyItem", "Duel Katana")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Triple Katana",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyItem", "Triple Katana")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Pipe",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyItem", "Pipe")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Dual-Headed Blade",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyItem", "Dual-Headed Blade")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Bisento",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyItem", "Bisento")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Soul Cane",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyItem", "Soul Cane")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Slingshot",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyItem", "Slingshot")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Musket",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyItem", "Musket")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Dual Flintlock",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyItem", "Dual Flintlock")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Flintlock",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyItem", "Flintlock")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Refined Flintlock",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyItem", "Refined Flintlock")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Cannon",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BuyItem", "Cannon")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Kabucha",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BlackbeardReward", "Slingshot", "2")
+    end,
+})
+
+tbl.Shop:CreateSection("Fragments shop")
+
+tbl.Shop:CreateButton({
+    Name = "Buy Refund Stats",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BlackbeardReward", "Refund", "2")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Reroll Race",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("BlackbeardReward", "Reroll", "2")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Ghoul Race",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("Ectoplasm", " Change", 4)
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Cyborg Race (2.5k)",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("CyborgTrainer", " Buy")
+    end,
+})
+
+tbl.Shop:CreateButton({
+    Name = "Buy Draco Race",
+    Description = "",
+    Callback = function()
+        _tp(CFrame.new(5814.42724609375, 1208.3267822265625, 884.5785522460938))
+        local vector = Vector3.new(5814.42724609375, 1208.3267822265625, 884.5785522460938)
+        local character = player.Character
+        local result = character or player.CharacterAdded:Wait()
+
+        repeat
+            wait()
+        until (result.HumanoidRootPart.Position - vector).Magnitude < 1
+
+        game:GetService("ReplicatedStorage").Modules.Net:FindFirstChild("RF/InteractDragonQuest"):InvokeServer(unpack({{NPC = "Dragon Wizard", Command = "DragonRace"}}))
+    end,
+})
+
+tbl.Misc:CreateSection("Server - Function")
+
+tbl.Misc:CreateButton({
+    Name = "Redeem All Codes",
+    Description = "",
+    Callback = function()
+        local tbl2 = {
+            "LIGHTNINGABUSE",
+            "1LOSTADMIN",
+            "ADMINFIGHT",
+            "GIFTING_HOURS",
+            "NOMOREHACK",
+            "BANEXPLOIT",
+            "WildDares",
+            "BossBuild",
+            "GetPranked",
+            "EARN_FRUITS",
+            "SUB2GAMERROBOT_RESET1",
+            "KITT_RESET",
+            "Bignews",
+            "CHANDLER",
+            "Fudd10",
+            "fudd10_v2",
+            "Sub2UncleKizaru",
+            "FIGHT4FRUIT",
+            "kittgaming",
+            "TRIPLEABUSE",
+            "Sub2CaptainMaui",
+            "Sub2Fer999",
+            "Enyu_is_Pro",
+            "Magicbus",
+            "JCWK",
+            "StEclipseodeheo",
+            "Bluxxy",
+            "SUB2GAMERROBOT_EXP1",
+            "Sub2NoobMaster123",
+            "Sub2Daigrock",
+            "Axiore",
+            "TantaiGaming",
+            "StrawHatMaine",
+            "Sub2OfficialNoobie",
+            "TheGreatAce",
+            "JULYUPDATE_RESET",
+            "ADMINHACKED",
+            "SEATROLLING",
+            "24NOADMIN",
+            "ADMIN_TROLL",
+            "NEWTROLL",
+            "SECRET_ADMIN",
+            "staffbattle",
+            "NOEXPLOIT",
+            "NOOB2ADMIN",
+            "CODESLIDE",
+            "fruitconcepts",
+            "krazydares",
+        }
+
+        local redeem = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):FindFirstChild("Redeem")
+        if not redeem then
+            return
+        end
+
+        for i, v8 in ipairs(tbl2) do
+            task.wait(0)
+
+            pcall(function()
+                if redeem.InvokeServer then
+                    redeem:InvokeServer(v8)
+                else
+                    redeem:FireServer(v8)
+                end
+            end)
+        end
+    end,
+})
+
+tbl.Misc:CreateButton({
+    Name = "Rejoin Server",
+    Description = "",
+    Callback = function()
+        game:GetService("TeleportService"):Teleport(game.PlaceId, game.Players.LocalPlayer)
+    end,
+})
+
+tbl.Misc:CreateButton({
+    Name = "Hop Server",
+    Description = "",
+    Callback = function()
+        task.spawn(function()
+            local HttpService = game:GetService("HttpService")
+            local TeleportService = game:GetService("TeleportService")
+            local placeId = game.PlaceId
+            local Players = game:GetService("Players")
+
+            local ok, result = pcall(function()
+                local response = game:HttpGet("https://games.roblox.com/v1/games/" .. placeId .. "/servers/Public?sortOrder=Asc&limit=100")
+                return HttpService:JSONDecode(response).data
+            end)
+
+            if ok and result then
+                local id = nil
+
+                for k, v8 in pairs(result) do
+                    if v8.playing < v8.maxPlayers then
+                        id = v8.id
+                    end
+                end
+
+                if id then
+                    pcall(function()
+                        TeleportService:TeleportToPlaceInstance(placeId, id, Players.LocalPlayer)
+                    end)
+                end
+            end
+        end)
+    end,
+})
+
+tbl.Misc:CreateButton({
+    Name = "Hop to Lowest Players",
+    Description = "",
+    Callback = function()
+        game:GetService("HttpService")
+        local TeleportService = game:GetService("TeleportService")
+        local placeId = game.PlaceId
+        local str = "https://games.roblox.com/v1/games/" .. placeId .. "/servers/Public?sortOrder=Asc&limit=100"
+        local nextPageCursor = nil
+        local v8, v9
+
+        repeat
+            v8 = ListServers(nextPageCursor)
+            v9 = v8.data[1]
+            nextPageCursor = v8.nextPageCursor
+        until v9
+
+        TeleportService:TeleportToPlaceInstance(placeId, v9.id, plr)
+    end,
+})
+
+tbl.Misc:CreateButton({
+    Name = "Hop to Lowest Pings Server",
+    Description = "",
+    Callback = function()
+        game:GetService("HttpService")
+        local TeleportService = game:GetService("TeleportService")
+        local Stats = game:GetService("Stats")
+        local placeId = game.PlaceId
+        local v8 = fetchServersData(placeId, 100)
+        if not v8 then
+            return
+        end
+        local v9 = v8[1]
+
+        for k, v10 in pairs(v8) do
+            if v10.ping < v9.ping and v10.playing < v10.maxPlayers then
+                v9 = v10
+            end
+        end
+
+        task.wait(0.5)
+        local valueString = Stats.Network.ServerStatsItem["Data Ping"]:GetValueString()
+
+        if tonumber(valueString:match("(%d+)")) >= 100 then
+            TeleportService:TeleportToPlaceInstance(placeId, v9.id)
+        end
+    end,
+})
+
+tbl.Misc:CreateTextBox({
+    Name = "Input Job Id",
+    Placeholder = "Job ID",
+    ClearOnFocus = true,
+    Callback = function(job)
+        getgenv().Job = job
+    end,
+})
+
+tbl.Misc:CreateButton({
+    Name = "Teleport [Job ID]",
+    Description = "",
+    Callback = function()
+        if getgenv().Job and getgenv().Job ~= "" then
+            game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, getgenv().Job, game.Players.LocalPlayer)
+        end
+    end,
+})
+
+tbl.Misc:CreateButton({
+    Name = "Copy JobID",
+    Description = "",
+    Callback = function()
+        setclipboard(tostring(game.JobId))
+    end,
+})
+
+tbl.Misc:CreateSection("Player Gui / Others")
+
+tbl.Misc:CreateButton({
+    Name = "Open Awakenings Expert",
+    Description = "",
+    Callback = function()
+        plr.PlayerGui.Main.AwakeningToggler.Visible = true
+    end,
+})
+
+tbl.Misc:CreateButton({
+    Name = "Open Title Selection",
+    Description = "",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("getTitles", true)
+        plr.PlayerGui.Main.Titles.Visible = true
+    end,
+})
+
+local v8 = tbl.Misc:CreateToggle({
+    Name = "Disable Chat GUI",
+    Description = "",
+    Default = false,
+    Callback = function(rechat)
+        _G.Rechat = rechat
+
+        if _G.Rechat == true then
+            game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false)
+        elseif _G.chat == false then
+            game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.Chat, true)
+        end
+    end,
+})
+
+DisbleChat = v8
+
+local v9 = tbl.Misc:CreateToggle({
+    Name = "Disable Leader Board GUI",
+    Description = "",
+    Default = false,
+    Callback = function(arg)
+        ReLeader = arg
+
+        if ReLeader == true then
+            game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, false)
+        elseif ReLeader == false then
+            game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, true)
+        end
+    end,
+})
+
+DisbleLeaderB = v9
+
+tbl.Misc:CreateButton({
+    Name = "Set Pirate Team",
+    Description = "",
+    Callback = function()
+        Pirates()
+    end,
+})
+
+tbl.Misc:CreateButton({
+    Name = "Set Marine Team",
+    Description = "",
+    Callback = function()
+        Marines()
+    end,
+})
+
+local v10 = tbl.Misc:CreateToggle({
+    Name = "Unlock All Portals",
+    Description = "",
+    Default = false,
+    Callback = function(portalUnLock)
+        _G.PortalUnLock = portalUnLock
+    end,
+})
+
+UnPortal = v10
+tbl.Misc:CreateSection("Graphics / Haki Stats")
+
+HakiSt = {
+    "State 0",
+    "State 1",
+    "State 2",
+    "State 3",
+    "State 4",
+    "State 5",
+}
+
+local v11 = tbl.Misc:CreateDropdown({
+    Name = "Select Haki States",
+    Options = HakiSt,
+    Callback = function(selectStateHaki)
+        _G.SelectStateHaki = selectStateHaki
+    end,
+})
+
+HakiStat = v11
+
+tbl.Misc:CreateButton({
+    Name = "ChangeBusoStage",
+    Description = "",
+    Callback = function()
+        if _G.SelectStateHaki == "State 0" then
+            replicated.Remotes.CommF_:InvokeServer("ChangeBusoStage", 0)
+        elseif _G.SelectStateHaki == "State 1" then
+            replicated.Remotes.CommF_:InvokeServer("ChangeBusoStage", 1)
+        elseif _G.SelectStateHaki == "State 2" then
+            replicated.Remotes.CommF_:InvokeServer("ChangeBusoStage", 2)
+        elseif _G.SelectStateHaki == "State 3" then
+            replicated.Remotes.CommF_:InvokeServer("ChangeBusoStage", 3)
+        elseif _G.SelectStateHaki == "State 4" then
+            replicated.Remotes.CommF_:InvokeServer("ChangeBusoStage", 4)
+        elseif _G.SelectStateHaki == "State 5" then
+            replicated.Remotes.CommF_:InvokeServer("ChangeBusoStage", 5)
+        end
+    end,
+})
+
+local v12 = tbl.Misc:CreateToggle({
+    Name = "Turn on RTX Mode",
+    Description = "",
+    Default = false,
+    Callback = function(rtxMode)
+        _G.RTXMode = rtxMode
+        local lighting = game.Lighting
+        local colorCorrectionEffect = Instance.new("ColorCorrectionEffect", lighting)
+        local colorCorrectionEffect2 = Instance.new("ColorCorrectionEffect", lighting)
+        OldAmbient = lighting.Ambient
+        OldBrightness = lighting.Brightness
+        OldColorShift_Top = lighting.ColorShift_Top
+        OldBrightnessc = colorCorrectionEffect.Brightness
+        OldContrastc = colorCorrectionEffect.Contrast
+        OldTintColorc = colorCorrectionEffect.TintColor
+        OldTintColore = colorCorrectionEffect2.TintColor
+        if not _G.RTXMode then
+            return
+        end
+
+        while _G.RTXMode do
+            wait()
+            lighting.Ambient = Color3.fromRGB(33, 33, 33)
+            lighting.Brightness = 0.3
+            colorCorrectionEffect.Brightness = 0.176
+            colorCorrectionEffect.Contrast = 0.39
+            colorCorrectionEffect.TintColor = Color3.fromRGB(217, 145, 57)
+            game.Lighting.FogEnd = 999
+
+            if not plr.Character.HumanoidRootPart:FindFirstChild("PointLight") then
+                local pointLight = Instance.new("PointLight")
+                pointLight.Parent = plr.Character.HumanoidRootPart
+                pointLight.Range = 15
+                pointLight.Color = Color3.fromRGB(217, 145, 57)
+            end
+
+            if not _G.RTXMode then
+                lighting.Ambient = OldAmbient
+                lighting.Brightness = OldBrightness
+                lighting.ColorShift_Top = OldColorShift_Top
+                colorCorrectionEffect.Contrast = OldContrastc
+                colorCorrectionEffect.Brightness = OldBrightnessc
+                colorCorrectionEffect.TintColor = OldTintColorc
+                colorCorrectionEffect2.TintColor = OldTintColore
+                game.Lighting.FogEnd = 2500
+                plr.Character.HumanoidRootPart:FindFirstChild("PointLight"):Destroy()
+            end
+        end
+    end,
+})
+
+rtxM = v12
+
+tbl.Misc:CreateButton({
+    Name = "Turn on Fast Mode",
+    Description = "",
+    Callback = function()
+        local v13 = next
+        local descendants, v14 = workspace:GetDescendants()
+
+        for k, v15 in v13, descendants, v14 do
+            if table.find(Past, v15.ClassName) then
+                v15.Material = "Plastic"
+            end
+        end
+    end,
+})
+
+tbl.Misc:CreateButton({
+    Name = "Turn on Low CPU",
+    Description = "",
+    Callback = function()
+        LowCpu()
+    end,
+})
+
+tbl.Misc:CreateButton({
+    Name = "Turn on increase Boats",
+    Description = "",
+    Callback = function()
+        for k, descendant in pairs(workspace.Boats:GetDescendants()) do
+            if table.find(ListSeaBoat, descendant.Name) and tostring(descendant.Owner.Value) == tostring(plr.Name) then
+                descendant.VehicleSeat.MaxSpeed = 350
+                descendant.VehicleSeat.Torque = 0.2
+                descendant.VehicleSeat.TurnSpeed = 5
+                descendant.VehicleSeat.HeadsUpDisplay = true
+            end
+        end
+    end,
+})
+
+tbl.Misc:CreateButton({
+    Name = "Remove Sky Fog",
+    Description = "",
+    Callback = function()
+        if Lighting:FindFirstChild("LightingLayers") then
+            Lighting.LightingLayers:Destroy()
+        end
+
+        if Lighting:FindFirstChild("SeaTerrorCC") then
+            Lighting.SeaTerrorCC:Destroy()
+        end
+
+        if Lighting:FindFirstChild("FantasySky") then
+            Lighting.FantasySky:Destroy()
+        end
+    end,
+})
+
+tbl.Misc:CreateSection("Configure - God")
+
+tbl.Misc:CreateButton({
+    Name = "Rain Fruits (Client)",
+    Description = "",
+    Callback = function()
+        for k, child in pairs(game:GetObjects("rbxassetid://14759368201")[1]:GetChildren()) do
+            child.Parent = game.Workspace.Map
+            child:MoveTo(plr.Character.PrimaryPart.Position + Vector3.new(math.random(-50, 50), 100, math.random(-50, 50)))
+
+            if child.Fruit:FindFirstChild("AnimationController") then
+                child.Fruit:FindFirstChild("AnimationController"):LoadAnimation(child.Fruit:FindFirstChild("Idle")):Play()
+            end
+
+            child.Handle.Touched:Connect(function(hit)
+                if hit.Parent == plr.Character then
+                    child.Parent = plr.Backpack
+                    plr.Character.Humanoid:EquipTool(child)
+                end
+            end)
+        end
+    end,
+})
+
+local v13 = tbl.Misc:CreateToggle({
+    Name = "Turn on Full Bright",
+    Description = "",
+    Default = false,
+    Callback = function(arg)
+        bright = arg
+
+        if arg == true then
+            Lighting.Ambient = Color3.new(1, 1, 1)
+            Lighting.ColorShift_Bottom = Color3.new(1, 1, 1)
+            Lighting.ColorShift_Top = Color3.new(1, 1, 1)
+        else
+            Lighting.Ambient = Color3.new(0, 0, 0)
+            Lighting.ColorShift_Bottom = Color3.new(0, 0, 0)
+            Lighting.ColorShift_Top = Color3.new(0, 0, 0)
+        end
+    end,
+})
+
+briggt1 = v13
+
+local v14 = tbl.Misc:CreateDropdown({
+    Name = "Select Time",
+    Description = "",
+    Options = {"Day", "Night"},
+    Default = Day,
+    Callback = function(selectDN)
+        _G.SelectDN = selectDN
+    end,
+})
+
+DayN = v14
+
+local v15 = tbl.Misc:CreateToggle({
+    Name = "Turn on Time",
+    Description = "",
+    Default = false,
+    Callback = function(daylightN)
+        _G.daylightN = daylightN
+    end,
+})
+
+dayornight = v15
+
+local v16 = tbl.Misc:CreateToggle({
+    Name = "Turn on Walk on Water",
+    Description = "",
+    Default = true,
+    Callback = function(walkWaterPart)
+        _G.WalkWater_Part = walkWaterPart
+
+        if _G.WalkWater_Part then
+            game:GetService("Workspace").Map["WaterBase-Plane"].Size = Vector3.new(1000, 112, 1000)
+        else
+            game:GetService("Workspace").Map["WaterBase-Plane"].Size = Vector3.new(1000, 80, 1000)
+        end
+    end,
+})
+
+walkWater = v16
+
+local v17 = tbl.Misc:CreateToggle({
+    Name = "Turn on Ice Walk",
+    Description = "",
+    Default = false,
+    Callback = function(walkWater_)
+        _G.WalkWater = walkWater_
+    end,
+})
+
+iceWalk = v17
+
+pKS6qzcaqB:Notify({
+    Title = "Eclipse Hub",
+    Description = "Eclipse Hub comeback",
+    Icon = "rbxassetid://110535192984297",
+    Duration = 5,
+})
