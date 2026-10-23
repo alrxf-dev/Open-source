@@ -1,0 +1,1838 @@
+-- founder Alrect 
+
+local game_ = game
+local t1 = {
+	value1 = game_:GetService("Players"),
+	value2 = game:GetService("UserInputService"),
+	value3 = game:GetService("RunService"),
+	value4 = game:GetService("Workspace"),
+	value5 = game:GetService("TeleportService"),
+	value6 = game:GetService("TweenService")
+}
+
+t1.value7 = t1.value1.LocalPlayer
+t1.value8 = t1.value4.CurrentCamera
+game_ = t1.value1.LocalPlayer or t1.value1.PlayerAdded:Wait()
+game_ = game_.Character or game_.CharacterAdded:Wait()
+game_:WaitForChild("HumanoidRootPart")
+t1.value9 = {
+	["ESPFillTransparency"] = 0.5,
+	["ESPOutlineTransparency"] = 0,
+	["GlobalESPColor"] = Color3.fromRGB(255, 215, 0),
+	["TPHeight"] = 3
+}
+t1.value10 = 250
+t1.value11 = false
+t1.value12 = 50
+t1.value13 = false
+t1.value14 = false
+t1.value15 = false
+t1.value16 = false
+t1.value17 = nil
+t1.value18 = nil
+game_ = t1.value4
+t1.value19 = game_:WaitForChild("RenderedEggs", 10)
+t1.value20 = {
+	["Cherub Egg"] = {
+		["rank"] = 0,
+		["rarity"] = "Eternal"
+	},
+	["Solaris Egg"] = {
+		["rank"] = 1,
+		["rarity"] = "Eternal"
+	},
+	["Blackhole Egg"] = {
+		["rank"] = 2,
+		["rarity"] = "Mythic"
+	},
+	["Galaxy Egg"] = {
+		["rank"] = 3,
+		["rarity"] = "Legendary"
+	},
+	["Flaming Egg"] = {
+		["rank"] = 4,
+		["rarity"] = "Legendary"
+	},
+	["Sinister Egg"] = {
+		["rank"] = 5,
+		["rarity"] = "Legendary"
+	},
+	["Space Egg"] = {
+		["rank"] = 6,
+		["rarity"] = "Rare-Legendary"
+	},
+	["Golden Egg"] = {
+		["rank"] = 7,
+		["rarity"] = "Rare"
+	},
+	["Glass Egg"] = {
+		["rank"] = 8,
+		["rarity"] = "Rare"
+	},
+	["Aquatic Egg"] = {
+		["rank"] = 9,
+		["rarity"] = "Rare"
+	},
+	["Desert Egg"] = {
+		["rank"] = 10,
+		["rarity"] = "Uncommon-Rare"
+	},
+	["Wood Egg"] = {
+		["rank"] = 11,
+		["rarity"] = "Uncommon"
+	},
+	["Easter Egg"] = {
+		["rank"] = 12,
+		["rarity"] = "Uncommon"
+	},
+	["Leaf Egg"] = {
+		["rank"] = 13,
+		["rarity"] = "Uncommon"
+	},
+	["Mushroom Egg"] = {
+		["rank"] = 14,
+		["rarity"] = "Common-Uncommon"
+	},
+	["White Egg"] = {
+		["rank"] = 15,
+		["rarity"] = "Common"
+	},
+	["Brown Egg"] = {
+		["rank"] = 16,
+		["rarity"] = "Common"
+	}
+}
+t1.value21 = {
+	["walkSpeed"] = 16,
+	["flySpeed"] = 50,
+	["glideSpeed"] = 250,
+	["autoReturn"] = false,
+	["espActive"] = false,
+	["removeTexture"] = false,
+	["removeShadow"] = false
+}
+t1.value22 = Instance.new("ScreenGui")
+t1.value22.Name = "SnailUtilityHub"
+t1.value22.ResetOnSpawn = false
+t1.value22.IgnoreGuiInset = true
+t1.value22.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+game_ = t1.value22
+local value7 = t1.value7
+game_.Parent = value7:WaitForChild("PlayerGui")
+t1.value23 = Instance.new("Frame")
+t1.value23.Size = UDim2.new(0, 260, 0, 36)
+t1.value23.Position = UDim2.new(0.5, -130, 1, 60)
+t1.value23.BackgroundColor3 = Color3.fromRGB(30, 40, 70)
+t1.value23.BorderSizePixel = 0
+t1.value23.ZIndex = 200
+t1.value23.Parent = t1.value22
+game_ = Instance.new("UICorner")
+game_.CornerRadius = UDim.new(0, 10)
+game_.Parent = t1.value23
+game_ = Instance.new("UIStroke")
+game_.Color = Color3.fromRGB(70, 130, 255)
+game_.Transparency = 0.3
+game_.Thickness = 1.2
+game_.Parent = t1.value23
+t1.value24 = Instance.new("TextLabel")
+t1.value24.Size = UDim2.new(1, -16, 1, 0)
+t1.value24.Position = UDim2.new(0, 8, 0, 0)
+t1.value24.BackgroundTransparency = 1
+t1.value24.Text = "\226\156\133 Invite link copied!"
+t1.value24.TextColor3 = Color3.fromRGB(200, 220, 255)
+t1.value24.TextSize = 12
+t1.value24.Font = Enum.Font.GothamSemibold
+t1.value24.TextXAlignment = Enum.TextXAlignment.Center
+t1.value24.ZIndex = 201
+t1.value24.Parent = t1.value23
+t1.value25 = false
+game_ = function(_)
+    if t1.value25 then
+        return
+    end
+end
+t1.value26 = Instance.new("Frame")
+t1.value26.Size = UDim2.new(1, 0, 1, 0)
+t1.value26.Position = UDim2.new(0, 0, 0, 0)
+t1.value26.BackgroundColor3 = Color3.fromRGB(8, 8, 12)
+t1.value26.BorderSizePixel = 0
+t1.value26.ZIndex = 100
+t1.value26.Parent = t1.value22
+t1.value27 = Instance.new("Frame")
+t1.value27.Size = UDim2.new(0, 120, 0, 120)
+t1.value27.Position = UDim2.new(0.5, -60, 0.5, -80)
+t1.value27.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+t1.value27.BorderSizePixel = 0
+t1.value27.ZIndex = 101
+t1.value27.Parent = t1.value26
+value7 = Instance.new("UICorner")
+value7.CornerRadius = UDim.new(1, 0)
+value7.Parent = t1.value27
+value7 = Instance.new("UIStroke")
+value7.Color = Color3.fromRGB(70, 130, 255)
+value7.Thickness = 2
+value7.Transparency = 0.3
+value7.Parent = t1.value27
+value7 = Instance.new("TextLabel")
+value7.Size = UDim2.new(1, 0, 1, 0)
+value7.BackgroundTransparency = 1
+value7.Text = "Hz"
+value7.TextColor3 = Color3.fromRGB(70, 130, 255)
+value7.TextSize = 42
+value7.Font = Enum.Font.GothamBold
+value7.TextXAlignment = Enum.TextXAlignment.Center
+value7.TextYAlignment = Enum.TextYAlignment.Center
+value7.ZIndex = 102
+value7.Parent = t1.value27
+t1.value28 = Instance.new("TextLabel")
+t1.value28.Size = UDim2.new(0, 300, 0, 28)
+t1.value28.Position = UDim2.new(0.5, -150, 0.5, 56)
+t1.value28.BackgroundTransparency = 1
+t1.value28.Text = "HERTZ  RIDE A PET"
+t1.value28.TextColor3 = Color3.fromRGB(240, 244, 255)
+t1.value28.TextSize = 16
+t1.value28.Font = Enum.Font.GothamBold
+t1.value28.TextXAlignment = Enum.TextXAlignment.Center
+t1.value28.ZIndex = 101
+t1.value28.TextTransparency = 1
+t1.value28.Parent = t1.value26
+t1.value29 = Instance.new("TextLabel")
+t1.value29.Size = UDim2.new(0, 300, 0, 20)
+t1.value29.Position = UDim2.new(0.5, -150, 0.5, 86)
+t1.value29.BackgroundTransparency = 1
+t1.value29.Text = "by prayfornueve"
+t1.value29.TextColor3 = Color3.fromRGB(100, 130, 200)
+t1.value29.TextSize = 12
+t1.value29.Font = Enum.Font.Gotham
+t1.value29.TextXAlignment = Enum.TextXAlignment.Center
+t1.value29.ZIndex = 101
+t1.value29.TextTransparency = 1
+t1.value29.Parent = t1.value26
+t1.value30 = Instance.new("Frame")
+t1.value30.Size = UDim2.new(0, 0, 0, 2)
+t1.value30.Position = UDim2.new(0.5, -100, 0.5, 120)
+t1.value30.BackgroundColor3 = Color3.fromRGB(70, 130, 255)
+t1.value30.BorderSizePixel = 0
+t1.value30.ZIndex = 101
+t1.value30.Parent = t1.value26
+value7 = Instance.new("UICorner")
+value7.CornerRadius = UDim.new(1, 0)
+value7.Parent = t1.value30
+t1.value31 = Instance.new("Frame")
+t1.value31.Size = UDim2.new(0, 580, 0, 440)
+t1.value31.Position = UDim2.new(0.5, -290, 0.5, -220)
+t1.value31.BackgroundColor3 = Color3.fromRGB(13, 13, 18)
+t1.value31.BorderSizePixel = 0
+t1.value31.ClipsDescendants = false
+t1.value31.Visible = false
+t1.value31.Parent = t1.value22
+value7 = Instance.new("UIStroke")
+value7.Color = Color3.fromRGB(70, 130, 255)
+value7.Transparency = 0.5
+value7.Thickness = 1.5
+value7.Parent = t1.value31
+value7 = Instance.new("UICorner")
+value7.CornerRadius = UDim.new(0, 16)
+value7.Parent = t1.value31
+t1.value32 = false
+t1.value33 = nil
+t1.value34 = nil
+value7 = Instance.new("Frame")
+value7.Size = UDim2.new(1, 0, 0, 45)
+value7.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
+value7.BorderSizePixel = 0
+value7.ZIndex = 5
+value7.Parent = t1.value31
+local UICorner = Instance.new("UICorner")
+
+UICorner.CornerRadius = UDim.new(0, 16)
+UICorner.Parent = value7
+UICorner = Instance.new("Frame")
+UICorner.Size = UDim2.new(1, 0, 0, 10)
+UICorner.Position = UDim2.new(0, 0, 1, -10)
+UICorner.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
+UICorner.BorderSizePixel = 0
+UICorner.ZIndex = 5
+UICorner.Parent = value7
+UICorner = Instance.new("TextButton")
+UICorner.Size = UDim2.new(1, -120, 1, 0)
+UICorner.Position = UDim2.new(0, 0, 0, 0)
+UICorner.BackgroundTransparency = 1
+UICorner.Text = ""
+UICorner.ZIndex = 6
+UICorner.Parent = value7
+local TextLabel = Instance.new("TextLabel")
+
+TextLabel.Size = UDim2.new(1, -120, 1, 0)
+TextLabel.Position = UDim2.new(0, 18, 0, 0)
+TextLabel.BackgroundTransparency = 1
+TextLabel.TextColor3 = Color3.fromRGB(240, 244, 255)
+TextLabel.TextSize = 12
+TextLabel.Font = Enum.Font.Gotham
+TextLabel.Text = "HERTZ  RIDE A PET by prayfornueve"
+TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+TextLabel.ZIndex = 6
+TextLabel.Parent = value7
+UICorner.InputBegan:Connect(function(input)
+    if not (input.UserInputType == Enum.UserInputType.MouseButton1 and true or input.UserInputType == Enum.UserInputType.Touch) then
+        return
+    end
+
+    t1.value32 = true
+    t1.value33 = input.Position
+    t1.value34 = t1.value31.Position
+end)
+t1.value2.InputBegan:Connect(function(input)
+    if input.KeyCode ~= Enum.KeyCode.RightShift then
+        return
+    end
+
+    if t1.value16 then
+        MiniBubble.Visible = not MiniBubble.Visible
+
+        return
+    end
+
+    t1.value31.Visible = not t1.value31.Visible
+end)
+UICorner = Instance.new("TextButton")
+UICorner.Size = UDim2.new(0, 26, 0, 26)
+UICorner.Position = UDim2.new(1, -35, 0.5, -13)
+UICorner.BackgroundColor3 = Color3.fromRGB(235, 65, 65)
+UICorner.Text = "X"
+UICorner.TextColor3 = Color3.fromRGB(255, 255, 255)
+UICorner.TextSize = 12
+UICorner.Font = Enum.Font.GothamBold
+UICorner.ZIndex = 7
+UICorner.Parent = value7
+TextLabel = Instance.new("UICorner")
+TextLabel.CornerRadius = UDim.new(1, 0)
+TextLabel.Parent = UICorner
+UICorner.MouseButton1Click:Connect(function()
+    t1.value22:Destroy()
+end)
+t1.value35 = Instance.new("TextButton")
+t1.value35.Size = UDim2.new(0, 30, 0, 30)
+t1.value35.Position = UDim2.new(1, -70, 0.5, -15)
+t1.value35.BackgroundColor3 = Color3.fromRGB(25, 40, 80)
+t1.value35.Text = "Hz"
+t1.value35.TextColor3 = Color3.fromRGB(70, 130, 255)
+t1.value35.TextSize = 11
+t1.value35.Font = Enum.Font.GothamBold
+t1.value35.ZIndex = 7
+t1.value35.AutoButtonColor = false
+t1.value35.Parent = value7
+value7 = Instance.new("UICorner")
+value7.CornerRadius = UDim.new(1, 0)
+value7.Parent = t1.value35
+t1.value36 = Instance.new("UIStroke")
+t1.value36.Color = Color3.fromRGB(70, 130, 255)
+t1.value36.Transparency = 0.5
+t1.value36.Thickness = 1.2
+t1.value36.Parent = t1.value35
+t1.value35.MouseEnter:Connect(function()
+    t1.value35.BackgroundColor3 = Color3.fromRGB(35, 60, 120)
+    t1.value36.Transparency = 0
+end)
+t1.value35.MouseLeave:Connect(function()
+    t1.value35.BackgroundColor3 = Color3.fromRGB(25, 40, 80)
+    t1.value36.Transparency = 0.5
+end)
+t1.value37 = Instance.new("Frame")
+t1.value37.Size = UDim2.new(0, 135, 1, -88)
+t1.value37.Position = UDim2.new(0, 12, 0, 52)
+t1.value37.BackgroundColor3 = Color3.fromRGB(17, 17, 23)
+t1.value37.BorderSizePixel = 0
+t1.value37.ClipsDescendants = true
+t1.value37.Parent = t1.value31
+value7 = Instance.new("UICorner")
+value7.CornerRadius = UDim.new(0, 12)
+value7.Parent = t1.value37
+t1.value38 = Instance.new("ScrollingFrame")
+t1.value38.Size = UDim2.new(1, 0, 1, 0)
+t1.value38.BackgroundTransparency = 1
+t1.value38.CanvasSize = UDim2.new(0, 0, 0, 0)
+t1.value38.AutomaticCanvasSize = Enum.AutomaticSize.Y
+t1.value38.ScrollBarThickness = 2
+t1.value38.ScrollBarImageColor3 = Color3.fromRGB(70, 130, 255)
+t1.value38.ScrollingDirection = Enum.ScrollingDirection.Y
+t1.value38.Parent = t1.value37
+value7 = Instance.new("Frame")
+value7.Size = UDim2.new(0.9, 0, 0, 70)
+value7.Position = UDim2.new(0.05, 0, 0, 8)
+value7.BackgroundTransparency = 1
+value7.Parent = t1.value38
+UICorner = Instance.new("Frame")
+UICorner.Size = UDim2.new(0, 42, 0, 42)
+UICorner.Position = UDim2.new(0.5, -21, 0, 0)
+UICorner.BackgroundColor3 = Color3.fromRGB(70, 130, 255)
+UICorner.BorderSizePixel = 0
+UICorner.Parent = value7
+TextLabel = Instance.new("UICorner")
+TextLabel.CornerRadius = UDim.new(1, 0)
+TextLabel.Parent = UICorner
+t1.value39 = Instance.new("ImageLabel")
+t1.value39.Size = UDim2.new(1, -4, 1, -4)
+t1.value39.Position = UDim2.new(0, 2, 0, 2)
+t1.value39.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
+t1.value39.BorderSizePixel = 0
+t1.value39.Image = ""
+t1.value39.Parent = UICorner
+UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(1, 0)
+UICorner.Parent = t1.value39
+task.spawn(function()
+    local ok, image = pcall(function()
+        return t1.value1:GetUserThumbnailAsync(t1.value7.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
+    end)
+
+    if not (ok and image) then
+        return
+    end
+
+    t1.value39.Image = image
+end)
+UICorner = Instance.new("TextLabel")
+UICorner.Size = UDim2.new(1, 0, 0, 18)
+UICorner.Position = UDim2.new(0, 0, 0, 46)
+UICorner.BackgroundTransparency = 1
+UICorner.Text = t1.value7.Name
+UICorner.TextColor3 = Color3.fromRGB(255, 255, 255)
+UICorner.TextSize = 11
+UICorner.Font = Enum.Font.GothamSemibold
+UICorner.TextScaled = true
+UICorner.Parent = value7
+value7 = Instance.new("Frame")
+value7.Size = UDim2.new(0.85, 0, 0, 1)
+value7.Position = UDim2.new(0.075, 0, 0, 84)
+value7.BackgroundColor3 = Color3.fromRGB(45, 45, 65)
+value7.BorderSizePixel = 0
+value7.Parent = t1.value38
+value7 = Instance.new("UIListLayout")
+value7.Padding = UDim.new(0, 6)
+value7.HorizontalAlignment = Enum.HorizontalAlignment.Center
+value7.SortOrder = Enum.SortOrder.LayoutOrder
+value7.Parent = t1.value38
+value7 = Instance.new("UIPadding")
+value7.PaddingTop = UDim.new(0, 96)
+value7.PaddingBottom = UDim.new(0, 8)
+value7.Parent = t1.value38
+t1.value40 = Instance.new("Frame")
+t1.value40.Size = UDim2.new(1, -165, 1, -88)
+t1.value40.Position = UDim2.new(0, 155, 0, 52)
+t1.value40.BackgroundTransparency = 1
+t1.value40.Parent = t1.value31
+value7 = Instance.new("Frame")
+value7.Size = UDim2.new(1, -24, 0, 26)
+value7.Position = UDim2.new(0, 12, 1, -34)
+value7.BackgroundColor3 = Color3.fromRGB(17, 17, 26)
+value7.BorderSizePixel = 0
+value7.ZIndex = 5
+value7.Parent = t1.value31
+UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 8)
+UICorner.Parent = value7
+t1.value41 = Instance.new("UIStroke")
+t1.value41.Color = Color3.fromRGB(55, 90, 200)
+t1.value41.Transparency = 0.6
+t1.value41.Thickness = 1
+t1.value41.Parent = value7
+UICorner = Instance.new("TextLabel")
+UICorner.Size = UDim2.new(0, 18, 1, 0)
+UICorner.Position = UDim2.new(0, 8, 0, 0)
+UICorner.BackgroundTransparency = 1
+UICorner.Text = "\240\159\148\151"
+UICorner.TextSize = 12
+UICorner.Font = Enum.Font.Gotham
+UICorner.TextXAlignment = Enum.TextXAlignment.Left
+UICorner.ZIndex = 6
+UICorner.Parent = value7
+t1.value42 = Instance.new("TextButton")
+t1.value42.Size = UDim2.new(1, -30, 1, 0)
+t1.value42.Position = UDim2.new(0, 28, 0, 0)
+t1.value42.BackgroundTransparency = 1
+t1.value42.Text = "discord.gg/U5DPwz2KVN"
+t1.value42.TextColor3 = Color3.fromRGB(100, 150, 255)
+t1.value42.TextSize = 11
+t1.value42.Font = Enum.Font.Gotham
+t1.value42.TextXAlignment = Enum.TextXAlignment.Left
+t1.value42.AutoButtonColor = false
+t1.value42.ZIndex = 6
+t1.value42.Parent = value7
+t1.value42.MouseEnter:Connect(function()
+    t1.value42.TextColor3 = Color3.fromRGB(160, 200, 255)
+    t1.value41.Transparency = 0.2
+end)
+t1.value42.MouseLeave:Connect(function()
+    t1.value42.TextColor3 = Color3.fromRGB(100, 150, 255)
+    t1.value41.Transparency = 0.6
+end)
+t1.value42.MouseButton1Click:Connect(function()
+    if setclipboard then
+        setclipboard("https://discord.gg/U5DPwz2KVN")
+        game_("\226\156\133 Invite link copied!")
+
+        return
+    else
+        game_("\226\157\140 Clipboard not supported")
+
+        return
+    end
+end)
+t1.value43 = Instance.new("TextButton")
+t1.value43.Size = UDim2.new(0, 44, 0, 44)
+t1.value43.Position = UDim2.new(0, 0, 0, 0)
+t1.value43.BackgroundColor3 = Color3.fromRGB(13, 13, 18)
+t1.value43.Text = "Hz"
+t1.value43.TextColor3 = Color3.fromRGB(70, 130, 255)
+t1.value43.TextSize = 14
+t1.value43.Font = Enum.Font.GothamBold
+t1.value43.ZIndex = 10
+t1.value43.AutoButtonColor = false
+t1.value43.Visible = false
+t1.value43.Parent = t1.value22
+game_ = Instance.new("UICorner")
+game_.CornerRadius = UDim.new(1, 0)
+game_.Parent = t1.value43
+t1.value44 = Instance.new("UIStroke")
+t1.value44.Color = Color3.fromRGB(70, 130, 255)
+t1.value44.Thickness = 1.5
+t1.value44.Transparency = 0.3
+t1.value44.Parent = t1.value43
+t1.value43.MouseEnter:Connect(function()
+    t1.value43.BackgroundColor3 = Color3.fromRGB(20, 28, 55)
+    t1.value44.Transparency = 0
+end)
+t1.value43.MouseLeave:Connect(function()
+    t1.value43.BackgroundColor3 = Color3.fromRGB(13, 13, 18)
+    t1.value44.Transparency = 0.3
+end)
+t1.value45 = false
+t1.value46 = nil
+t1.value47 = nil
+t1.value48 = nil
+game_ = t1.value43.InputBegan
+game_:Connect(function(p1)
+    if not (p1.UserInputType == Enum.UserInputType.MouseButton1 and true or p1.UserInputType == Enum.UserInputType.Touch) then
+        return
+    end
+
+    t1.value45 = false
+    t1.value48 = p1.Position
+    t1.value46 = p1.Position
+    t1.value47 = t1.value43.Position
+end)
+t1.value43.InputChanged:Connect(function(input)
+    local v8
+
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        v8 = true
+    elseif input.UserInputType == Enum.UserInputType.Touch then
+        v8 = t1.value46
+    else
+        v8 = false
+    end
+
+    if not (v8 and (input.Position - t1.value48).Magnitude > 6) then
+        return
+    end
+
+    t1.value45 = true
+end)
+t1.value43.MouseButton1Click:Connect(function()
+    if t1.value45 then
+        t1.value45 = false
+
+        return
+    end
+
+    t1.value16 = false
+    t1.value43.Visible = false
+    t1.value31.Visible = true
+    t1.value45 = false
+end)
+t1.value35.MouseButton1Click:Connect(function()
+    t1.value16 = not t1.value16
+
+    if t1.value16 then
+        t1.value43.Position = t1.value31.Position
+        t1.value43.Visible = true
+        t1.value31.Visible = false
+    else
+        t1.value43.Visible = false
+        t1.value31.Visible = true
+    end
+
+    t1.value37.Visible = not t1.value16
+    t1.value40.Visible = not t1.value16
+end)
+t1.value49 = {}
+t1.value50 = {}
+function t1.value51(p2)
+
+    for v11, v12 in pairs(t1.value49) do
+
+        v12.Visible = v11 == p2
+    end
+    for k, v in pairs(t1.value50) do
+        if k == p2 then
+            v.BackgroundColor3 = Color3.fromRGB(60, 110, 240)
+            v.TextColor3 = Color3.fromRGB(255, 255, 255)
+        else
+            v.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+            v.TextColor3 = Color3.fromRGB(255, 255, 255)
+        end
+    end
+end
+function t1.value52(p3)
+    local ScrollingFrame = Instance.new("ScrollingFrame")
+
+    ScrollingFrame.Size = UDim2.new(1, 0, 1, 0)
+    ScrollingFrame.BackgroundTransparency = 1
+    ScrollingFrame.Visible = false
+    ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    ScrollingFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    ScrollingFrame.ScrollBarThickness = 3
+    ScrollingFrame.ScrollBarImageColor3 = Color3.fromRGB(70, 130, 255)
+    ScrollingFrame.Parent = t1.value40
+
+    local UIListLayout = Instance.new("UIListLayout")
+
+    UIListLayout.Padding = UDim.new(0, 8)
+    UIListLayout.Parent = ScrollingFrame
+    t1.value49[p3] = ScrollingFrame
+
+    return ScrollingFrame
+end
+function t1.value53(p4)
+    if not p4 or p4 == "-" then
+        return 0
+    else
+        local match = string.match
+        local v18 = tostring(p4)
+
+        return tonumber(match(v18, "%d+%.?%d*")) or 0
+    end
+end
+function t1.value54()
+    return t1.value7.Character
+end
+function t1.value55()
+    local HumanoidRootPart = t1.value54()
+
+    if not HumanoidRootPart then
+        return HumanoidRootPart
+    end
+
+    HumanoidRootPart = HumanoidRootPart:FindFirstChild("HumanoidRootPart")
+
+    return HumanoidRootPart
+end
+function t1.value56(p5)
+    if p5 and p5.Parent then
+        if p5:IsA("Model") then
+            return p5:GetPivot()
+        else
+            if p5:IsA("BasePart") then
+                return p5.CFrame
+            else
+                return nil
+            end
+
+            return
+        end
+
+        return
+    else
+        return nil
+    end
+end
+t1.value57 = "Rarest Egg"
+UICorner = function(p6, p7)
+    local TextButton = Instance.new("TextButton")
+
+    TextButton.Size = UDim2.new(0.9, 0, 0, 34)
+    TextButton.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+    TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TextButton.TextSize = 12
+    TextButton.Font = Enum.Font.GothamSemibold
+    TextButton.Text = p6
+    TextButton.LayoutOrder = p7
+    TextButton.Parent = t1.value38
+
+    local UICorner2 = Instance.new("UICorner")
+
+    UICorner2.CornerRadius = UDim.new(0, 8)
+    UICorner2.Parent = TextButton
+    t1.value52(p6)
+    t1.value50[p6] = TextButton
+    TextButton.MouseButton1Click:Connect(function()
+        t1.value51(p6)
+    end)
+end
+for i, v in ipairs({
+	"Main",
+	"Eggs",
+	"Teleport",
+	"Settings"
+}) do
+    UICorner(v, i)
+end
+t1.value51("Main")
+game_ = function(p8, p9)
+    local Frame = Instance.new("Frame")
+
+    Frame.Size = UDim2.new(1, -8, 0, p9 or 42)
+    Frame.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
+    Frame.BorderSizePixel = 0
+    Frame.Parent = p8
+
+    local UIStroke = Instance.new("UIStroke")
+
+    UIStroke.Color = Color3.fromRGB(45, 45, 60)
+    UIStroke.Transparency = 0.5
+    UIStroke.Parent = Frame
+    UIStroke = Instance.new("UICorner")
+    UIStroke.CornerRadius = UDim.new(0, 10)
+    UIStroke.Parent = Frame
+
+    return Frame
+end
+value7 = function()
+    local Character = t1.value7.Character
+
+    if Character then
+        local GetChildren = Character.GetChildren
+        local isTool
+
+        for _, v in ipairs(GetChildren(Character)) do
+            isTool = v:IsA("Tool")
+
+            if isTool then
+                isTool = string.find(string.lower(v.Name), "egg")
+            end
+
+            if isTool then
+                return true
+            end
+        end
+
+        Character = t1.value7:FindFirstChild("Backpack")
+
+        if not Character then
+            return false
+        end
+
+        GetChildren = Character.GetChildren
+
+        for _, v in ipairs(GetChildren(Character)) do
+            isTool = v:IsA("Tool")
+
+            if isTool then
+                isTool = string.find(string.lower(v.Name), "egg")
+            end
+
+            if isTool then
+                return true
+            end
+        end
+
+        return false
+    else
+        return false
+    end
+end
+UICorner = function()
+    local Character = t1.value7.Character
+
+    if not Character then
+        return
+    end
+
+    Character = Character:FindFirstChildOfClass("Humanoid")
+
+    if Character then
+        Character.PlatformStand = true
+        Character.AutoRotate = false
+    end
+
+    if Character then
+        Character = Character:FindFirstChildOfClass("Animator")
+    end
+
+    if not Character then
+        return
+    end
+
+    for _, v in ipairs(Character:GetPlayingAnimationTracks()) do
+        pcall(function()
+            v:Stop(0)
+        end)
+    end
+end
+t1.value58 = nil
+function t1.value58()
+    local Character = t1.value7.Character
+
+    if not Character then
+        return
+    end
+
+    Character = Character:FindFirstChildOfClass("Humanoid")
+
+    if not Character then
+        return
+    end
+
+    Character.PlatformStand = false
+    Character.AutoRotate = true
+end
+function t1.value59(p10, _)
+    local v37 = t1.value55()
+
+    if v37 then
+        local v38 = t1.value56(p10)
+
+        if not v38 then
+            return false
+        end
+
+        return
+    else
+        return false
+    end
+end
+function t1.value60(p11)
+    local Plots = t1.value4:FindFirstChild("Plots")
+
+    if Plots then
+        for _, child in ipairs(Plots:GetChildren()) do
+            local Data = child:FindFirstChild("Data")
+
+            if Data then
+                Data = Data:FindFirstChild("Owner")
+
+                if Data then
+                    if Data:IsA("StringValue") then
+                        Data = Data.Value == t1.value7.Name
+                    elseif Data:IsA("ObjectValue") then
+                        Data = Data.Value == t1.value7
+                    else
+                        Data = Data.Value
+                        Data = tostring(Data) == t1.value7.Name
+                    end
+
+                    if Data then
+                        return t1.value59(child, p11)
+                    end
+                end
+            end
+        end
+
+        return false
+    else
+        return false
+    end
+end
+UICorner = function(p12)
+    local ipairs_ = ipairs
+    local value4 = t1.value4
+
+    for _, descendant in ipairs_(value4:GetDescendants()) do
+        if (descendant:IsA("BasePart") or descendant:IsA("Model")) and string.find(string.lower(descendant.Name), string.lower(p12)) then
+            return t1.value59(descendant)
+        end
+    end
+
+    return false
+end
+function t1.value61(_)
+    if t1.value15 then
+        return
+    end
+end
+value7 = function(p13, p14, p15)
+    local TextButton = Instance.new("TextButton")
+    TextButton.Size = UDim2.new(0, 46, 0, 24)
+    TextButton.Position = UDim2.new(1, -56, 0.5, -12)
+    TextButton.BackgroundColor3 = p14 and Color3.fromRGB(70, 130, 255) or Color3.fromRGB(35, 35, 48)
+    TextButton.Text = ""
+    TextButton.AutoButtonColor = false
+    TextButton.Parent = p13
+    local UICorner2 = Instance.new("UICorner")
+    UICorner2.CornerRadius = UDim.new(1, 0)
+    UICorner2.Parent = TextButton
+    UICorner2 = Instance.new("Frame")
+    UICorner2.Size = UDim2.new(0, 18, 0, 18)
+    UICorner2.Position = p14 and UDim2.new(1, -21, 0.5, -9) or UDim2.new(0, 3, 0.5, -9)
+    UICorner2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    UICorner2.BorderSizePixel = 0
+    UICorner2.Parent = TextButton
+    local UICorner3 = Instance.new("UICorner")
+    UICorner3.CornerRadius = UDim.new(1, 0)
+    local u50
+    UICorner3.Parent = UICorner2
+    UICorner2 = function(p16)
+        u50 = p16
+
+        local uDim2 = u50
+
+        if not uDim2 then
+            UICorner2:TweenPosition(uDim2 or UDim2.new(0, 3, 0.5, -9), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.15, true)
+            TextButton.BackgroundColor3 = u50 and Color3.fromRGB(70, 130, 255) or Color3.fromRGB(35, 35, 48)
+
+            return
+        end
+
+        uDim2 = UDim2.new(1, -21, 0.5, -9)
+        UICorner2:TweenPosition(uDim2 or UDim2.new(0, 3, 0.5, -9), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.15, true)
+        TextButton.BackgroundColor3 = u50 and Color3.fromRGB(70, 130, 255) or Color3.fromRGB(35, 35, 48)
+    end
+    u50 = p14
+    TextButton.MouseButton1Click:Connect(function()
+        UICorner2(not u50)
+        p15(u50)
+    end)
+
+    return UICorner2
+end
+t1.value62 = nil
+t1.value2.InputEnded:Connect(function(input)
+    if input.UserInputType ~= Enum.UserInputType.MouseButton1 then
+        return
+    end
+
+    t1.value62 = nil
+    t1.value32 = false
+    t1.value45 = false
+    t1.value46 = nil
+    t1.value33 = nil
+end)
+t1.value2.InputChanged:Connect(function(input)
+    if not (input.UserInputType == Enum.UserInputType.MouseMovement and true or input.UserInputType == Enum.UserInputType.Touch) then
+        return
+    end
+
+    if t1.value62 then
+        v74 = t1.value62
+
+        local v52 = (input.Position.X - v74.bg.AbsolutePosition.X) / v74.bg.AbsoluteSize.X
+
+        v52 = math.clamp(v52, 0, 1)
+        v74.fill.Size = UDim2.new(v52, 0, 1, 0)
+        v74.thumb.Position = UDim2.new(v52, -7, 0.5, -7)
+        v52 = v74.minVal + (v74.maxVal - v74.minVal) * v52
+        v52 = math.floor(v52)
+        v74.lbl.Text = tostring(v52)
+        v74.cb(v52)
+
+        return
+    end
+
+    local value32 = t1.value32
+
+    if value32 then
+        value32 = t1.value33
+
+        if value32 then
+            value32 = t1.value34
+        end
+    end
+
+    if value32 then
+        value32 = input.Position - t1.value33
+        t1.value31.Position = UDim2.new(t1.value34.X.Scale, t1.value34.X.Offset + value32.X, t1.value34.Y.Scale, t1.value34.Y.Offset + value32.Y)
+
+        return
+    end
+
+    value32 = t1.value45
+
+    if value32 then
+        value32 = t1.value46
+
+        if value32 then
+            value32 = t1.value47
+        end
+    end
+
+    if not value32 then
+        return
+    end
+
+    value32 = input.Position - t1.value46
+    t1.value43.Position = UDim2.new(t1.value47.X.Scale, t1.value47.X.Offset + value32.X, t1.value47.Y.Scale, t1.value47.Y.Offset + value32.Y)
+end)
+TextLabel = function(p17, p18, p19, p20, p21, p22)
+    local UICorner2 = game_(p17, 62)
+    local TextLabel2 = Instance.new("TextLabel")
+
+    TextLabel2.Size = UDim2.new(1, -16, 0, 20)
+    TextLabel2.Position = UDim2.new(0, 12, 0, 8)
+    TextLabel2.BackgroundTransparency = 1
+    TextLabel2.Text = p18
+    TextLabel2.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TextLabel2.TextSize = 12
+    TextLabel2.Font = Enum.Font.GothamSemibold
+    TextLabel2.TextXAlignment = Enum.TextXAlignment.Left
+    TextLabel2.Parent = UICorner2
+    TextLabel2 = Instance.new("TextLabel")
+    TextLabel2.Size = UDim2.new(0, 50, 0, 20)
+    TextLabel2.Position = UDim2.new(1, -62, 0, 8)
+    TextLabel2.BackgroundTransparency = 1
+    TextLabel2.Text = tostring(p21)
+    TextLabel2.TextColor3 = Color3.fromRGB(100, 170, 255)
+    TextLabel2.TextSize = 12
+    TextLabel2.Font = Enum.Font.GothamBold
+    TextLabel2.TextXAlignment = Enum.TextXAlignment.Right
+    TextLabel2.Parent = UICorner2
+
+    local Frame = Instance.new("Frame")
+
+    Frame.Size = UDim2.new(1, -24, 0, 6)
+    Frame.Position = UDim2.new(0, 12, 0, 38)
+    Frame.BackgroundColor3 = Color3.fromRGB(35, 35, 52)
+    Frame.BorderSizePixel = 0
+    Frame.Parent = UICorner2
+    UICorner2 = Instance.new("UICorner")
+    UICorner2.CornerRadius = UDim.new(1, 0)
+    UICorner2.Parent = Frame
+    UICorner2 = Instance.new("Frame")
+    UICorner2.Size = UDim2.new((p21 - p19) / (p20 - p19), 0, 1, 0)
+    UICorner2.BackgroundColor3 = Color3.fromRGB(70, 130, 255)
+    UICorner2.BorderSizePixel = 0
+    UICorner2.Parent = Frame
+
+    local UICorner3 = Instance.new("UICorner")
+
+    UICorner3.CornerRadius = UDim.new(1, 0)
+    UICorner3.Parent = UICorner2
+    UICorner3 = Instance.new("Frame")
+    UICorner3.Size = UDim2.new(0, 14, 0, 14)
+    UICorner3.Position = UDim2.new((p21 - p19) / (p20 - p19), -7, 0.5, -7)
+    UICorner3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    UICorner3.BorderSizePixel = 0
+    UICorner3.ZIndex = 3
+    UICorner3.Parent = Frame
+
+    local UICorner4 = Instance.new("UICorner")
+
+    UICorner4.CornerRadius = UDim.new(1, 0)
+    UICorner4.Parent = UICorner3
+    Frame.InputBegan:Connect(function(input)
+        if input.UserInputType ~= Enum.UserInputType.MouseButton1 then
+            return
+        end
+
+        local v59 = (input.Position.X - Frame.AbsolutePosition.X) / Frame.AbsoluteSize.X
+
+        v59 = math.clamp(v59, 0, 1)
+        UICorner2.Size = UDim2.new(v59, 0, 1, 0)
+        UICorner3.Position = UDim2.new(v59, -7, 0.5, -7)
+        v59 = math.floor(p19 + (p20 - p19) * v59)
+        TextLabel2.Text = tostring(v59)
+        p22(v59)
+    end)
+
+    return function(p23)
+        local v60 = p19
+        v60 = math.clamp(p23, v60, p20)
+        local v61 = (v60 - p19) / (p20 - p19)
+        UICorner2.Size = UDim2.new(v61, 0, 1, 0)
+        UICorner3.Position = UDim2.new(v61, -7, 0.5, -7)
+        TextLabel2.Text = tostring(v60)
+        p22(v60)
+    end
+end
+t1.value63 = game:GetService("ReplicatedStorage"):WaitForChild("ServerData"):WaitForChild("ActiveEggs")
+
+local function v62(p24)
+    if not p24 then
+        return "-"
+    end
+
+    if not t1.value63 then
+        v92 = p24:GetAttribute("Weight") or p24:GetAttribute("KG")
+
+        return not v92 and "-" or tostring(v92) .. " KG"
+    end
+
+    local ipairs_ = ipairs
+    local value63 = t1.value63
+
+    for _, child in ipairs_(value63:GetChildren()) do
+        if child:IsA("Configuration") then
+            local attribute = child:GetAttribute("Egg")
+            local v68 = child:GetAttribute("Weight")
+
+            if attribute and v68 then
+                local v69 = string.gsub(p24.Name, "_", " ")
+                local v70 = string.gsub(tostring(attribute), "_", " ")
+
+                if string.find(string.lower(v69), string.lower(v70)) or p24.Name == tostring(attribute) then
+                    return tostring(v68) .. " KG"
+                end
+            end
+        end
+    end
+
+    ipairs_ = p24:GetAttribute("Weight") or p24:GetAttribute("KG")
+
+    return not ipairs_ and "-" or tostring(ipairs_) .. " KG"
+end
+local Main = t1.value49.Main
+t1.value64 = nil
+t1.value64 = {}
+function t1.value65(p25)
+    local v72 = p25 and not p25:IsA("Model") and true or false
+
+    if v72 then
+        v72 = not p25:IsA("BasePart")
+    end
+
+    if v72 then
+        return
+    end
+
+    if not t1.value64[p25] then
+        t1.value64[p25] = {
+			["Highlight"] = nil,
+			["Billboard"] = nil,
+			["TextLabel"] = nil
+		}
+    end
+
+    v72 = t1.value64[p25]
+
+    if not t1.value14 then
+        if v72.Highlight then
+            v72.Highlight.Enabled = false
+        end
+
+        if not v72.Billboard then
+            return
+        end
+
+        v72.Billboard.Enabled = false
+
+        return
+    end
+end
+local UICorner2 = game_(Main)
+local TextLabel2 = Instance.new("TextLabel")
+
+TextLabel2.Size = UDim2.new(0.7, 0, 1, 0)
+TextLabel2.Position = UDim2.new(0, 15, 0, 0)
+TextLabel2.BackgroundTransparency = 1
+TextLabel2.Text = "Egg ESP Highlights & Text"
+TextLabel2.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel2.TextSize = 13
+TextLabel2.Font = Enum.Font.Gotham
+TextLabel2.TextXAlignment = Enum.TextXAlignment.Left
+TextLabel2.Parent = UICorner2
+value7(UICorner2, false, function(p26)
+    t1.value14 = p26
+    t1.value21.espActive = p26
+
+    if not t1.value19 then
+        return
+    end
+
+    for _, child in ipairs(t1.value19:GetChildren()) do
+        t1.value65(child)
+    end
+end)
+
+if t1.value19 then
+    t1.value19.ChildAdded:Connect(function(child)
+        task.wait()
+        t1.value65(child)
+    end)
+    t1.value19.ChildRemoved:Connect(function(child)
+        if not t1.value64[child] then
+            return
+        end
+
+        local v77
+
+        if t1.value64[child].Highlight then
+            v77 = function()
+                t1.value64[child].Highlight:Destroy()
+            end
+            pcall(v77)
+        end
+
+        if t1.value64[child].Billboard then
+            v77 = function()
+                t1.value64[child].Billboard:Destroy()
+            end
+            pcall(v77)
+        end
+
+        t1.value64[child] = nil
+    end)
+end
+UICorner2 = game_(Main)
+TextLabel2 = Instance.new("TextLabel")
+TextLabel2.Size = UDim2.new(0.7, 0, 1, 0)
+TextLabel2.Position = UDim2.new(0, 15, 0, 0)
+TextLabel2.BackgroundTransparency = 1
+TextLabel2.Text = "Character Fly Mode"
+TextLabel2.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel2.TextSize = 13
+TextLabel2.Font = Enum.Font.Gotham
+TextLabel2.TextXAlignment = Enum.TextXAlignment.Left
+TextLabel2.Parent = UICorner2
+value7(UICorner2, false, function(p27)
+    t1.value11 = p27
+
+    local Character = t1.value7.Character
+
+    if Character then
+        Character = Character:FindFirstChild("HumanoidRootPart")
+    end
+
+    if t1.value11 and Character then
+        t1.value17 = Instance.new("BodyGyro", Character)
+        t1.value17.P = 90000
+        t1.value17.maxTorque = Vector3.new(9000000000, 9000000000, 9000000000)
+        t1.value17.cframe = Character.CFrame
+        t1.value18 = Instance.new("BodyVelocity", Character)
+        t1.value18.velocity = Vector3.new(0, 0.1, 0)
+        t1.value18.maxForce = Vector3.new(9000000000, 9000000000, 9000000000)
+
+        return
+    end
+
+    if t1.value17 then
+        Character = function()
+            t1.value17:Destroy()
+        end
+        pcall(Character)
+        t1.value17 = nil
+    end
+
+    if not t1.value18 then
+        return
+    end
+
+    Character = function()
+        t1.value18:Destroy()
+    end
+    pcall(Character)
+    t1.value18 = nil
+end)
+TextLabel(Main, "Walk Speed", 16, 500, 16, function(p28)
+    t1.value21.walkSpeed = p28
+
+    local Character = t1.value7.Character
+    local Humanoid
+
+    if Character then
+        Humanoid = Character:FindFirstChildOfClass("Humanoid")
+    else
+        Humanoid = Character
+    end
+
+    if not Humanoid then
+        return
+    end
+
+    Character:FindFirstChildOfClass("Humanoid").WalkSpeed = p28
+end)
+TextLabel(Main, "Fly Speed", 10, 500, 50, function(p29)
+    t1.value12 = p29
+    t1.value21.flySpeed = p29
+end)
+Main = t1.value49.Eggs
+UICorner2 = game_(Main, 38)
+TextLabel2 = Instance.new("TextLabel")
+TextLabel2.Size = UDim2.new(0.7, 0, 1, 0)
+TextLabel2.Position = UDim2.new(0, 15, 0, 0)
+TextLabel2.BackgroundTransparency = 1
+TextLabel2.Text = "Auto Return to Ranch"
+TextLabel2.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel2.TextSize = 12
+TextLabel2.Font = Enum.Font.Gotham
+TextLabel2.TextXAlignment = Enum.TextXAlignment.Left
+TextLabel2.Parent = UICorner2
+value7(UICorner2, false, function(p30)
+    t1.value13 = p30
+    t1.value21.autoReturn = p30
+end)
+UICorner2 = game_(Main, 26)
+TextLabel2 = Instance.new("TextLabel")
+TextLabel2.Size = UDim2.new(1, -20, 1, 0)
+TextLabel2.Position = UDim2.new(0, 12, 0, 0)
+TextLabel2.BackgroundTransparency = 1
+TextLabel2.Text = "Only returns home if egg is confirmed in hand"
+TextLabel2.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel2.TextSize = 9
+TextLabel2.Font = Enum.Font.Gotham
+TextLabel2.TextXAlignment = Enum.TextXAlignment.Left
+TextLabel2.TextWrapped = true
+TextLabel2.Parent = UICorner2
+TextLabel(Main, "Glide Speed", 50, 400, 250, function(p31)
+    t1.value10 = p31
+    t1.value21.glideSpeed = p31
+end)
+TextLabel = Instance.new("TextLabel")
+TextLabel.Size = UDim2.new(1, -8, 0, 28)
+TextLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
+TextLabel.BorderSizePixel = 0
+TextLabel.Text = "  Egg Scanner"
+TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.TextSize = 13
+TextLabel.Font = Enum.Font.GothamBold
+TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+TextLabel.Parent = Main
+UICorner2 = Instance.new("UICorner")
+UICorner2.CornerRadius = UDim.new(0, 10)
+UICorner2.Parent = TextLabel
+t1.value66 = Instance.new("ScrollingFrame")
+t1.value66.Size = UDim2.new(1, -8, 0, 200)
+t1.value66.BackgroundColor3 = Color3.fromRGB(16, 16, 22)
+t1.value66.BorderSizePixel = 0
+t1.value66.CanvasSize = UDim2.new(0, 0, 0, 0)
+t1.value66.AutomaticCanvasSize = Enum.AutomaticSize.Y
+t1.value66.ScrollBarThickness = 3
+t1.value66.ScrollBarImageColor3 = Color3.fromRGB(70, 130, 255)
+t1.value66.Parent = Main
+TextLabel = Instance.new("UICorner")
+TextLabel.CornerRadius = UDim.new(0, 10)
+TextLabel.Parent = t1.value66
+TextLabel = Instance.new("UIListLayout")
+TextLabel.Padding = UDim.new(0, 4)
+TextLabel.Parent = t1.value66
+TextLabel = Instance.new("UIPadding")
+TextLabel.PaddingTop = UDim.new(0, 6)
+TextLabel.PaddingLeft = UDim.new(0, 6)
+TextLabel.PaddingRight = UDim.new(0, 6)
+TextLabel.Parent = t1.value66
+t1.value67 = {
+	["Eternal"] = Color3.fromRGB(100, 220, 255),
+	["Mythic"] = Color3.fromRGB(255, 80, 255),
+	["Legendary"] = Color3.fromRGB(255, 185, 0),
+	["Rare-Legendary"] = Color3.fromRGB(220, 140, 40),
+	["Rare"] = Color3.fromRGB(80, 130, 255),
+	["Uncommon-Rare"] = Color3.fromRGB(80, 180, 180),
+	["Uncommon"] = Color3.fromRGB(80, 210, 100),
+	["Common-Uncommon"] = Color3.fromRGB(160, 200, 120),
+	["Common"] = Color3.fromRGB(160, 160, 180)
+}
+
+function t1.value68(p32)
+    if p32 then
+        local GetDescendants = p32.GetDescendants
+        local v82, v83
+
+        GetDescendants, v82, v83 = ipairs(GetDescendants(p32))
+
+        local v84
+
+        while true do
+            v83, v84 = GetDescendants(v82, v83)
+
+            if not v83 then
+                break
+            end
+
+            if v84:IsA("BillboardGui") then
+                for _, descendant in ipairs(v84:GetDescendants()) do
+                    if descendant:IsA("TextLabel") then
+                        local Text = descendant.Text
+                        local v88
+
+                        if Text then
+                            if Text == "" or Text == p32.Name then
+                                v88 = false
+                            else
+                                v88 = not string.find(string.lower(Text), "studs")
+                            end
+                        else
+                            v88 = Text
+                        end
+
+                        if v88 then
+                            return Text
+                        end
+                    end
+                end
+            end
+        end
+
+        for _, descendant in ipairs(p32:GetDescendants()) do
+            if descendant:IsA("TextLabel") then
+                descendant = descendant.Text
+
+                if descendant then
+                    v84 = descendant ~= ""
+
+                    if v84 then
+                        if descendant == p32.Name then
+                            v84 = false
+                        else
+                            v84 = not string.find(string.lower(descendant), "studs")
+                        end
+                    end
+                else
+                    v84 = descendant
+                end
+
+                if v84 then
+                    return descendant
+                end
+            end
+        end
+
+        return "-"
+    else
+        return "-"
+    end
+end
+TextLabel = Instance.new("Frame")
+TextLabel.Size = UDim2.new(1, 0, 0, 30)
+TextLabel.BackgroundTransparency = 1
+TextLabel.Parent = Main
+t1.value69 = Instance.new("TextButton")
+t1.value69.Size = UDim2.new(0, 130, 1, 0)
+t1.value69.Position = UDim2.new(1, -130, 0, 0)
+t1.value69.BackgroundColor3 = Color3.fromRGB(24, 24, 32)
+t1.value69.Text = "Sort: " .. t1.value57 .. " \226\150\190"
+t1.value69.TextColor3 = Color3.fromRGB(255, 255, 255)
+t1.value69.TextSize = 11
+t1.value69.Font = Enum.Font.GothamSemibold
+t1.value69.Parent = TextLabel
+Main = Instance.new("UICorner")
+Main.CornerRadius = UDim.new(0, 6)
+Main.Parent = t1.value69
+t1.value70 = false
+t1.value71 = Instance.new("Frame")
+t1.value71.Size = UDim2.new(0, 130, 0, 56)
+t1.value71.Position = UDim2.new(1, -130, 1, 4)
+t1.value71.BackgroundColor3 = Color3.fromRGB(16, 16, 22)
+t1.value71.BorderSizePixel = 0
+t1.value71.Visible = false
+t1.value71.ZIndex = 15
+t1.value71.Parent = TextLabel
+TextLabel = Instance.new("UICorner")
+TextLabel.CornerRadius = UDim.new(0, 6)
+TextLabel.Parent = t1.value71
+TextLabel = Instance.new("UIListLayout")
+TextLabel.Padding = UDim.new(0, 2)
+TextLabel.Parent = t1.value71
+t1.value72 = nil
+TextLabel = function(p33)
+    local TextButton = Instance.new("TextButton")
+
+    TextButton.Size = UDim2.new(1, 0, 0, 26)
+    TextButton.BackgroundTransparency = 1
+    TextButton.Text = p33
+    TextButton.TextColor3 = Color3.fromRGB(200, 200, 220)
+    TextButton.TextSize = 11
+    TextButton.Font = Enum.Font.Gotham
+    TextButton.ZIndex = 16
+    TextButton.Parent = t1.value71
+
+    local function v93()
+        t1.value57 = p33
+        t1.value69.Text = "Sort: " .. t1.value57 .. " v"
+        t1.value71.Visible = false
+        t1.value70 = false
+
+        if not t1.value72 then
+            return
+        end
+
+        t1.value72()
+    end
+
+    TextButton.MouseButton1Click:Connect(v93)
+end
+TextLabel("Rarest Egg")
+TextLabel("Heavy Egg")
+t1.value69.MouseButton1Click:Connect(function()
+    t1.value70 = not t1.value70
+    t1.value71.Visible = t1.value70
+end)
+
+function t1.value72()
+
+    for v96, v97 in ipairs(t1.value66:GetChildren()) do
+
+        if v97:IsA("Frame") then
+            v97:Destroy()
+        end
+    end
+    if not t1.value19 then
+        return
+    end
+end
+if t1.value19 then
+    t1.value19.ChildAdded:Connect(function()
+        task.wait()
+
+        if not t1.value49.Eggs.Visible then
+            return
+        end
+
+        t1.value72()
+    end)
+    t1.value19.ChildRemoved:Connect(function()
+        if not t1.value49.Eggs.Visible then
+            return
+        end
+
+        t1.value72()
+    end)
+end
+t1.value49.Eggs:GetPropertyChangedSignal("Visible"):Connect(function()
+    if not t1.value49.Eggs.Visible then
+        return
+    end
+
+    t1.value72()
+end)
+t1.value73 = 0
+t1.value3.Heartbeat:Connect(function()
+    local Visible = t1.value49.Eggs.Visible
+
+    if Visible then
+        Visible = tick() - t1.value73 >= 1
+    end
+
+    if not Visible then
+        return
+    end
+
+    tick()
+    t1.value72()
+end)
+t1.value74 = t1.value49.Teleport
+TextLabel = game_(t1.value74, 40)
+v62 = Instance.new("TextButton")
+v62.Size = UDim2.new(1, 0, 1, 0)
+v62.BackgroundTransparency = 1
+v62.Text = "Teleport to Home"
+v62.TextColor3 = Color3.fromRGB(255, 255, 255)
+v62.TextSize = 13
+v62.Font = Enum.Font.GothamSemibold
+v62.Parent = TextLabel
+v62.MouseButton1Click:Connect(function()
+    t1.value60()
+end)
+UICorner = function(p34, p35, p36, p37)
+    local Frame = Instance.new("Frame")
+
+    Frame.Size = UDim2.new(1, -8, 0, 40)
+    Frame.BackgroundTransparency = 1
+    Frame.Parent = t1.value74
+    Frame = function(p38, p39, p40)
+        local Frame2 = Instance.new("Frame")
+
+        Frame2.Size = UDim2.new(0.49, 0, 1, 0)
+        Frame2.Position = UDim2.new(p38, 0, 0, 0)
+        Frame2.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
+        Frame2.BorderSizePixel = 0
+        Frame2.Parent = Frame
+
+        local UIStroke = Instance.new("UIStroke")
+
+        UIStroke.Color = Color3.fromRGB(45, 45, 60)
+        UIStroke.Transparency = 0.5
+        UIStroke.Parent = Frame2
+        UIStroke = Instance.new("UICorner")
+        UIStroke.CornerRadius = UDim.new(0, 10)
+        UIStroke.Parent = Frame2
+        UIStroke = Instance.new("TextButton")
+        UIStroke.Size = UDim2.new(1, 0, 1, 0)
+        UIStroke.BackgroundTransparency = 1
+        UIStroke.Text = p39
+        UIStroke.TextColor3 = Color3.fromRGB(255, 255, 255)
+        UIStroke.TextSize = 12
+        UIStroke.Font = Enum.Font.GothamSemibold
+        UIStroke.Parent = Frame2
+        UIStroke.MouseButton1Click:Connect(function()
+
+            if type(p40) == "function" then
+                p40()
+
+                return
+            else
+                UICorner(p40)
+
+                return
+            end
+        end)
+    end
+    Frame(0, p34, p35)
+    Frame(0.51, p36, p37)
+end
+UICorner("Teleport to Sell", "Sell", "Teleport to Food", "Food")
+UICorner("Teleport to Track", "Track", "Teleport to Gears", "Gears")
+UICorner = t1.value49.Settings
+t1.value75 = nil
+t1.value75 = {}
+function t1.value76(p41)
+    t1.value21.removeTexture = p41
+
+    local ipairs_ = ipairs
+    local value4 = t1.value4
+
+    for _, descendant in ipairs_(value4:GetDescendants()) do
+        if descendant:IsA("Texture") or descendant:IsA("Decal") then
+            if p41 then
+                t1.value75[descendant] = descendant.Texture
+                descendant.Texture = ""
+            elseif t1.value75[descendant] then
+                descendant.Texture = t1.value75[descendant]
+                t1.value75[descendant] = nil
+            end
+        end
+    end
+end
+TextLabel = function(p42)
+    t1.value21.removeShadow = p42
+
+    local ipairs_ = ipairs
+    local value4 = t1.value4
+
+    for _, descendant in ipairs_(value4:GetDescendants()) do
+        if descendant:IsA("BasePart") then
+            descendant.CastShadow = not p42
+        end
+    end
+
+    ipairs_ = game:GetService("Lighting")
+
+    if p42 then
+        ipairs_.GlobalShadows = false
+        ipairs_.Brightness = 2
+
+        return
+    else
+        ipairs_.GlobalShadows = true
+        ipairs_.Brightness = 1
+
+        return
+    end
+end
+v62 = function(p43, p44)
+    local TextLabel3 = Instance.new("TextLabel")
+
+    TextLabel3.Size = UDim2.new(1, -8, 0, 22)
+    TextLabel3.BackgroundTransparency = 1
+    TextLabel3.Text = p44
+    TextLabel3.TextColor3 = Color3.fromRGB(100, 130, 200)
+    TextLabel3.TextSize = 11
+    TextLabel3.Font = Enum.Font.GothamBold
+    TextLabel3.TextXAlignment = Enum.TextXAlignment.Left
+    TextLabel3.Parent = p43
+end
+v62(UICorner, "  Performance")
+Main = game_(UICorner, 38)
+UICorner2 = Instance.new("TextLabel")
+UICorner2.Size = UDim2.new(0.7, 0, 1, 0)
+UICorner2.Position = UDim2.new(0, 15, 0, 0)
+UICorner2.BackgroundTransparency = 1
+UICorner2.Text = "Remove Textures"
+UICorner2.TextColor3 = Color3.fromRGB(255, 255, 255)
+UICorner2.TextSize = 12
+UICorner2.Font = Enum.Font.Gotham
+UICorner2.TextXAlignment = Enum.TextXAlignment.Left
+UICorner2.Parent = Main
+value7(Main, false, function(p45)
+    t1.value76(p45)
+end)
+Main = game_(UICorner, 38)
+UICorner2 = Instance.new("TextLabel")
+UICorner2.Size = UDim2.new(0.7, 0, 1, 0)
+UICorner2.Position = UDim2.new(0, 15, 0, 0)
+UICorner2.BackgroundTransparency = 1
+UICorner2.Text = "Remove Shadows"
+UICorner2.TextColor3 = Color3.fromRGB(255, 255, 255)
+UICorner2.TextSize = 12
+UICorner2.Font = Enum.Font.Gotham
+UICorner2.TextXAlignment = Enum.TextXAlignment.Left
+UICorner2.Parent = Main
+value7(Main, false, function(p46)
+    TextLabel(p46)
+end)
+v62(UICorner, "  Server");
+(function(p47, p48, p49, p50)
+    local v111 = game_(p47, 36)
+    local TextButton = Instance.new("TextButton")
+
+    TextButton.Size = UDim2.new(1, 0, 1, 0)
+    TextButton.BackgroundTransparency = 1
+    TextButton.Text = p48
+    TextButton.TextColor3 = p49 or Color3.fromRGB(255, 255, 255)
+    TextButton.TextSize = 12
+    TextButton.Font = Enum.Font.GothamSemibold
+    TextButton.Parent = v111
+    TextButton.MouseButton1Click:Connect(p50)
+
+    return v111
+end)(UICorner, "Rejoin Server", Color3.fromRGB(255, 255, 255), function()
+    local function v113()
+        t1.value5:Teleport(game.PlaceId, t1.value7)
+    end
+
+    local result
+
+    v113, result = pcall(v113)
+
+    if v113 then
+        return
+    end
+
+    warn("Rejoin failed: " .. tostring(result))
+end)
+t1.value3.RenderStepped:Connect(function()
+    local Character
+    if t1.value11 then
+        Character = t1.value7.Character
+
+        if Character then
+            v174 = Character:FindFirstChild("HumanoidRootPart")
+        else
+            v174 = Character
+        end
+
+        if v174 then
+            v174 = t1.value17
+
+            if v174 then
+                v174 = t1.value18
+            end
+        end
+
+        if v174 then
+            t1.value17.cframe = t1.value8.CFrame
+            v174 = Vector3.new()
+            Character = t1.value2
+
+            if Character:IsKeyDown(Enum.KeyCode.W) then
+                v174 = v174 + t1.value8.CFrame.LookVector
+                Character = v174
+            end
+
+            if t1.value2:IsKeyDown(Enum.KeyCode.S) then
+                v174 = v174 - t1.value8.CFrame.LookVector
+            end
+
+            if t1.value2:IsKeyDown(Enum.KeyCode.A) then
+                v174 = v174 - t1.value8.CFrame.RightVector
+            end
+
+            if t1.value2:IsKeyDown(Enum.KeyCode.D) then
+                v174 = v174 + t1.value8.CFrame.RightVector
+            end
+
+            t1.value18.velocity = v174 * t1.value12
+        end
+    end
+    local value14 = t1.value14
+    if value14 then
+        value14 = t1.value19
+    end
+    value14 = value14 and t1.value55()
+    if not value14 then
+        return
+    end
+    local ipairs_ = ipairs
+    local value19 = t1.value19
+    for _, child in ipairs_(value19:GetChildren()) do
+        local TextLabel3 = t1.value64[child]
+        local Billboard
+
+        if TextLabel3 then
+            Billboard = TextLabel3.Billboard
+
+            if Billboard then
+                Billboard = TextLabel3.TextLabel
+            end
+        else
+            Billboard = TextLabel3
+        end
+
+        if Billboard then
+            local Magnitude = t1.value56(child)
+
+            if Magnitude then
+                TextLabel3 = TextLabel3.TextLabel
+                Magnitude = (value14.Position - Magnitude.Position).Magnitude
+                TextLabel3.Text = math.floor(Magnitude) .. " studs"
+            end
+        end
+    end
+end)
+task.spawn(function()
+    t1.value27.Size = UDim2.new(0, 0, 0, 0)
+    t1.value27.Position = UDim2.new(0.5, 0, 0.5, -40)
+
+    local value6 = t1.value6
+    local value27 = t1.value27
+    local tweenInfo = TweenInfo.new(0.45, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+    local UDim2_ = UDim2
+
+    value6.Create(value6, value27, tweenInfo, {
+		["Size"] = UDim2_.new(0, 120, 0, 120),
+		["Position"] = UDim2.new(0.5, -60, 0.5, -80)
+	}):Play()
+    task.wait(0.45)
+    t1.value6:Create(t1.value28, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+		["TextTransparency"] = 0
+	}):Play()
+    t1.value6:Create(t1.value29, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+		["TextTransparency"] = 0
+	}):Play()
+    task.wait(0.15)
+    value6 = t1.value6
+    value27 = t1.value30
+    tweenInfo = TweenInfo.new
+    UDim2_ = Enum.EasingStyle.Quad
+
+    local EasingDirection = Enum.EasingDirection
+
+    value6.Create(value6, value27, tweenInfo(0.7, UDim2_, EasingDirection.Out), {
+		["Size"] = UDim2.new(0, 200, 0, 2),
+		["Position"] = UDim2.new(0.5, -100, 0.5, 120)
+	}):Play()
+    task.wait(0.85)
+    value6 = t1.value6
+    value27 = t1.value27
+    tweenInfo = TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.In)
+    UDim2_ = UDim2.new(0, 0, 0, 0)
+    value6.Create(value6, value27, tweenInfo, {
+		["Size"] = UDim2_,
+		["Position"] = UDim2.new(0.5, 0, 0.5, -80)
+	}):Play()
+    t1.value6:Create(t1.value28, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+		["TextTransparency"] = 1
+	}):Play()
+    value6 = t1.value6
+    value27 = t1.value29
+    tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+    value6.Create(value6, value27, tweenInfo, {
+		["TextTransparency"] = 1
+	}):Play()
+    value6 = t1.value6
+    value27 = t1.value30
+    tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+    UDim2_ = UDim2.new
+    value6.Create(value6, value27, tweenInfo, {
+		["Size"] = UDim2_(0, 0, 0, 2),
+		["Position"] = UDim2.new(0.5, 0, 0.5, 120)
+	}):Play()
+    t1.value6:Create(t1.value26, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+		["BackgroundTransparency"] = 1
+	}):Play()
+    task.wait(0.3)
+    t1.value26:Destroy()
+    t1.value31.Visible = true
+    t1.value31.BackgroundTransparency = 1
+    t1.value6:Create(t1.value31, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+		["BackgroundTransparency"] = 0
+	}):Play()
+end)
