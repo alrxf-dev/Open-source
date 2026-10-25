@@ -1,4 +1,5 @@
--- founder kode by alrect
+
+-- founder by alrect 
 local ChilliLibrary
 do
     local SetupLoadingScreenOverlay = function()
