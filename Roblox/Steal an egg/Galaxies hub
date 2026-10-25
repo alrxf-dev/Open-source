@@ -1,0 +1,2054 @@
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local SoundService = game:GetService("SoundService")
+local ProximityPromptService = game:GetService("ProximityPromptService")
+local Lighting = game:GetService("Lighting")
+
+local LocalPlayer = Players.LocalPlayer
+if not LocalPlayer then return end
+
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+
+local CHANNEL_URL = "https://whatsapp.com/channel/0029Vb7mbtT9xVJfwjAKzL2E"
+local LOGO_IMAGE = "rbxassetid://75281338441933"
+
+local CLICK_SOUND_ID = "rbxassetid://6042053626"
+local DRAG_SOUND_ID = "rbxassetid://8120249833"
+local NOTIFY_SOUND_ID = "rbxassetid://4590662766"
+
+local WALLPAPERS = {
+    "rbxassetid://83457261837923",
+    "rbxassetid://101537320599458",
+    "rbxassetid://97946819416556",
+    "rbxassetid://92242525928116",
+    "rbxassetid://71708155566408",
+    "rbxassetid://130729948273624",
+    "rbxassetid://80597421595667",
+    "rbxassetid://128574105668430",
+}
+
+local State = {
+    AntiHitGuard = false,
+    Godmode = false,
+    AntiLag = false,
+    Running = true,
+}
+
+-- ============================================================
+-- STEAL 1X EGG - AUTO ON
+-- ============================================================
+local function forceInstantPrompt(prompt)
+    pcall(function()
+        if prompt.HoldDuration ~= 0 then prompt.HoldDuration = 0 end
+        if prompt.MaxActivationDistance < 20 then prompt.MaxActivationDistance = 20 end
+    end)
+end
+
+local function hookPrompt(prompt)
+    forceInstantPrompt(prompt)
+    pcall(function()
+        prompt:GetPropertyChangedSignal("HoldDuration"):Connect(function()
+            if prompt.HoldDuration ~= 0 then prompt.HoldDuration = 0 end
+        end)
+    end)
+end
+
+for _, v in pairs(game:GetDescendants()) do
+    if v:IsA("ProximityPrompt") then hookPrompt(v) end
+end
+
+game.DescendantAdded:Connect(function(v)
+    if v:IsA("ProximityPrompt") then hookPrompt(v) end
+end)
+
+task.spawn(function()
+    while State.Running do
+        task.wait(1.5)
+        pcall(function()
+            for _, v in pairs(workspace:GetDescendants()) do
+                if v:IsA("ProximityPrompt") and v.HoldDuration > 0 then
+                    v.HoldDuration = 0
+                end
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    task.wait(2)
+    pcall(function()
+        for _, obj in ipairs(game:GetDescendants()) do
+            if obj:IsA("Script") or obj:IsA("LocalScript") then
+                local nameLower = string.lower(obj.Name)
+                if nameLower:find("anticheat") or nameLower:find("anti_cheat")
+                    or nameLower:find("anti-cheat") or nameLower:find("ac_")
+                    or nameLower:find("acdetect") or nameLower:find("antiexploit")
+                    or nameLower:find("anticheatservice") then
+                    pcall(function() obj.Disabled = true end)
+                end
+            end
+        end
+    end)
+end)
+
+-- ============================================================
+-- ROUTE 15 TITIK
+-- ============================================================
+local TeleportPoints = {
+    Vector3.new(500.62, 241.28, -366.64),
+    Vector3.new(504.45, 155.80, -366.35),
+    Vector3.new(508.30, 70.28, -366.03),
+    Vector3.new(513.86, 70.28, -366.25),
+    Vector3.new(524.32, 70.28, -366.59),
+    Vector3.new(529.22, 70.28, -366.71),
+    Vector3.new(538.01, 70.28, -365.55),
+    Vector3.new(546.80, 70.28, -364.40),
+    Vector3.new(563.80, 70.28, -363.85),
+    Vector3.new(572.40, 70.28, -363.60),
+    Vector3.new(589.60, 70.28, -363.10),
+    Vector3.new(598.20, 70.28, -362.85),
+    Vector3.new(624.00, 70.28, -362.10),
+    Vector3.new(632.60, 70.28, -361.85),
+    Vector3.new(641.20, 70.28, -361.60)
+}
+
+-- ============================================================
+-- ANTI HIT GUARD
+-- ============================================================
+local ANTI_HIT_SPEED = 0.005
+local ANTI_HIT_COOLDOWN = 2.5
+local IsAntiHitRunning = false
+local lastAntiHit = 0
+
+local function TeleportRouteAndReturn(character)
+    if not character then return end
+    local root = character:FindFirstChild("HumanoidRootPart")
+    if not root then return end
+    local hum = character:FindFirstChildOfClass("Humanoid")
+    if not hum then return end
+    
+    IsAntiHitRunning = true
+    local savedCFrame = root.CFrame
+    local savedVel = root.AssemblyLinearVelocity
+    
+    for _, position in ipairs(TeleportPoints) do
+        if not State.AntiHitGuard or not root.Parent then
+            if root and root.Parent then
+                pcall(function()
+                    root.CFrame = savedCFrame
+                    root.AssemblyLinearVelocity = Vector3.zero
+                end)
+            end
+            IsAntiHitRunning = false
+            return
+        end
+        
+        pcall(function()
+            root.CFrame = CFrame.new(position)
+            root.AssemblyLinearVelocity = Vector3.zero
+            root.AssemblyAngularVelocity = Vector3.zero
+            if hum.Health < hum.MaxHealth then hum.Health = hum.MaxHealth end
+        end)
+        
+        task.wait(ANTI_HIT_SPEED)
+    end
+    
+    task.wait(0.15)
+    if root and root.Parent then
+        pcall(function()
+            root.CFrame = savedCFrame
+            root.AssemblyLinearVelocity = savedVel
+            root.AssemblyAngularVelocity = Vector3.zero
+            if hum.Health < hum.MaxHealth then hum.Health = hum.MaxHealth end
+        end)
+    end
+    
+    IsAntiHitRunning = false
+end
+
+ProximityPromptService.PromptTriggered:Connect(function(prompt, player)
+    if player ~= LocalPlayer then return end
+    if not State.AntiHitGuard then return end
+    if IsAntiHitRunning then return end
+    if tick() - lastAntiHit < ANTI_HIT_COOLDOWN then return end
+    lastAntiHit = tick()
+    
+    local character = LocalPlayer.Character
+    if not character then return end
+    
+    task.spawn(function()
+        pcall(function() TeleportRouteAndReturn(character) end)
+    end)
+end)
+
+-- ============================================================
+-- GODMODE
+-- ============================================================
+local godmodeConn = nil
+local godmodeBusy = false
+
+local function godmodeHealLoop()
+    return RunService.Heartbeat:Connect(function()
+        if not State.Godmode then return end
+        local char = LocalPlayer.Character
+        if not char then return end
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        if hum and hum.Health < hum.MaxHealth then
+            pcall(function() hum.Health = hum.MaxHealth end)
+        end
+    end)
+end
+
+local function enableGodmode()
+    if godmodeConn then return end
+    godmodeConn = godmodeHealLoop()
+end
+
+local function disableGodmode()
+    if godmodeConn then
+        pcall(function() godmodeConn:Disconnect() end)
+        godmodeConn = nil
+    end
+    godmodeBusy = false
+    local cam = workspace.CurrentCamera
+    if cam and cam.CameraType == Enum.CameraType.Scriptable then
+        pcall(function() cam.CameraType = Enum.CameraType.Custom end)
+    end
+end
+
+ProximityPromptService.PromptTriggered:Connect(function(prompt, player)
+    if player ~= LocalPlayer then return end
+    if not State.Godmode then return end
+    if godmodeBusy then return end
+    
+    local char = LocalPlayer.Character
+    if not char then return end
+    local root = char:FindFirstChild("HumanoidRootPart")
+    if not root then return end
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    if not hum then return end
+    
+    godmodeBusy = true
+    
+    task.spawn(function()
+        pcall(function()
+            local savedCFrame = root.CFrame
+            local savedVel = root.AssemblyLinearVelocity
+            local cam = workspace.CurrentCamera
+            local camSavedCFrame = nil
+            if cam then
+                camSavedCFrame = cam.CFrame
+                pcall(function()
+                    cam.CameraType = Enum.CameraType.Scriptable
+                    cam.CFrame = camSavedCFrame
+                end)
+            end
+            
+            task.wait(0.6)
+            
+            for _, position in ipairs(TeleportPoints) do
+                if not root or not root.Parent then break end
+                if not State.Godmode then break end
+                pcall(function()
+                    root.CFrame = CFrame.new(position)
+                    root.AssemblyLinearVelocity = Vector3.zero
+                    root.AssemblyAngularVelocity = Vector3.zero
+                    if hum.Health < hum.MaxHealth then hum.Health = hum.MaxHealth end
+                end)
+                task.wait(0.005)
+            end
+            
+            local start = tick()
+            while tick() - start < 0.4 do
+                if hum and hum.Health < hum.MaxHealth then
+                    pcall(function() hum.Health = hum.MaxHealth end)
+                end
+                task.wait(0.05)
+            end
+            
+            if root and root.Parent then
+                pcall(function()
+                    root.CFrame = savedCFrame
+                    root.AssemblyLinearVelocity = savedVel
+                    root.AssemblyAngularVelocity = Vector3.zero
+                    if hum.Health < hum.MaxHealth then hum.Health = hum.MaxHealth end
+                end)
+            end
+            
+            task.wait(0.15)
+            
+            if cam then
+                pcall(function() cam.CameraType = Enum.CameraType.Custom end)
+            end
+        end)
+        
+        godmodeBusy = false
+    end)
+end)
+
+-- ============================================================
+-- ANTI LAG - PERFORMANCE MODE
+-- ============================================================
+local AntiLagStored = {
+    Lighting = {}, Effects = {}, Parts = {}, Lights = {}, Decals = {},
+    Quality = nil, Quality2 = nil, Terrain = {}, DescendantConn = nil,
+}
+
+local function EnableAntiLag()
+    pcall(function() if setfpscap then setfpscap(60) end end)
+    
+    pcall(function()
+        local USS = UserSettings and UserSettings() or nil
+        if USS then
+            local GS = USS:GetService("UserGameSettings")
+            if GS then
+                AntiLagStored.Quality = GS.SavedQualityLevel
+                GS.SavedQualityLevel = Enum.SavedQualitySetting.QualityLevel1
+            end
+        end
+    end)
+    pcall(function()
+        if settings and settings().Rendering then
+            AntiLagStored.Quality2 = settings().Rendering.QualityLevel
+            settings().Rendering.QualityLevel = 1
+        end
+    end)
+    
+    pcall(function()
+        AntiLagStored.Lighting.GlobalShadows = Lighting.GlobalShadows
+        AntiLagStored.Lighting.FogEnd = Lighting.FogEnd
+        AntiLagStored.Lighting.FogStart = Lighting.FogStart
+        AntiLagStored.Lighting.Brightness = Lighting.Brightness
+        AntiLagStored.Lighting.EnvironmentDiffuseScale = Lighting.EnvironmentDiffuseScale
+        AntiLagStored.Lighting.EnvironmentSpecularScale = Lighting.EnvironmentSpecularScale
+        AntiLagStored.Lighting.ShadowSoftness = Lighting.ShadowSoftness
+        
+        Lighting.GlobalShadows = false
+        Lighting.FogEnd = 100000
+        Lighting.FogStart = 0
+        Lighting.Brightness = 1
+        Lighting.EnvironmentDiffuseScale = 0
+        Lighting.EnvironmentSpecularScale = 0
+        Lighting.ShadowSoftness = 0
+    end)
+    
+    pcall(function()
+        for _, child in ipairs(Lighting:GetChildren()) do
+            if child:IsA("PostEffect") or child:IsA("Atmosphere") or child:IsA("Sky") or child:IsA("Clouds") then
+                AntiLagStored.Effects[child] = child.Enabled
+                pcall(function() child.Enabled = false end)
+            end
+        end
+    end)
+    
+    pcall(function()
+        local terrain = workspace:FindFirstChildOfClass("Terrain")
+        if terrain then
+            AntiLagStored.Terrain.WaterWaveSize = terrain.WaterWaveSize
+            AntiLagStored.Terrain.WaterWaveSpeed = terrain.WaterWaveSpeed
+            AntiLagStored.Terrain.WaterTransparency = terrain.WaterTransparency
+            AntiLagStored.Terrain.WaterReflectance = terrain.WaterReflectance
+            terrain.WaterWaveSize = 0
+            terrain.WaterWaveSpeed = 0
+            terrain.WaterTransparency = 1
+            terrain.WaterReflectance = 0
+        end
+    end)
+    
+    task.spawn(function()
+        for _, obj in ipairs(workspace:GetDescendants()) do
+            if not State.AntiLag or not State.Running then break end
+            pcall(function()
+                if obj:IsA("ParticleEmitter") or obj:IsA("Trail") or obj:IsA("Beam")
+                    or obj:IsA("Fire") or obj:IsA("Smoke") or obj:IsA("Sparkles") then
+                    if obj.Enabled then
+                        AntiLagStored.Effects[obj] = true
+                        obj.Enabled = false
+                    end
+                elseif obj:IsA("Light") then
+                    if obj.Enabled then
+                        AntiLagStored.Lights[obj] = true
+                        obj.Enabled = false
+                    end
+                elseif obj:IsA("BasePart") then
+                    if obj.CastShadow then
+                        AntiLagStored.Parts[obj] = true
+                        obj.CastShadow = false
+                    end
+                    if obj.Reflectance > 0 then obj.Reflectance = 0 end
+                elseif obj:IsA("Decal") or obj:IsA("Texture") then
+                    if obj.Transparency < 1 then
+                        AntiLagStored.Decals[obj] = obj.Transparency
+                        obj.Transparency = 1
+                    end
+                end
+            end)
+        end
+    end)
+    
+    AntiLagStored.DescendantConn = workspace.DescendantAdded:Connect(function(obj)
+        if not State.AntiLag or not State.Running then return end
+        pcall(function()
+            if obj:IsA("ParticleEmitter") or obj:IsA("Trail") or obj:IsA("Beam")
+                or obj:IsA("Fire") or obj:IsA("Smoke") or obj:IsA("Sparkles") then
+                if obj.Enabled then obj.Enabled = false end
+            elseif obj:IsA("Light") then
+                if obj.Enabled then obj.Enabled = false end
+            elseif obj:IsA("BasePart") then
+                if obj.CastShadow then obj.CastShadow = false end
+                if obj.Reflectance > 0 then obj.Reflectance = 0 end
+            elseif obj:IsA("Decal") or obj:IsA("Texture") then
+                obj.Transparency = 1
+            end
+        end)
+    end)
+    
+    print("[Anti-Lag] Performance Mode: ON")
+end
+
+local function DisableAntiLag()
+    pcall(function() if setfpscap then setfpscap(60) end end)
+    pcall(function()
+        local USS = UserSettings and UserSettings() or nil
+        if USS then
+            local GS = USS:GetService("UserGameSettings")
+            if GS and AntiLagStored.Quality then GS.SavedQualityLevel = AntiLagStored.Quality end
+        end
+    end)
+    pcall(function()
+        if settings and settings().Rendering and AntiLagStored.Quality2 then
+            settings().Rendering.QualityLevel = AntiLagStored.Quality2
+        end
+    end)
+    pcall(function() for k, v in pairs(AntiLagStored.Lighting) do Lighting[k] = v end end)
+    pcall(function()
+        for obj, val in pairs(AntiLagStored.Effects) do
+            if obj and obj.Parent then pcall(function() obj.Enabled = val end) end
+        end
+    end)
+    pcall(function()
+        local terrain = workspace:FindFirstChildOfClass("Terrain")
+        if terrain then for k, v in pairs(AntiLagStored.Terrain) do terrain[k] = v end end
+    end)
+    pcall(function()
+        for obj, val in pairs(AntiLagStored.Lights) do
+            if obj and obj.Parent then pcall(function() obj.Enabled = val end) end
+        end
+    end)
+    pcall(function()
+        for obj, val in pairs(AntiLagStored.Parts) do
+            if obj and obj.Parent then pcall(function() obj.CastShadow = val end) end
+        end
+    end)
+    pcall(function()
+        for obj, val in pairs(AntiLagStored.Decals) do
+            if obj and obj.Parent then pcall(function() obj.Transparency = val end) end
+        end
+    end)
+    if AntiLagStored.DescendantConn then
+        pcall(function() AntiLagStored.DescendantConn:Disconnect() end)
+        AntiLagStored.DescendantConn = nil
+    end
+    AntiLagStored.Effects, AntiLagStored.Lights, AntiLagStored.Parts, AntiLagStored.Decals = {}, {}, {}, {}
+    print("[Anti-Lag] Performance Mode: OFF")
+end
+
+-- ============================================================
+-- THEME
+-- ============================================================
+local Theme = {
+    Window = Color3.fromRGB(255,255,255),
+    Card = Color3.fromRGB(248,248,250),
+    CardHover = Color3.fromRGB(240,240,245),
+    CardOn = Color3.fromRGB(232,250,240),
+    CardDisabled = Color3.fromRGB(240,240,242),
+    Border = Color3.fromRGB(225,225,230),
+    Text = Color3.fromRGB(24,24,30),
+    TextDisabled = Color3.fromRGB(160,160,170),
+    SubText = Color3.fromRGB(130,130,145),
+    SwitchOff = Color3.fromRGB(215,215,220),
+    SwitchDisabled = Color3.fromRGB(235,235,240),
+    SwitchOn = Color3.fromRGB(34,180,90),
+}
+
+local FONT = Enum.Font.BuilderSansMedium
+local FONT_BOLD = Enum.Font.BuilderSansBold
+
+local oldGui = PlayerGui:FindFirstChild("grllscript_v4_6_release")
+if oldGui then oldGui:Destroy() end
+
+local function new(className, props, children)
+    local obj = Instance.new(className)
+    for key, value in pairs(props or {}) do obj[key] = value end
+    for _, child in ipairs(children or {}) do child.Parent = obj end
+    return obj
+end
+
+local function corner(radius)
+    return new("UICorner", { CornerRadius = UDim.new(0, radius or 8) })
+end
+
+local function stroke(color, thickness)
+    return new("UIStroke", {
+        Color = color or Theme.Border,
+        Thickness = thickness or 1,
+        ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+    })
+end
+
+local function playSound(soundId, volume)
+    local sound = Instance.new("Sound")
+    sound.SoundId = soundId
+    sound.Volume = volume or 0.5
+    sound.Parent = SoundService
+    sound:Play()
+    task.delay(8, function()
+        if sound and sound.Parent then sound:Destroy() end
+    end)
+    return sound
+end
+
+local function playClick() playSound(CLICK_SOUND_ID, 0.5) end
+local function playNotifSound() playSound(NOTIFY_SOUND_ID, 0.7) end
+
+local ScreenGui = new("ScreenGui", {
+    Name = "grllscript_v4_6_release",
+    Parent = PlayerGui,
+    ResetOnSpawn = false,
+    IgnoreGuiInset = true,
+    ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+    DisplayOrder = 999,
+})
+
+-- ============================================================
+-- SLIDE NOTIFICATION
+-- ============================================================
+local function showSlideNotification(text, color)
+    color = color or Color3.fromRGB(150, 150, 150)
+    
+    local notifFrame = new("Frame", {
+        Parent = ScreenGui,
+        AnchorPoint = Vector2.new(0, 0),
+        Position = UDim2.new(-0.6, 0, 0, 160),
+        Size = UDim2.fromOffset(300, 42),
+        BackgroundColor3 = Color3.fromRGB(80, 80, 80),
+        BackgroundTransparency = 0.4,
+        BorderSizePixel = 0,
+        ClipsDescendants = true,
+        ZIndex = 520,
+    }, { corner(21), stroke(color, 1.5) })
+    
+    new("Frame", {
+        Parent = notifFrame,
+        Size = UDim2.fromOffset(6, 26),
+        Position = UDim2.fromOffset(10, 8),
+        BackgroundColor3 = color,
+        BackgroundTransparency = 0.2,
+        BorderSizePixel = 0,
+        ZIndex = 522,
+    }, { corner(3) })
+    
+    new("TextLabel", {
+        Parent = notifFrame,
+        Size = UDim2.new(1, -30, 1, 0),
+        Position = UDim2.fromOffset(24, 0),
+        BackgroundTransparency = 1,
+        Font = FONT_BOLD,
+        Text = text,
+        TextColor3 = Color3.fromRGB(220, 220, 220),
+        TextTransparency = 0.15,
+        TextSize = 12,
+        TextTruncate = Enum.TextTruncate.AtEnd,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        TextYAlignment = Enum.TextYAlignment.Center,
+        ZIndex = 522,
+    })
+    
+    playNotifSound()
+    
+    TweenService:Create(notifFrame, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Position = UDim2.new(0, 15, 0, 160)
+    }):Play()
+    
+    task.wait(2.2)
+    
+    TweenService:Create(notifFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        Position = UDim2.new(-0.6, 0, 0, 160)
+    }):Play()
+    
+    task.wait(0.6)
+    pcall(function() notifFrame:Destroy() end)
+end
+
+-- ============================================================
+-- WELCOME BANNER
+-- ============================================================
+local WelcomeBanner = new("Frame", {
+    Parent = ScreenGui,
+    AnchorPoint = Vector2.new(0, 0),
+    Position = UDim2.new(-0.5, 0, 0, 90),
+    Size = UDim2.fromOffset(280, 48),
+    BackgroundColor3 = Color3.fromRGB(80, 80, 80),
+    BackgroundTransparency = 0.4,
+    BorderSizePixel = 0,
+    ClipsDescendants = true,
+    ZIndex = 500,
+}, { corner(24), stroke(Color3.fromRGB(150, 150, 150), 1.5) })
+
+new("ImageLabel", {
+    Parent = WelcomeBanner,
+    Size = UDim2.fromOffset(36, 36),
+    Position = UDim2.fromOffset(8, 6),
+    BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+    BackgroundTransparency = 0.3,
+    BorderSizePixel = 0,
+    Image = LOGO_IMAGE,
+    ScaleType = Enum.ScaleType.Fit,
+    ZIndex = 502,
+}, { corner(18) })
+
+new("TextLabel", {
+    Parent = WelcomeBanner,
+    Size = UDim2.new(1, -56, 1, 0),
+    Position = UDim2.fromOffset(52, 0),
+    BackgroundTransparency = 1,
+    Font = FONT_BOLD,
+    Text = "WELCOME, " .. string.upper(LocalPlayer.DisplayName or LocalPlayer.Name),
+    TextColor3 = Color3.fromRGB(220, 220, 220),
+    TextTransparency = 0.15,
+    TextSize = 13,
+    TextTruncate = Enum.TextTruncate.AtEnd,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    TextYAlignment = Enum.TextYAlignment.Center,
+    ZIndex = 502,
+})
+
+task.spawn(function()
+    task.wait(0.5)
+    playNotifSound()
+    TweenService:Create(WelcomeBanner, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Position = UDim2.new(0, 15, 0, 90)
+    }):Play()
+    
+    task.wait(4)
+    
+    TweenService:Create(WelcomeBanner, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        Position = UDim2.new(-0.5, 0, 0, 90)
+    }):Play()
+    
+    task.wait(0.8)
+    pcall(function() WelcomeBanner:Destroy() end)
+end)
+
+-- ============================================================
+-- CLOSE NOTIFICATION
+-- ============================================================
+local Notification = new("Frame", {
+    Parent = ScreenGui,
+    AnchorPoint = Vector2.new(0.5, 0),
+    Position = UDim2.new(0.5, 0, 0, -120),
+    Size = UDim2.fromOffset(290, 112),
+    BackgroundColor3 = Color3.fromRGB(100, 100, 100),
+    BackgroundTransparency = 0.35,
+    BorderSizePixel = 0,
+    Visible = false,
+    ZIndex = 200,
+}, { corner(12), stroke(Color3.fromRGB(180, 180, 180), 1.5) })
+
+new("TextLabel", {
+    Parent = Notification,
+    Position = UDim2.fromOffset(14, 8),
+    Size = UDim2.new(1, -28, 0, 28),
+    BackgroundTransparency = 1,
+    Font = FONT_BOLD,
+    Text = "Closed Windows",
+    TextColor3 = Color3.fromRGB(230, 230, 230),
+    TextTransparency = 0.1,
+    TextSize = 16,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    ZIndex = 201,
+})
+
+new("TextLabel", {
+    Parent = Notification,
+    Position = UDim2.fromOffset(14, 36),
+    Size = UDim2.new(1, -28, 0, 19),
+    BackgroundTransparency = 1,
+    Font = FONT,
+    Text = "Are You Sure",
+    TextColor3 = Color3.fromRGB(200, 200, 200),
+    TextTransparency = 0.2,
+    TextSize = 11,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    ZIndex = 201,
+})
+
+local ConfirmCloseBtn = new("TextButton", {
+    Parent = Notification,
+    Position = UDim2.fromOffset(14, 67),
+    Size = UDim2.new(0.5, -20, 0, 32),
+    BackgroundColor3 = Color3.fromRGB(190, 55, 65),
+    BackgroundTransparency = 0.2,
+    BorderSizePixel = 0,
+    Text = "CLOSE",
+    Font = FONT_BOLD,
+    TextSize = 12,
+    TextColor3 = Color3.fromRGB(255,255,255),
+    AutoButtonColor = false,
+    ZIndex = 202,
+}, { corner(7) })
+
+local CancelCloseBtn = new("TextButton", {
+    Parent = Notification,
+    Position = UDim2.new(0.5, 6, 0, 67),
+    Size = UDim2.new(0.5, -20, 0, 32),
+    BackgroundColor3 = Color3.fromRGB(180, 180, 180),
+    BackgroundTransparency = 0.3,
+    BorderSizePixel = 0,
+    Text = "NOT",
+    Font = FONT_BOLD,
+    TextSize = 12,
+    TextColor3 = Color3.fromRGB(255,255,255),
+    AutoButtonColor = false,
+    ZIndex = 202,
+}, { corner(7), stroke(Color3.fromRGB(150, 150, 150), 1) })
+
+local notificationBusy, notificationOpen = false, false
+
+local function showClosedNotification()
+    if notificationBusy or notificationOpen then return end
+    notificationBusy = true
+    notificationOpen = true
+    playNotifSound()
+    Notification.Visible = true
+    Notification.Position = UDim2.new(0.5, 0, 0, -120)
+    local drop = TweenService:Create(Notification, TweenInfo.new(0.5, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out), {
+        Position = UDim2.new(0.5, 0, 0, 12)
+    })
+    drop:Play()
+    drop.Completed:Wait()
+    notificationBusy = false
+end
+
+local function hideClosedNotification()
+    if notificationBusy then return end
+    notificationBusy = true
+    local hide = TweenService:Create(Notification, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        Position = UDim2.new(0.5, 0, 0, -120)
+    })
+    hide:Play()
+    hide.Completed:Wait()
+    Notification.Visible = false
+    notificationOpen = false
+    notificationBusy = false
+end
+
+-- ============================================================
+-- ENTER FRAME
+-- ============================================================
+local copiedLink = false
+
+local EnterFrame = new("Frame", {
+    Parent = ScreenGui,
+    AnchorPoint = Vector2.new(0.5, 0.5),
+    Position = UDim2.fromScale(0.5, 0.5),
+    Size = UDim2.fromOffset(310, 225),
+    BackgroundColor3 = Theme.Window,
+    BorderSizePixel = 0,
+    ZIndex = 150,
+}, { corner(15), stroke(Theme.Border, 1.5) })
+
+new("ImageLabel", {
+    Parent = EnterFrame,
+    Position = UDim2.new(0.5, -28, 0, 14),
+    Size = UDim2.fromOffset(56, 56),
+    BackgroundTransparency = 1,
+    Image = LOGO_IMAGE,
+    ScaleType = Enum.ScaleType.Fit,
+    ZIndex = 151,
+})
+
+new("TextLabel", {
+    Parent = EnterFrame,
+    Position = UDim2.fromOffset(10, 77),
+    Size = UDim2.new(1, -20, 0, 24),
+    BackgroundTransparency = 1,
+    Font = FONT_BOLD,
+    Text = "grllscript New Anti Hit V4.1 Release",
+    TextColor3 = Theme.Text,
+    TextSize = 14,
+    TextTruncate = Enum.TextTruncate.AtEnd,
+    TextXAlignment = Enum.TextXAlignment.Center,
+    ZIndex = 151,
+})
+
+new("TextLabel", {
+    Parent = EnterFrame,
+    Position = UDim2.fromOffset(18, 106),
+    Size = UDim2.new(1, -36, 0, 36),
+    BackgroundTransparency = 1,
+    Font = FONT,
+    Text = "COPY CHANNEL GRLLSCRIPT FOR ENTERS.",
+    TextColor3 = Theme.SubText,
+    TextSize = 11,
+    TextWrapped = true,
+    ZIndex = 151,
+})
+
+local CopyBtn = new("TextButton", {
+    Parent = EnterFrame,
+    Position = UDim2.fromOffset(18, 151),
+    Size = UDim2.new(1, -36, 0, 34),
+    BackgroundColor3 = Theme.Card,
+    BorderSizePixel = 0,
+    Text = "COPY LINKS",
+    Font = FONT_BOLD,
+    TextSize = 12,
+    TextColor3 = Theme.Text,
+    AutoButtonColor = true,
+    ZIndex = 151,
+}, { corner(8), stroke(Theme.Border, 1) })
+
+local EnterBtn = new("TextButton", {
+    Parent = EnterFrame,
+    Position = UDim2.fromOffset(18, 191),
+    Size = UDim2.new(1, -36, 0, 26),
+    BackgroundColor3 = Color3.fromRGB(34,180,90),
+    BorderSizePixel = 0,
+    Text = "CLICK ENTER",
+    Font = FONT_BOLD,
+    TextSize = 12,
+    TextColor3 = Color3.fromRGB(255,255,255),
+    AutoButtonColor = true,
+    Visible = false,
+    ZIndex = 151,
+}, { corner(8) })
+
+CopyBtn.Activated:Connect(function()
+    playClick()
+    local clipboardFunction
+    pcall(function() clipboardFunction = setclipboard end)
+    if typeof(clipboardFunction) == "function" then
+        local ok = pcall(function() clipboardFunction(CHANNEL_URL) end)
+        if ok then
+            copiedLink = true
+            CopyBtn.Text = "Completed"
+            EnterBtn.Visible = true
+        else
+            CopyBtn.Text = "SALIN MANUAL"
+        end
+    else
+        CopyBtn.Text = "SALIN MANUAL"
+    end
+end)
+
+-- ============================================================
+-- WINDOW
+-- ============================================================
+local NORMAL_SIZE = UDim2.fromOffset(300, 460)
+local COMPACT_SIZE = UDim2.fromOffset(250, 420)
+
+local Window = new("Frame", {
+    Parent = ScreenGui,
+    AnchorPoint = Vector2.new(0.5, 0.5),
+    Position = UDim2.fromScale(0.5, 0.5),
+    Size = NORMAL_SIZE,
+    BackgroundColor3 = Theme.Window,
+    BorderSizePixel = 0,
+    Active = true,
+    Visible = false,
+    ClipsDescendants = true,
+    ZIndex = 2,
+}, { corner(14), stroke(Theme.Border, 1.2) })
+
+local WallpaperBg = new("ImageLabel", {
+    Parent = Window,
+    Size = UDim2.new(1.3, 0, 1.3, 0),
+    Position = UDim2.new(-0.15, 0, -0.15, 0),
+    BackgroundTransparency = 1,
+    Image = "",
+    ImageTransparency = 1,
+    ScaleType = Enum.ScaleType.Crop,
+    BorderSizePixel = 0,
+    ZIndex = 0,
+})
+new("UICorner", { Parent = WallpaperBg, CornerRadius = UDim.new(0, 14) })
+
+local BrightnessOverlay = new("Frame", {
+    Parent = Window,
+    Size = UDim2.new(1, 0, 1, 0),
+    BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+    BackgroundTransparency = 1,
+    BorderSizePixel = 0,
+    ZIndex = 1,
+}, { corner(14) })
+
+local DarknessOverlay = new("Frame", {
+    Parent = Window,
+    Size = UDim2.new(1, 0, 1, 0),
+    BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+    BackgroundTransparency = 1,
+    BorderSizePixel = 0,
+    ZIndex = 1,
+}, { corner(14) })
+
+local WindowScale = new("UIScale", { Parent = Window, Scale = 1 })
+
+local function getTargetScale()
+    local camera = workspace.CurrentCamera
+    local viewport = camera and camera.ViewportSize or Vector2.new(800,600)
+    return math.clamp(
+        math.min(
+            (viewport.X - 20) / math.max(Window.Size.X.Offset, 1),
+            (viewport.Y - 40) / math.max(Window.Size.Y.Offset, 1)
+        ),
+        0.55,
+        1
+    )
+end
+
+local function updateScale()
+    WindowScale.Scale = getTargetScale()
+end
+
+updateScale()
+
+local ThemedElements = {}
+local function registerThemed(elem, defaultBgTransparency)
+    table.insert(ThemedElements, {elem = elem, default = defaultBgTransparency or 0})
+end
+
+-- TOPBAR
+local TopBar = new("Frame", {
+    Parent = Window,
+    Size = UDim2.new(1,0,0,50),
+    BackgroundColor3 = Theme.Window,
+    BackgroundTransparency = 0,
+    BorderSizePixel = 0,
+    Active = true,
+    ClipsDescendants = true,
+    ZIndex = 20,
+}, {
+    corner(14),
+    new("Frame", {
+        Size = UDim2.new(1,0,0,1),
+        Position = UDim2.new(0,0,1,-1),
+        BackgroundColor3 = Theme.Border,
+        BorderSizePixel = 0,
+        ZIndex = 21,
+    }),
+})
+registerThemed(TopBar, 0)
+
+local BackBtn = new("TextButton", {
+    Parent = TopBar,
+    Size = UDim2.fromOffset(28,28),
+    Position = UDim2.fromOffset(12,11),
+    BackgroundTransparency = 1,
+    Text = "←",
+    Font = FONT_BOLD,
+    TextSize = 20,
+    TextColor3 = Theme.Text,
+    AutoButtonColor = false,
+    ZIndex = 23,
+})
+
+new("ImageLabel", {
+    Parent = TopBar,
+    Size = UDim2.fromOffset(24,24),
+    Position = UDim2.fromOffset(44,13),
+    BackgroundTransparency = 1,
+    Image = LOGO_IMAGE,
+    ScaleType = Enum.ScaleType.Fit,
+    ZIndex = 23,
+})
+
+new("TextLabel", {
+    Parent = TopBar,
+    Size = UDim2.new(0,110,0,17),
+    Position = UDim2.fromOffset(74,10),
+    BackgroundTransparency = 1,
+    Font = FONT_BOLD,
+    Text = "grllscript V4.1",
+    TextColor3 = Theme.Text,
+    TextSize = 12,
+    TextTruncate = Enum.TextTruncate.AtEnd,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    ZIndex = 23,
+})
+
+new("TextLabel", {
+    Parent = TopBar,
+    Size = UDim2.new(0,110,0,13),
+    Position = UDim2.fromOffset(74,27),
+    BackgroundTransparency = 1,
+    Font = FONT,
+    Text = "Steal An Egg V4.1",
+    TextColor3 = Theme.SubText,
+    TextSize = 10,
+    TextTruncate = Enum.TextTruncate.AtEnd,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    ZIndex = 23,
+})
+
+local WallpaperBtn = new("TextButton", {
+    Parent = TopBar,
+    Size = UDim2.fromOffset(28,28),
+    Position = UDim2.new(1,-102,0,11),
+    BackgroundColor3 = Theme.Card,
+    BorderSizePixel = 0,
+    Text = "@",
+    Font = FONT_BOLD,
+    TextSize = 16,
+    TextColor3 = Theme.Text,
+    AutoButtonColor = false,
+    ZIndex = 24,
+}, { corner(6), stroke(Theme.Border,1) })
+
+local CloseBtn = new("TextButton", {
+    Parent = TopBar,
+    Size = UDim2.fromOffset(28,28),
+    Position = UDim2.new(1,-38,0,11),
+    BackgroundColor3 = Theme.Card,
+    BorderSizePixel = 0,
+    Text = "x",
+    Font = FONT_BOLD,
+    TextSize = 18,
+    TextColor3 = Theme.SubText,
+    AutoButtonColor = false,
+    ZIndex = 23,
+}, { corner(6), stroke(Theme.Border,1) })
+
+local ScaleBtn = new("TextButton", {
+    Parent = TopBar,
+    Size = UDim2.fromOffset(28,28),
+    Position = UDim2.new(1,-70,0,11),
+    BackgroundColor3 = Theme.Card,
+    BorderSizePixel = 0,
+    Text = "[ ]",
+    Font = FONT_BOLD,
+    TextSize = 11,
+    TextColor3 = Theme.SubText,
+    AutoButtonColor = false,
+    ZIndex = 23,
+}, { corner(6), stroke(Theme.Border,1) })
+
+-- CONTENT
+local ContentHost = new("Frame", {
+    Parent = Window,
+    Size = UDim2.new(1,-24,1,-62),
+    Position = UDim2.fromOffset(12,52),
+    BackgroundTransparency = 1,
+    ClipsDescendants = true,
+    ZIndex = 10,
+})
+
+local MainCard = new("TextButton", {
+    Parent = ContentHost,
+    Size = UDim2.new(1,0,0,52),
+    Position = UDim2.fromOffset(0,0),
+    BackgroundColor3 = Theme.Card,
+    BackgroundTransparency = 0,
+    BorderSizePixel = 0,
+    AutoButtonColor = false,
+    Text = "",
+    ZIndex = 12,
+}, { corner(10), stroke(Theme.Border,1) })
+registerThemed(MainCard, 0)
+
+new("TextLabel", {
+    Parent = MainCard,
+    Size = UDim2.new(1,-60,0,18),
+    Position = UDim2.fromOffset(14,10),
+    BackgroundTransparency = 1,
+    Font = FONT_BOLD,
+    Text = "Stealtion",
+    TextColor3 = Theme.Text,
+    TextSize = 15,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    ZIndex = 14,
+})
+
+local Chevron = new("TextLabel", {
+    Parent = MainCard,
+    Size = UDim2.fromOffset(24,24),
+    Position = UDim2.new(1,-36,0.5,-12),
+    BackgroundTransparency = 1,
+    Font = FONT_BOLD,
+    Text = ">",
+    TextColor3 = Theme.SubText,
+    TextSize = 14,
+    ZIndex = 14,
+})
+
+local SubPanel = new("Frame", {
+    Parent = ContentHost,
+    Size = UDim2.new(1,0,0,0),
+    Position = UDim2.fromOffset(0,56),
+    BackgroundTransparency = 1,
+    ClipsDescendants = true,
+    ZIndex = 11,
+})
+
+local subCardY = 0
+local ToggleRegistry = {}
+
+local function makeSubCard(title, subtitle, key, onToggle, exclusiveGroup)
+    local card = new("TextButton", {
+        Parent = SubPanel,
+        Size = UDim2.new(1,0,0,46),
+        Position = UDim2.fromOffset(0,subCardY),
+        BackgroundColor3 = Theme.Card,
+        BackgroundTransparency = 0,
+        BorderSizePixel = 0,
+        AutoButtonColor = false,
+        Text = "",
+        ZIndex = 12,
+    }, { corner(8), stroke(Theme.Border,1) })
+    registerThemed(card, 0)
+
+    subCardY += 50
+
+    local titleLbl = new("TextLabel", {
+        Parent = card,
+        Size = UDim2.new(1,-60,0,15),
+        Position = UDim2.fromOffset(12,6),
+        BackgroundTransparency = 1,
+        Font = FONT_BOLD,
+        Text = title,
+        TextColor3 = Theme.Text,
+        TextSize = 13,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        ZIndex = 14,
+    })
+
+    local subLbl = new("TextLabel", {
+        Parent = card,
+        Size = UDim2.new(1,-60,0,12),
+        Position = UDim2.fromOffset(12,24),
+        BackgroundTransparency = 1,
+        Font = FONT,
+        Text = subtitle,
+        TextColor3 = Theme.SubText,
+        TextSize = 10,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        ZIndex = 14,
+    })
+
+    local switch = new("Frame", {
+        Parent = card,
+        Size = UDim2.fromOffset(38,22),
+        Position = UDim2.new(1,-50,0.5,-11),
+        BackgroundColor3 = Theme.SwitchOff,
+        BorderSizePixel = 0,
+        ZIndex = 14,
+    }, { corner(11), stroke(Theme.Border,1) })
+
+    local knob = new("Frame", {
+        Parent = switch,
+        Size = UDim2.fromOffset(16,16),
+        Position = UDim2.new(0,3,0.5,-8),
+        BackgroundColor3 = Color3.fromRGB(255,255,255),
+        BorderSizePixel = 0,
+        ZIndex = 15,
+    }, { corner(8), stroke(Color3.fromRGB(200,200,205),1) })
+
+    local enabled = false
+    local locked = false
+
+    local function setEnabledVisual(v, animate)
+        enabled = v
+        State[key] = v
+        
+        local tweenTime = animate and 0.22 or 0
+        TweenService:Create(card, TweenInfo.new(tweenTime), {
+            BackgroundColor3 = v and Theme.CardOn or Theme.Card
+        }):Play()
+        TweenService:Create(switch, TweenInfo.new(tweenTime), {
+            BackgroundColor3 = v and Theme.SwitchOn or Theme.SwitchOff
+        }):Play()
+        TweenService:Create(knob, TweenInfo.new(tweenTime), {
+            Position = v and UDim2.new(1,-19,0.5,-8) or UDim2.new(0,3,0.5,-8)
+        }):Play()
+    end
+
+    local function setLockedVisual(v)
+        locked = v
+        if v then
+            TweenService:Create(card, TweenInfo.new(0.2), { BackgroundColor3 = Theme.CardDisabled }):Play()
+            TweenService:Create(titleLbl, TweenInfo.new(0.2), { TextColor3 = Theme.TextDisabled }):Play()
+            TweenService:Create(subLbl, TweenInfo.new(0.2), { TextColor3 = Theme.TextDisabled }):Play()
+            TweenService:Create(switch, TweenInfo.new(0.2), { BackgroundColor3 = Theme.SwitchDisabled }):Play()
+        else
+            TweenService:Create(card, TweenInfo.new(0.2), {
+                BackgroundColor3 = enabled and Theme.CardOn or Theme.Card
+            }):Play()
+            TweenService:Create(titleLbl, TweenInfo.new(0.2), { TextColor3 = Theme.Text }):Play()
+            TweenService:Create(subLbl, TweenInfo.new(0.2), { TextColor3 = Theme.SubText }):Play()
+            TweenService:Create(switch, TweenInfo.new(0.2), {
+                BackgroundColor3 = enabled and Theme.SwitchOn or Theme.SwitchOff
+            }):Play()
+        end
+    end
+
+    local toggleObj = {
+        key = key,
+        getEnabled = function() return enabled end,
+        getLocked = function() return locked end,
+        setEnabled = setEnabledVisual,
+        setLocked = setLockedVisual,
+        onToggle = onToggle,
+        exclusiveGroup = exclusiveGroup,
+    }
+
+    if exclusiveGroup then
+        ToggleRegistry[exclusiveGroup] = ToggleRegistry[exclusiveGroup] or {}
+        table.insert(ToggleRegistry[exclusiveGroup], toggleObj)
+    end
+
+    card.Activated:Connect(function()
+        if locked then
+            playClick()
+            return
+        end
+        playClick()
+
+        local newVal = not enabled
+
+        if newVal and exclusiveGroup and ToggleRegistry[exclusiveGroup] then
+            for _, other in ipairs(ToggleRegistry[exclusiveGroup]) do
+                if other ~= toggleObj then
+                    if other.getEnabled() then
+                        other.setEnabled(false, true)
+                        if other.onToggle then pcall(other.onToggle, false) end
+                    end
+                    other.setLocked(true)
+                end
+            end
+        end
+
+        if not newVal and exclusiveGroup and ToggleRegistry[exclusiveGroup] then
+            for _, other in ipairs(ToggleRegistry[exclusiveGroup]) do
+                if other ~= toggleObj then
+                    other.setLocked(false)
+                end
+            end
+        end
+
+        setEnabledVisual(newVal, true)
+        if onToggle then pcall(onToggle, newVal) end
+    end)
+end
+
+makeSubCard("Anti Hit Guard", "Now Hit Guard Galaxy.Ri Lua", "AntiHitGuard", function(v)
+    State.AntiHitGuard = v
+    if v then
+        task.spawn(function()
+            showSlideNotification("ANTI HIT GUARD ACTIVATED tap to button", Color3.fromRGB(150, 150, 150))
+        end)
+    end
+end, "protection")
+
+makeSubCard("Godmode", "Godmodetion Steal", "Godmode", function(v)
+    State.Godmode = v
+    if v then
+        enableGodmode()
+        task.spawn(function()
+            showSlideNotification("GODMODE ACTIVATED tap to button", Color3.fromRGB(150, 150, 150))
+        end)
+    else
+        disableGodmode()
+    end
+end, "protection")
+
+makeSubCard("Performance", "Performance Mode - Support HP Kentang", "AntiLag", function(v)
+    State.AntiLag = v
+    if v then
+        EnableAntiLag()
+        task.spawn(function()
+            showSlideNotification("ANTI LAG ACTIVATED tap to button", Color3.fromRGB(255, 140, 60))
+        end)
+    else
+        DisableAntiLag()
+    end
+end)
+
+local expanded = false
+local subHeight = 3 * 50
+
+MainCard.Activated:Connect(function()
+    expanded = not expanded
+    playClick()
+    TweenService:Create(SubPanel,TweenInfo.new(0.35, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),{
+        Size = UDim2.new(1,0,0,expanded and subHeight or 0)
+    }):Play()
+    TweenService:Create(Chevron,TweenInfo.new(0.3),{
+        Rotation = expanded and 90 or 0
+    }):Play()
+end)
+
+-- FOOTER
+local FooterBlock = new("Frame", {
+    Parent = ContentHost,
+    Size = UDim2.new(1,0,0,104),
+    Position = UDim2.new(0,0,1,0),
+    AnchorPoint = Vector2.new(0,1),
+    BackgroundTransparency = 1,
+    ZIndex = 12,
+})
+
+local function makeFooterRow(y,title,subtitle,url)
+    local row = new("TextButton", {
+        Parent = FooterBlock,
+        Size = UDim2.new(1,0,0,32),
+        Position = UDim2.fromOffset(0,y),
+        BackgroundColor3 = Theme.Card,
+        BackgroundTransparency = 0,
+        BorderSizePixel = 0,
+        AutoButtonColor = false,
+        Text = "",
+        ZIndex = 13,
+    }, { corner(8), stroke(Theme.Border,1) })
+    registerThemed(row, 0)
+
+    new("TextLabel", {
+        Parent = row,
+        Size = UDim2.new(1,-20,0,15),
+        Position = UDim2.fromOffset(10,4),
+        BackgroundTransparency = 1,
+        Font = FONT_BOLD,
+        Text = title,
+        TextColor3 = Theme.Text,
+        TextSize = 11,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        ZIndex = 14,
+    })
+
+    new("TextLabel", {
+        Parent = row,
+        Size = UDim2.new(1,-20,0,11),
+        Position = UDim2.fromOffset(10,19),
+        BackgroundTransparency = 1,
+        Font = FONT,
+        Text = subtitle,
+        TextColor3 = Theme.SubText,
+        TextSize = 9,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        ZIndex = 14,
+    })
+
+    row.Activated:Connect(function()
+        playClick()
+        local clipboardFunction
+        pcall(function() clipboardFunction = setclipboard end)
+        if typeof(clipboardFunction) == "function" then
+            pcall(function() clipboardFunction(url) end)
+        end
+    end)
+end
+
+makeFooterRow(0,"Channel grllscript","WhatsApp channel",CHANNEL_URL)
+makeFooterRow(36,"Web grllscript","galaxyidscript.lovable.app","https://galaxyidscript.lovable.app")
+
+local profileRow = new("Frame", {
+    Parent = FooterBlock,
+    Size = UDim2.new(1,0,0,32),
+    Position = UDim2.fromOffset(0,72),
+    BackgroundColor3 = Theme.Card,
+    BackgroundTransparency = 0,
+    BorderSizePixel = 0,
+    ZIndex = 13,
+}, { corner(8), stroke(Theme.Border,1) })
+registerThemed(profileRow, 0)
+
+local avatarFrame = new("Frame", {
+    Parent = profileRow,
+    Size = UDim2.fromOffset(22,22),
+    Position = UDim2.fromOffset(6,5),
+    BackgroundColor3 = Theme.Border,
+    BorderSizePixel = 0,
+    ClipsDescendants = true,
+    ZIndex = 14,
+}, { corner(11) })
+
+new("ImageLabel", {
+    Parent = avatarFrame,
+    Size = UDim2.fromScale(1,1),
+    BackgroundTransparency = 1,
+    Image = "rbxthumb://type=AvatarHeadShot&id="..tostring(LocalPlayer.UserId).."&w=48&h=48",
+    ScaleType = Enum.ScaleType.Fit,
+    ZIndex = 15,
+})
+
+new("TextLabel", {
+    Parent = profileRow,
+    Size = UDim2.new(1,-36,0,13),
+    Position = UDim2.fromOffset(34,5),
+    BackgroundTransparency = 1,
+    Font = FONT_BOLD,
+    Text = "grllscript Profile",
+    TextColor3 = Theme.Text,
+    TextSize = 11,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    ZIndex = 14,
+})
+
+new("TextLabel", {
+    Parent = profileRow,
+    Size = UDim2.new(1,-36,0,11),
+    Position = UDim2.fromOffset(34,18),
+    BackgroundTransparency = 1,
+    Font = FONT,
+    Text = "Signed In",
+    TextColor3 = Theme.SubText,
+    TextSize = 9,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    ZIndex = 14,
+})
+
+-- MIN BTN
+local MinBtn = new("ImageButton", {
+    Parent = ScreenGui,
+    AnchorPoint = Vector2.new(0.5, 0),
+    Position = UDim2.new(0.5, 0, 0, 20),
+    Size = UDim2.fromOffset(56,56),
+    BackgroundColor3 = Color3.fromRGB(255,255,255),
+    BorderSizePixel = 0,
+    Image = LOGO_IMAGE,
+    ScaleType = Enum.ScaleType.Fit,
+    AutoButtonColor = false,
+    Visible = false,
+    Active = true,
+    ZIndex = 100,
+}, { corner(28), stroke(Color3.fromRGB(220,220,230),2) })
+
+-- DRAGGABLE
+local lastDragSound = 0
+local function playDragSound()
+    if os.clock() - lastDragSound < 0.6 then return end
+    lastDragSound = os.clock()
+    playSound(DRAG_SOUND_ID,0.3)
+end
+
+local function makeDraggable(handle,target,excludedButtons)
+    local dragging = false
+    local dragStart
+    local startPosition
+    local activeTouch
+    local dragMoved = false
+
+    handle.InputBegan:Connect(function(input)
+        if input.UserInputType ~= Enum.UserInputType.MouseButton1
+            and input.UserInputType ~= Enum.UserInputType.Touch then return end
+
+        local objects = PlayerGui:GetGuiObjectsAtPosition(input.Position.X, input.Position.Y)
+        for _,obj in ipairs(objects) do
+            for _,excluded in ipairs(excludedButtons or {}) do
+                if obj == excluded or obj:IsDescendantOf(excluded) then return end
+            end
+        end
+
+        dragging = true
+        dragMoved = false
+        dragStart = input.Position
+        startPosition = target.Position
+        activeTouch = input
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+                activeTouch = nil
+            end
+        end)
+    end)
+
+    UserInputService.InputChanged:Connect(function(input)
+        if not dragging then return end
+        local mouseMove = input.UserInputType == Enum.UserInputType.MouseMovement
+        local touchMove = input.UserInputType == Enum.UserInputType.Touch and input == activeTouch
+        if not mouseMove and not touchMove then return end
+
+        local delta = input.Position - dragStart
+        if not dragMoved and delta.Magnitude > 3 then
+            dragMoved = true
+            playDragSound()
+        end
+
+        target.Position = UDim2.new(
+            startPosition.X.Scale,
+            startPosition.X.Offset + delta.X,
+            startPosition.Y.Scale,
+            startPosition.Y.Offset + delta.Y
+        )
+    end)
+
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1
+            or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = false
+            activeTouch = nil
+        end
+    end)
+end
+
+makeDraggable(TopBar,Window,{BackBtn,ScaleBtn,CloseBtn,WallpaperBtn})
+makeDraggable(MinBtn,MinBtn,{})
+
+-- MIN/RESTORE
+local isCompact = false
+local minimized = false
+local busy = false
+local savedPos = Window.Position
+
+ScaleBtn.Activated:Connect(function()
+    playClick()
+    isCompact = not isCompact
+    TweenService:Create(Window,TweenInfo.new(0.28, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),{
+        Size = isCompact and COMPACT_SIZE or NORMAL_SIZE
+    }):Play()
+    task.delay(0.3,updateScale)
+end)
+
+local function minimizeGUI()
+    if minimized or busy then return end
+    busy = true
+    savedPos = Window.Position
+    playClick()
+
+    local shrink = TweenService:Create(WindowScale, TweenInfo.new(0.2), {Scale = 0})
+    shrink:Play()
+    shrink.Completed:Wait()
+
+    Window.Visible = false
+    MinBtn.Position = UDim2.new(0.5, 0, 0, 20)
+    MinBtn.Size = UDim2.fromOffset(0,0)
+    MinBtn.Visible = true
+
+    local logoTween = TweenService:Create(MinBtn, TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
+        Size = UDim2.fromOffset(56,56)
+    })
+    logoTween:Play()
+    logoTween.Completed:Wait()
+
+    minimized = true
+    busy = false
+end
+
+local function restoreGUI()
+    if not minimized or busy then return end
+    busy = true
+    playClick()
+
+    local hideLogo = TweenService:Create(MinBtn, TweenInfo.new(0.16, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        Size = UDim2.fromOffset(0,0)
+    })
+    hideLogo:Play()
+    hideLogo.Completed:Wait()
+
+    MinBtn.Visible = false
+    Window.Position = savedPos
+    Window.Visible = true
+    WindowScale.Scale = 0
+
+    local openTween = TweenService:Create(WindowScale, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Scale = getTargetScale()
+    })
+    openTween:Play()
+    openTween.Completed:Wait()
+
+    minimized = false
+    busy = false
+end
+
+BackBtn.Activated:Connect(function()
+    if busy or minimized then return end
+    task.spawn(minimizeGUI)
+end)
+
+MinBtn.Activated:Connect(function()
+    if busy or not minimized then return end
+    task.spawn(restoreGUI)
+end)
+
+CloseBtn.Activated:Connect(function()
+    playClick()
+    task.spawn(showClosedNotification)
+end)
+
+ConfirmCloseBtn.Activated:Connect(function()
+    if not State.Running then return end
+    playClick()
+    State.Running = false
+    State.AntiHitGuard = false
+    State.Godmode = false
+    State.AntiLag = false
+    disableGodmode()
+    DisableAntiLag()
+
+    local hide = TweenService:Create(Notification, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        Position = UDim2.new(0.5,0,0,-120)
+    })
+    hide:Play()
+    hide.Completed:Wait()
+    ScreenGui:Destroy()
+end)
+
+CancelCloseBtn.Activated:Connect(function()
+    playClick()
+    task.spawn(hideClosedNotification)
+end)
+
+EnterBtn.Activated:Connect(function()
+    if not copiedLink then return end
+    playClick()
+    local hideEnter = TweenService:Create(EnterFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        BackgroundTransparency = 1,
+        Size = UDim2.fromOffset(10,10)
+    })
+    hideEnter:Play()
+    hideEnter.Completed:Wait()
+    EnterFrame.Visible = false
+    Window.Position = UDim2.fromScale(0.5,0.5)
+    Window.Size = NORMAL_SIZE
+    Window.Visible = true
+    WindowScale.Scale = 0
+
+    local openWindow = TweenService:Create(WindowScale, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Scale = getTargetScale()
+    })
+    openWindow:Play()
+    openWindow.Completed:Wait()
+end)
+
+-- FIRE AURA
+local function SpawnFireAura()
+    for i = 1, 20 do
+        local p = Instance.new("Frame")
+        p.Parent = Window
+        p.Size = UDim2.fromOffset(math.random(6, 14), math.random(6, 14))
+        p.Position = UDim2.new(math.random(0, 100)/100, 0, math.random(0, 100)/100, 0)
+        p.BackgroundColor3 = Color3.fromRGB(255, math.random(200, 255), math.random(200, 255))
+        p.BackgroundTransparency = 0.2
+        p.BorderSizePixel = 0
+        p.ZIndex = 3
+        local c = corner(50)
+        c.Parent = p
+        
+        local lifeTime = math.random(60, 120) / 100
+        local targetY = p.Position.Y.Offset - math.random(30, 60)
+        
+        TweenService:Create(p, TweenInfo.new(lifeTime, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            Position = UDim2.new(p.Position.X.Scale, p.Position.X.Offset, p.Position.Y.Scale, targetY),
+            Size = UDim2.fromOffset(2, 2),
+            BackgroundTransparency = 1
+        }):Play()
+        
+        task.delay(lifeTime + 0.1, function()
+            pcall(function() p:Destroy() end)
+        end)
+    end
+    
+    local glowStroke = stroke(Color3.fromRGB(255, 255, 255), 3)
+    glowStroke.Parent = Window
+    TweenService:Create(glowStroke, TweenInfo.new(0.6), {
+        Transparency = 1
+    }):Play()
+    task.delay(0.7, function() pcall(function() glowStroke:Destroy() end) end)
+end
+
+-- WALLPAPER STATE
+local WPState = {
+    ImageIndex = 0,
+    Active = false,
+    Brightness = 0,
+    Darkness = 0,
+    Zoom = 1,
+    PanX = 0,
+    PanY = 0,
+}
+
+local function applyWallpaper()
+    if WPState.Active and WPState.ImageIndex > 0 then
+        WallpaperBg.Image = WALLPAPERS[WPState.ImageIndex]
+        WallpaperBg.ImageTransparency = 0
+        
+        for _, data in ipairs(ThemedElements) do
+            TweenService:Create(data.elem, TweenInfo.new(0.25), {
+                BackgroundTransparency = 0.5
+            }):Play()
+        end
+        TweenService:Create(Window, TweenInfo.new(0.25), {
+            BackgroundTransparency = 0.5
+        }):Play()
+        TweenService:Create(TopBar, TweenInfo.new(0.25), {
+            BackgroundTransparency = 0.5
+        }):Play()
+    else
+        WallpaperBg.Image = ""
+        WallpaperBg.ImageTransparency = 1
+        
+        for _, data in ipairs(ThemedElements) do
+            TweenService:Create(data.elem, TweenInfo.new(0.25), {
+                BackgroundTransparency = data.default or 0
+            }):Play()
+        end
+        TweenService:Create(Window, TweenInfo.new(0.25), {
+            BackgroundTransparency = 0
+        }):Play()
+        TweenService:Create(TopBar, TweenInfo.new(0.25), {
+            BackgroundTransparency = 0
+        }):Play()
+    end
+    
+    local z = WPState.Zoom
+    WallpaperBg.Size = UDim2.new(z, 0, z, 0)
+    WallpaperBg.Position = UDim2.new((1-z)/2 + WPState.PanX, 0, (1-z)/2 + WPState.PanY, 0)
+    
+    if WPState.Brightness > 0 then
+        BrightnessOverlay.BackgroundTransparency = 1 - (WPState.Brightness / 100) * 0.9
+    else
+        BrightnessOverlay.BackgroundTransparency = 1
+    end
+    
+    if WPState.Darkness > 0 then
+        DarknessOverlay.BackgroundTransparency = 1 - (WPState.Darkness / 100) * 0.9
+    else
+        DarknessOverlay.BackgroundTransparency = 1
+    end
+end
+
+-- WALLPAPER PANEL
+local WPPanel = new("Frame", {
+    Parent = ScreenGui,
+    AnchorPoint = Vector2.new(0.5, 0.5),
+    Position = UDim2.fromScale(0.5, 0.5),
+    Size = UDim2.fromOffset(320, 520),
+    BackgroundColor3 = Theme.Window,
+    BorderSizePixel = 0,
+    Visible = false,
+    Active = true,
+    ClipsDescendants = true,
+    ZIndex = 300,
+}, { corner(14), stroke(Theme.Border, 1.5) })
+
+local WPHeader = new("Frame", {
+    Parent = WPPanel,
+    Size = UDim2.new(1, 0, 0, 45),
+    BackgroundColor3 = Theme.Window,
+    BorderSizePixel = 0,
+    ZIndex = 310,
+}, { corner(14) })
+
+new("TextLabel", {
+    Parent = WPHeader,
+    Size = UDim2.new(1, -60, 1, 0),
+    Position = UDim2.fromOffset(14, 0),
+    BackgroundTransparency = 1,
+    Font = FONT_BOLD,
+    Text = "WALLPAPER",
+    TextColor3 = Theme.Text,
+    TextSize = 15,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    ZIndex = 312,
+})
+
+local WPCloseBtn = new("TextButton", {
+    Parent = WPHeader,
+    Size = UDim2.fromOffset(28, 28),
+    Position = UDim2.new(1, -38, 0.5, -14),
+    BackgroundColor3 = Theme.Card,
+    BorderSizePixel = 0,
+    Text = "x",
+    Font = FONT_BOLD,
+    TextSize = 18,
+    TextColor3 = Theme.SubText,
+    AutoButtonColor = false,
+    ZIndex = 312,
+}, { corner(6), stroke(Theme.Border, 1) })
+
+new("TextLabel", {
+    Parent = WPPanel,
+    Size = UDim2.new(1, -20, 0, 18),
+    Position = UDim2.fromOffset(12, 74),
+    BackgroundTransparency = 1,
+    Font = FONT_BOLD,
+    Text = "PILIH:",
+    TextColor3 = Theme.Text,
+    TextSize = 12,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    ZIndex = 312,
+})
+
+local WPScroll = new("ScrollingFrame", {
+    Parent = WPPanel,
+    Size = UDim2.new(1, -20, 0, 130),
+    Position = UDim2.fromOffset(10, 96),
+    BackgroundColor3 = Theme.Card,
+    BackgroundTransparency = 0.3,
+    BorderSizePixel = 0,
+    CanvasSize = UDim2.new(0, 0, 0, 0),
+    AutomaticCanvasSize = Enum.AutomaticSize.Y,
+    ScrollBarThickness = 4,
+    ZIndex = 310,
+}, { corner(8), stroke(Theme.Border, 1) })
+
+new("UIGridLayout", {
+    Parent = WPScroll,
+    CellSize = UDim2.new(0.5, -6, 0, 60),
+    CellPadding = UDim2.new(0, 4, 0, 4),
+    SortOrder = Enum.SortOrder.LayoutOrder,
+    FillDirectionMaxCells = 2,
+})
+
+local wpItemRefs = {}
+
+local DefaultBtn = new("TextButton", {
+    Parent = WPScroll,
+    BackgroundColor3 = Theme.Window,
+    BorderSizePixel = 0,
+    Text = "DEFAULT",
+    Font = FONT_BOLD,
+    TextSize = 14,
+    TextColor3 = Theme.Text,
+    AutoButtonColor = false,
+    LayoutOrder = 0,
+    ZIndex = 311,
+}, { corner(6) })
+local defStroke = stroke(Theme.Border, 1)
+defStroke.Parent = DefaultBtn
+
+new("TextLabel", {
+    Parent = DefaultBtn,
+    Size = UDim2.fromOffset(20, 14),
+    Position = UDim2.fromOffset(4, 4),
+    BackgroundColor3 = Color3.fromRGB(0,0,0),
+    BackgroundTransparency = 0.4,
+    BorderSizePixel = 0,
+    Font = FONT_BOLD,
+    Text = "0",
+    TextColor3 = Color3.fromRGB(255,255,255),
+    TextSize = 10,
+    ZIndex = 312,
+}, { corner(4) })
+
+table.insert(wpItemRefs, {item = DefaultBtn, stroke = defStroke, isDefault = true})
+
+local function updateWallpaperSelection()
+    for i, ref in ipairs(wpItemRefs) do
+        local isSelected = false
+        if ref.isDefault then
+            isSelected = (WPState.ImageIndex == 0)
+        else
+            isSelected = (WPState.ImageIndex == (i - 1))
+        end
+        
+        if isSelected and WPState.Active then
+            ref.stroke.Color = Color3.fromRGB(34, 180, 90)
+            ref.stroke.Thickness = 3
+        elseif isSelected then
+            ref.stroke.Color = Theme.Border
+            ref.stroke.Thickness = 2
+        else
+            ref.stroke.Color = Theme.Border
+            ref.stroke.Thickness = 1
+        end
+    end
+end
+
+DefaultBtn.Activated:Connect(function()
+    playClick()
+    WPState.ImageIndex = 0
+    WPState.Active = false
+    updateWallpaperSelection()
+    applyWallpaper()
+end)
+
+for i, wpId in ipairs(WALLPAPERS) do
+    local item = new("ImageButton", {
+        Parent = WPScroll,
+        BackgroundColor3 = Theme.Card,
+        BorderSizePixel = 0,
+        Image = wpId,
+        ScaleType = Enum.ScaleType.Crop,
+        AutoButtonColor = false,
+        LayoutOrder = i,
+        ZIndex = 311,
+    }, { corner(6) })
+    local itemStroke = stroke(Theme.Border, 1)
+    itemStroke.Parent = item
+    
+    new("TextLabel", {
+        Parent = item,
+        Size = UDim2.fromOffset(20, 14),
+        Position = UDim2.fromOffset(4, 4),
+        BackgroundColor3 = Color3.fromRGB(0,0,0),
+        BackgroundTransparency = 0.4,
+        BorderSizePixel = 0,
+        Font = FONT_BOLD,
+        Text = tostring(i),
+        TextColor3 = Color3.fromRGB(255,255,255),
+        TextSize = 10,
+        ZIndex = 312,
+    }, { corner(4) })
+    
+    item.Activated:Connect(function()
+        playClick()
+        WPState.ImageIndex = i
+        WPState.Active = true
+        updateWallpaperSelection()
+        applyWallpaper()
+        SpawnFireAura()
+    end)
+    
+    table.insert(wpItemRefs, {item = item, stroke = itemStroke, isDefault = false})
+end
+
+-- SLIDERS
+local function makeSlider(parent, yOffset, labelText, minVal, maxVal, defaultVal, formatFn, onChange)
+    local container = new("Frame", {
+        Parent = parent,
+        Size = UDim2.new(1, -20, 0, 36),
+        Position = UDim2.fromOffset(10, yOffset),
+        BackgroundColor3 = Theme.Card,
+        BackgroundTransparency = 0.3,
+        BorderSizePixel = 0,
+        ZIndex = 310,
+    }, { corner(8), stroke(Theme.Border, 1) })
+    
+    local label = new("TextLabel", {
+        Parent = container,
+        Size = UDim2.new(1, -20, 0, 14),
+        Position = UDim2.fromOffset(10, 3),
+        BackgroundTransparency = 1,
+        Font = FONT_BOLD,
+        Text = labelText .. ": " .. formatFn(defaultVal),
+        TextColor3 = Theme.Text,
+        TextSize = 11,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        ZIndex = 312,
+    })
+    
+    local bar = new("Frame", {
+        Parent = container,
+        Size = UDim2.new(1, -20, 0, 8),
+        Position = UDim2.fromOffset(10, 22),
+        BackgroundColor3 = Color3.fromRGB(200, 200, 205),
+        BorderSizePixel = 0,
+        ZIndex = 311,
+    }, { corner(4) })
+    
+    local fill = new("Frame", {
+        Parent = bar,
+        Size = UDim2.new(0, 0, 1, 0),
+        BackgroundColor3 = Color3.fromRGB(34, 180, 90),
+        BorderSizePixel = 0,
+        ZIndex = 312,
+    }, { corner(4) })
+    
+    local knob = new("Frame", {
+        Parent = bar,
+        Size = UDim2.fromOffset(14, 14),
+        Position = UDim2.new(0, 0, 0.5, -7),
+        BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+        BorderSizePixel = 0,
+        ZIndex = 313,
+    }, { corner(7), stroke(Color3.fromRGB(150,150,150), 1) })
+    
+    local currentValue = defaultVal
+    local dragging = false
+    
+    local function setValue(newVal)
+        newVal = math.clamp(newVal, minVal, maxVal)
+        currentValue = newVal
+        local pct = (newVal - minVal) / (maxVal - minVal)
+        fill.Size = UDim2.new(pct, 0, 1, 0)
+        knob.Position = UDim2.new(pct, -7, 0.5, -7)
+        label.Text = labelText .. ": " .. formatFn(newVal)
+        if onChange then pcall(onChange, newVal) end
+    end
+    
+    setValue(defaultVal)
+    
+    bar.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if not dragging then return end
+        if input.UserInputType ~= Enum.UserInputType.MouseMovement and input.UserInputType ~= Enum.UserInputType.Touch then return end
+        local relX = (input.Position.X - bar.AbsolutePosition.X) / math.max(bar.AbsoluteSize.X, 1)
+        relX = math.clamp(relX, 0, 1)
+        local newVal = minVal + relX * (maxVal - minVal)
+        setValue(newVal)
+    end)
+    
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = false
+        end
+    end)
+    
+    return container
+end
+
+makeSlider(WPPanel, 236, "Terangin", 0, 100, WPState.Brightness,
+    function(v) return math.floor(v) .. "%" end,
+    function(v) WPState.Brightness = v applyWallpaper() end
+)
+
+makeSlider(WPPanel, 276, "Gelapin", 0, 100, WPState.Darkness,
+    function(v) return math.floor(v) .. "%" end,
+    function(v) WPState.Darkness = v applyWallpaper() end
+)
+
+makeSlider(WPPanel, 316, "Zoom", 0.5, 3.0, WPState.Zoom,
+    function(v) return string.format("%.2fx", v) end,
+    function(v) WPState.Zoom = v applyWallpaper() end
+)
+
+makeSlider(WPPanel, 356, "Geser X", -0.5, 0.5, WPState.PanX,
+    function(v) return string.format("%.2f", v) end,
+    function(v) WPState.PanX = v applyWallpaper() end
+)
+
+makeSlider(WPPanel, 396, "Geser Y", -0.5, 0.5, WPState.PanY,
+    function(v) return string.format("%.2f", v) end,
+    function(v) WPState.PanY = v applyWallpaper() end
+)
+
+makeDraggable(WPHeader, WPPanel, {WPCloseBtn})
+
+local wpPanelOpen = false
+WallpaperBtn.Activated:Connect(function()
+    playClick()
+    wpPanelOpen = not wpPanelOpen
+    WPPanel.Visible = wpPanelOpen
+end)
+
+WPCloseBtn.Activated:Connect(function()
+    playClick()
+    wpPanelOpen = false
+    WPPanel.Visible = false
+end)
+
+-- INITIAL APPLY
+updateWallpaperSelection()
+applyWallpaper()
+
+-- CAMERA VIEWPORT
+local function connectCamera(camera)
+    if not camera then return end
+    camera:GetPropertyChangedSignal("ViewportSize"):Connect(function()
+        if not minimized and Window.Visible then updateScale() end
+    end)
+end
+
+connectCamera(workspace.CurrentCamera)
+workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(function()
+    connectCamera(workspace.CurrentCamera)
+    task.defer(updateScale)
+end)
