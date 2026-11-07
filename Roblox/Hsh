@@ -1,0 +1,1016 @@
+--================================================
+-- OUROBOROS HUB — CLEAN / DEOBFUSCATED VERSION
+-- Anime Loot Upgrade
+--================================================
+
+-- ============ SERVICES ============
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local VirtualUser = game:GetService("VirtualUser")
+local HttpService = game:GetService("HttpService")
+
+-- ============ LIBRARIES ============
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/joustingmatch/ObsidianUltra/main/Library.lua"))()
+local ThemeManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/joustingmatch/ObsidianUltra/main/addons/ThemeManager.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/joustingmatch/ObsidianUltra/main/addons/SaveManager.lua"))()
+
+local Toggles = Library.Toggles
+local Options = Library.Options
+
+-- ============ LOCAL PLAYER ============
+local LocalPlayer = Players.LocalPlayer
+
+-- ============ CONSTANTS ============
+local SCRIPT_NAME = "+1 Anime Loot Upgrade"
+local DISCORD_INVITE = "https://discord.gg/ehKVq7pf7v"
+local RSCRIPTS_LINK = "https://rscripts.net/@Ouroboros"
+
+-- ============ REMOTES ============
+local Remote = ReplicatedStorage.Remote
+local Event = Remote.Event
+local Function = Remote.Function
+
+local StageStateFunc        = Function.Stage["[C-S]GetStageState"]
+local WeaponStateFunc       = Function.Weapon["[C-S]GetWeaponState"]
+local EquipmentStateFunc    = Function.Equipment["[C-S]GetEquipmentState"]
+local CurrencyFunc          = Function.Currency["[C-S]GetCurrencyData"]
+local RebirthStateFunc      = Function.Rebirth["[C-S]GetState"]
+local TalentStateFunc       = Function.Talent["[C-S]GetState"]
+local AutoClickStateFunc    = Function.AutoClick["[C-S]GetState"]
+local EquipItemFunc         = Function.Equipment["[C-S]EquipItem"]
+
+local ChestRequestOpenEvent     = Event.Chest["[C-S]RequestOpen"]
+local ChestSpawnedEvent         = Event.Chest["[S-C]ChestSpawned"]
+local TryRebirthEvent           = Event.Rebirth["[C-S]TryRebirth"]
+local AllocateTalentEvent       = Event.Talent["[C-S]Allocate"]
+local AutoClickSetModeEvent     = Event.AutoClick["[C-S]SetMode"]
+
+-- ============ CONFIGS ============
+local WeaponConfig = require(ReplicatedStorage.Config.WeaponConfig)
+local AutoTrainConfig = require(ReplicatedStorage.Config.AutoTrainConfig)
+
+-- ============ STATE ============
+local MAX_DUNGEON_STAGE = 14
+local currentStage = 1
+local lastStageTeleported = nil
+local lastAutoTrainEquipmentId = nil
+local trackedChests = {}
+local lastInputTime = tick()
+local lastCameraClickTime = tick()
+local sessionStartTime = os.clock()
+local executorName = "Unknown"
+
+local connectionInputBegan = nil
+local connectionInputChanged = nil
+
+-- ============ UI COLOR PALETTE ============
+local COLOR_GREEN = "#7fd47f"
+local COLOR_BLUE = "#6ec1ff"
+local COLOR_ORANGE = "#e8a34d"
+local COLOR_GRAY = "#8b93a3"
+local COLOR_RED = "#ff4b5a"
+
+-- ============ UTILITY FUNCTIONS ============
+
+local function notifyUser(message)
+    pcall(function()
+        Library:Notify(message, 6)
+    end)
+end
+
+local function copyToClipboard(text, message)
+    if setclipboard then
+        setclipboard(text)
+    elseif toclipboard then
+        toclipboard(text)
+    end
+    Library:Notify(message)
+end
+
+local function colorizeText(text, colorHex)
+    return string.format('<font color="%s">%s</font>', colorHex, text)
+end
+
+local function formatInfoLine(labelText, valueText, valueColor)
+    return string.format("<b>%s</b> %s %s", labelText, colorizeText("-", "#5a6070"), colorizeText(valueText, valueColor))
+end
+
+-- ============ CHARACTER HELPERS ============
+
+local function getHumanoidRootPart()
+    local character = LocalPlayer.Character
+    return character and character:FindFirstChild("HumanoidRootPart")
+end
+
+local function getHumanoid()
+    local character = LocalPlayer.Character
+    return character and character:FindFirstChildOfClass("Humanoid")
+end
+
+local function invokeServer(remoteFunc)
+    local success, result = pcall(function()
+        return remoteFunc:InvokeServer()
+    end)
+    if success and type(result) == "table" then
+        return result
+    end
+    return nil
+end
+
+-- ============ TELEPORT TO STAGE ============
+
+local function teleportToStage(stageNumber, force)
+    local rootPart = getHumanoidRootPart()
+    local levelFolder = workspace:FindFirstChild("Level")
+    local stageFolder = levelFolder and levelFolder:FindFirstChild(tostring(stageNumber))
+    local zoneFolder = stageFolder and stageFolder:FindFirstChild("Zone")
+    if not (rootPart and zoneFolder) then return end
+
+    local targetCFrame = zoneFolder.CFrame + Vector3.new(0, 4, 0)
+    if force or (rootPart.Position - targetCFrame.Position).Magnitude > 8 then
+        rootPart.CFrame = targetCFrame
+    end
+end
+
+-- ============ CHEST HELPERS ============
+
+local function hasAvailableChest()
+    if next(trackedChests) ~= nil then return true end
+    local localChestEffects = workspace:FindFirstChild("LocalChestEffects")
+    if localChestEffects then
+        for _, descendant in ipairs(localChestEffects:GetDescendants()) do
+            if descendant:IsA("ProximityPrompt") and descendant.ActionText == "Open" then
+                return true
+            end
+        end
+    end
+    return false
+end
+
+local function getAutoClickMode()
+    if not (Toggles.AutoClick and Toggles.AutoClick.Value) then return "Off" end
+    local state = invokeServer(AutoClickStateFunc)
+    if state and state.OwnsOP then return "OP" end
+    return "Free"
+end
+
+local function setAutoClickMode()
+    pcall(function()
+        AutoClickSetModeEvent:FireServer(getAutoClickMode())
+    end)
+end
+
+local function triggerCameraClick()
+    if not workspace.CurrentCamera then return end
+    VirtualUser:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+    task.wait(0.1)
+    VirtualUser:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+    lastCameraClickTime = tick()
+end
+
+-- ============ GAMEPLAY PAUSE CONTROL ============
+
+local function setGameplayPaused(enabled)
+    pcall(function()
+        game:GetService("GuiService"):SetGameplayPausedNotificationEnabled(not enabled)
+    end)
+    pcall(function()
+        local pauseNotification = game:GetService("CoreGui"):FindFirstChild("RobloxNetworkPauseNotification")
+        if pauseNotification then
+            pauseNotification.Enabled = not enabled
+        end
+    end)
+    if not enabled then return end
+    pcall(function()
+        if sethiddenproperty then
+            sethiddenproperty(LocalPlayer, "GameplayPaused", false)
+        else
+            LocalPlayer.GameplayPaused = false
+        end
+    end)
+end
+
+-- ============ EQUIPMENT SCORING ============
+
+local QUALITY_TIER = {
+    Common = 1, UnCommon = 2, Rare = 3, Epic = 4,
+    Legendary = 5, Mythical = 6, Exclusive = 7
+}
+
+local function equipmentScore(item)
+    local tier = QUALITY_TIER[item.Quality] or 0
+    local defenseScore = (item.HealthBonus or 0) + (item.Defense or 0) * 1000
+    local attackScore = (item.AttackBonus or 0) * 1000
+    return tier * 1000000 + defenseScore + attackScore + (item.CritRate or 0) * 1000
+end
+
+local function getMaxEquipmentForRebirth(rebirthCount)
+    local maxEquipmentId = 1
+    for _, equipData in ipairs(AutoTrainConfig.EQUIPMENT) do
+        local req = equipData.Requirement or {}
+        if req.Type == "Free" then
+            maxEquipmentId = math.max(maxEquipmentId, equipData.EquipmentId)
+        elseif req.Type == "Rebirth" and rebirthCount >= (req.Amount or math.huge) then
+            maxEquipmentId = math.max(maxEquipmentId, equipData.EquipmentId)
+        end
+    end
+    return maxEquipmentId
+end
+
+-- ============ CONFIG SERIALIZATION ============
+
+local function findObjectByType(typeName, objectId)
+    local sourceTable = (typeName == "Toggle" and Toggles or Options)
+    local entry = sourceTable[objectId]
+    local isValid = type(entry) == "table" and entry.Type == typeName
+    return isValid and entry or nil
+end
+
+local function serializeObject(index, object)
+    local objectType = object.Type
+    if objectType == "Toggle" then
+        return { idx = index, type = "Toggle", value = object.Value == true }
+    elseif objectType == "Slider" then
+        return { idx = index, type = "Slider", value = tostring(object.Value) }
+    elseif objectType == "Dropdown" then
+        return { idx = index, type = "Dropdown", multi = object.Multi == true, value = object.Value }
+    elseif objectType == "Input" then
+        return { idx = index, type = "Input", text = tostring(object.Value or "") }
+    elseif objectType == "ColorPicker" then
+        return { idx = index, type = "ColorPicker", value = object.Value:ToHex(), transparency = object.Transparency }
+    elseif objectType == "KeyPicker" then
+        return { idx = index, type = "KeyPicker", mode = object.Mode, key = object.Value, modifiers = object.Modifiers, toggled = object.Toggled }
+    end
+    return nil
+end
+
+local function exportConfigToTable()
+    local objects = {}
+    for _, sourceTable in ipairs({ Toggles, Options }) do
+        for key, object in pairs(sourceTable) do
+            if type(object) == "table" and type(object.Type) == "string" and not SaveManager.Ignore[key] then
+                local serialized = serializeObject(key, object)
+                if serialized then
+                    objects[#objects + 1] = serialized
+                end
+            end
+        end
+    end
+    table.sort(objects, function(a, b)
+        if a.type ~= b.type then return a.type < b.type end
+        return a.idx < b.idx
+    end)
+    return { objects = objects }
+end
+
+local function applySerializedObject(data)
+    local isMalformed = type(data) ~= "table" or type(data.idx) ~= "string" or type(data.type) ~= "string" or SaveManager.Ignore[data.idx]
+    if isMalformed then return false end
+    local object = findObjectByType(data.type, data.idx)
+    if not object then return false end
+    local success = pcall(function()
+        if data.type == "Input" then
+            if type(data.text) == "string" then object:SetValue(data.text) end
+        elseif data.type == "ColorPicker" then
+            object:SetValueRGB(Color3.fromHex(data.value), data.transparency)
+        elseif data.type == "KeyPicker" then
+            object:SetValue({ data.key, data.mode, data.modifiers })
+            if data.mode == "Toggle" and data.toggled ~= nil then
+                object.Toggled = data.toggled
+                object:Update()
+            end
+        else
+            object:SetValue(data.value)
+        end
+    end)
+    return success
+end
+
+-- ============ ANTI-AFK ============
+
+local function antiAfkLoop()
+    while not Library.Unloaded do
+        task.wait(2)
+        if Toggles.AntiAfk.Value then
+            local sinceLastInput = tick() - lastInputTime
+            local sinceLastClick = tick() - lastCameraClickTime
+            if sinceLastInput >= 300 and sinceLastClick >= 60 then
+                pcall(triggerCameraClick)
+            elseif sinceLastInput < 300 and sinceLastClick >= 300 then
+                pcall(triggerCameraClick)
+            end
+        end
+    end
+end
+
+-- ============ GAMEPLAY PAUSE LOOP ============
+
+local function antiGameplayPauseLoop()
+    while not Library.Unloaded do
+        task.wait(1)
+        if Toggles.AntiGameplayPause.Value then
+            setGameplayPaused(true)
+        end
+    end
+end
+
+-- ============ AUTO FARM LOOP ============
+
+local function autoFarmLoop()
+    while true do
+        task.wait(0.35)
+        if Library.Unloaded then break end
+        if Toggles.AutoTrain and Toggles.AutoTrain.Value then continue end
+
+        local farmAllDungeons = Toggles.AutoFarmDungeons and Toggles.AutoFarmDungeons.Value
+        local farmSelected = Toggles.AutoFarmSelected and Toggles.AutoFarmSelected.Value
+        if not (farmAllDungeons or farmSelected) then
+            currentStage = 1
+            lastStageTeleported = nil
+            continue
+        end
+
+        local maxStage = MAX_DUNGEON_STAGE
+        if farmSelected then
+            maxStage = tonumber(Options.SelectedStage.Value) or 1
+        end
+
+        local stageState = invokeServer(StageStateFunc)
+        if not stageState then continue end
+
+        local clearedStage = stageState.ClearedStage or 0
+        local targetStage = math.min(currentStage, maxStage, clearedStage + 1)
+        if targetStage < 1 then targetStage = 1 end
+
+        currentStage = targetStage
+        teleportToStage(targetStage, lastStageTeleported ~= targetStage)
+        lastStageTeleported = targetStage
+
+        local stageComplete = (stageState.EnteredStage == targetStage)
+            and ((stageState.AliveEnemies or 0) == 0)
+            and ((stageState.ClearedStage or 0) >= targetStage)
+
+        if stageComplete then
+            local shouldWaitForChest = Toggles.AutoOpenChest and Toggles.AutoOpenChest.Value and hasAvailableChest()
+            if shouldWaitForChest then continue end
+
+            if currentStage < maxStage then
+                currentStage += 1
+                lastStageTeleported = nil
+            else
+                local rootPart = getHumanoidRootPart()
+                local levelFolder = workspace:FindFirstChild("Level")
+                local firstStage = levelFolder and levelFolder:FindFirstChild(tostring(targetStage))
+                local startPart = firstStage and firstStage:FindFirstChild("Start")
+                if rootPart and startPart then
+                    rootPart.CFrame = startPart.CFrame + Vector3.new(0, 4, 0)
+                    task.wait(0.4)
+                    teleportToStage(targetStage, true)
+                end
+            end
+        end
+    end
+end
+
+-- ============ AUTO OPEN CHEST LOOP ============
+
+local function autoOpenChestLoop()
+    while true do
+        task.wait(0.25)
+        if Library.Unloaded then break end
+        if not (Toggles.AutoOpenChest and Toggles.AutoOpenChest.Value) then continue end
+
+        for chestId in pairs(trackedChests) do
+            pcall(function()
+                ChestRequestOpenEvent:FireServer(chestId)
+            end)
+            trackedChests[chestId] = nil
+        end
+
+        for _, descendant in ipairs(workspace:GetDescendants()) do
+            if descendant:IsA("ProximityPrompt") and descendant.ActionText == "Open" then
+                pcall(function()
+                    if fireproximityprompt then
+                        fireproximityprompt(descendant)
+                    end
+                end)
+            end
+        end
+    end
+end
+
+-- ============ AUTO BUY WEAPON LOOP ============
+
+local function autoBuyWeaponLoop()
+    local stop = false
+    repeat
+        task.wait(0.6)
+        if Library.Unloaded then
+            stop = true
+        elseif Toggles.AutoBuyWeapons and Toggles.AutoBuyWeapons.Value then
+            local weaponState = invokeServer(WeaponStateFunc)
+            local currencyState = invokeServer(CurrencyFunc)
+            if weaponState and currencyState then
+                local trophies = currencyState.Trophies or 0
+                local unlockedWeapons = weaponState.Unlocked or {}
+                local weaponArea = workspace:FindFirstChild("WeaponArea")
+                local rootPart = getHumanoidRootPart()
+                if weaponArea and rootPart then
+                    for index, weaponData in ipairs(WeaponConfig.WEAPONS) do
+                        if weaponData.UnlockType == "Trophies" and not unlockedWeapons[tostring(index)] then
+                            if trophies >= (weaponData.UnlockCost or math.huge) then
+                                local weaponPart = weaponArea:FindFirstChild(tostring(index))
+                                if weaponPart and firetouchinterest then
+                                    pcall(function()
+                                        firetouchinterest(rootPart, weaponPart, 0)
+                                        task.wait(0.1)
+                                        firetouchinterest(rootPart, weaponPart, 1)
+                                    end)
+                                end
+                                break
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    until stop
+end
+
+-- ============ AUTO EQUIP LOOP ============
+
+local function autoEquipLoop()
+    while true do
+        task.wait(1)
+        if Library.Unloaded then break end
+        if not (Toggles.AutoEquipBest and Toggles.AutoEquipBest.Value) then continue end
+
+        local equipmentState = invokeServer(EquipmentStateFunc)
+        if not equipmentState or type(equipmentState.Items) ~= "table" then continue end
+
+        local bestPerSlot = {}
+        for _, item in ipairs(equipmentState.Items) do
+            local slot = item.Slot
+            if slot then
+                local current = bestPerSlot[slot]
+                if not current or equipmentScore(item) > equipmentScore(current) then
+                    bestPerSlot[slot] = item
+                end
+            end
+        end
+
+        local equipped = equipmentState.Equipped or {}
+        for slot, bestItem in pairs(bestPerSlot) do
+            if equipped[slot] ~= bestItem.Uid then
+                pcall(function()
+                    EquipItemFunc:InvokeServer(bestItem.Uid)
+                end)
+            end
+        end
+    end
+end
+
+-- ============ AUTO ATTRIBUTE LOOP ============
+
+local function autoAttributeLoop()
+    local stop = false
+    repeat
+        task.wait(0.5)
+        if Library.Unloaded then
+            stop = true
+        elseif Toggles.AutoAttribute and Toggles.AutoAttribute.Value then
+            local talentState = invokeServer(TalentStateFunc)
+            if talentState then
+                local availablePoints = talentState.AvailablePoints or 0
+                if availablePoints > 0 then
+                    local statName = Options.AttributeStat.Value
+                    pcall(function()
+                        AllocateTalentEvent:FireServer(statName, availablePoints)
+                    end)
+                end
+            end
+        end
+    until stop
+end
+
+-- ============ AUTO REBIRTH LOOP ============
+
+local function autoRebirthLoop()
+    while true do
+        task.wait(0.7)
+        if Library.Unloaded then break end
+        if not (Toggles.AutoRebirth and Toggles.AutoRebirth.Value) then continue end
+        local rebirthState = invokeServer(RebirthStateFunc)
+        if rebirthState and rebirthState.CanRebirth and not rebirthState.IsMax then
+            pcall(function()
+                TryRebirthEvent:FireServer()
+            end)
+        end
+    end
+end
+
+-- ============ AUTO CLICK LOOP ============
+
+local function autoClickLoop()
+    while true do
+        task.wait(3)
+        if Library.Unloaded then break end
+        if not (Toggles.AutoClick and Toggles.AutoClick.Value) then continue end
+        local state = invokeServer(AutoClickStateFunc)
+        if state and state.Mode == "Off" then
+            setAutoClickMode()
+        end
+    end
+end
+
+-- ============ AUTO TRAIN LOOP ============
+
+local function autoTrainLoop()
+    while true do
+        task.wait(0.5)
+        if Library.Unloaded then break end
+        if not (Toggles.AutoTrain and Toggles.AutoTrain.Value) then
+            lastAutoTrainEquipmentId = nil
+            continue
+        end
+        local rebirthState = invokeServer(RebirthStateFunc)
+        local rebirths = rebirthState and rebirthState.Rebirths or 0
+        local equipmentId = getMaxEquipmentForRebirth(rebirths)
+        if equipmentId ~= lastAutoTrainEquipmentId then
+            local afkArea = workspace:FindFirstChild("AFK Area")
+            local afkPart = afkArea and afkArea:FindFirstChild(tostring(equipmentId))
+            local rootPart = getHumanoidRootPart()
+            if afkPart and rootPart then
+                rootPart.CFrame = afkPart.CFrame + Vector3.new(0, 4, 0)
+                lastAutoTrainEquipmentId = equipmentId
+            end
+        end
+    end
+end
+
+-- ============ SESSION TIMER ============
+
+local sessionLabel = nil
+
+local function sessionTimerLoop()
+    while true do
+        task.wait(1)
+        if Library.Unloaded then break end
+        local elapsed = math.floor(os.clock() - sessionStartTime)
+        local display
+        if elapsed < 60 then
+            display = elapsed .. "s"
+        elseif elapsed < 3600 then
+            display = string.format("%dm %ds", elapsed // 60, elapsed % 60)
+        else
+            display = string.format("%dh %dm", elapsed // 3600, elapsed % 3600 // 60)
+        end
+        if sessionLabel then
+            sessionLabel:SetText(formatInfoLine("Session time", display, COLOR_ORANGE))
+        end
+    end
+end
+
+-- ============ EXECUTOR DETECTION ============
+
+pcall(function()
+    if identifyexecutor then
+        local name, version = identifyexecutor()
+        if type(name) == "string" and name ~= "" then
+            executorName = (type(version) == "string" and version ~= "") and (name .. " " .. version) or name
+        end
+    end
+end)
+
+-- ============ WINDOW & TABS ============
+
+local Window = Library:CreateWindow({
+    Title = "Ouroboros Hub",
+    Footer = {
+        { Text = DISCORD_INVITE, Copyable = true },
+        "|",
+        SCRIPT_NAME
+    },
+    Icon = 78539693571783,
+    NotifySide = "Right",
+    ShowCustomCursor = false,
+    CornerRadius = 0
+})
+
+local Tabs = {
+    Info = Window:AddTab("Info", "info"),
+    Main = Window:AddTab("Main", "gamepad-2"),
+    Player = Window:AddTab("Player", "person-standing"),
+    Settings = Window:AddTab("Settings", "settings")
+}
+
+Tabs.Farm = Tabs.Main:AddSubTab("Farm", "swords")
+Tabs.Progress = Tabs.Main:AddSubTab("Progress", "trending-up")
+
+-- ============ INFO TAB ============
+
+local AccountGroup = Tabs.Info:AddLeftGroupbox("Account", "circle-user")
+AccountGroup:AddLabel(formatInfoLine("User", LocalPlayer.Name, COLOR_GREEN), true)
+AccountGroup:AddLabel(formatInfoLine("Status", "Keyless", COLOR_GREEN), true)
+AccountGroup:AddLabel(formatInfoLine("Executor", executorName, COLOR_GREEN), true)
+
+local GameInfoGroup = Tabs.Info:AddLeftGroupbox("Game Info", "gamepad-2")
+GameInfoGroup:AddLabel(colorizeText(SCRIPT_NAME .. " [" .. tostring(game.PlaceId) .. "]", COLOR_BLUE), true)
+GameInfoGroup:AddLabel(formatInfoLine("Place ID", tostring(game.PlaceId), COLOR_BLUE), true)
+sessionLabel = GameInfoGroup:AddLabel(formatInfoLine("Session time", "0s", COLOR_ORANGE), true)
+
+local jobId = tostring(game.JobId)
+if #jobId > 18 then
+    jobId = string.sub(jobId, 1, 18) .. "..."
+end
+GameInfoGroup:AddLabel(formatInfoLine("Server", jobId, COLOR_GRAY), true)
+
+local function onCopyJoinScript()
+    local joinScript = string.format(
+        'game:GetService("TeleportService"):TeleportToPlaceInstance(%d, "%s", game:GetService("Players").LocalPlayer)',
+        game.PlaceId, tostring(game.JobId)
+    )
+    copyToClipboard(joinScript, "Copied join script to clipboard")
+end
+
+GameInfoGroup:AddButton({
+    Text = "Copy join script (Job ID)",
+    Func = onCopyJoinScript
+})
+
+task.spawn(sessionTimerLoop)
+
+local ScriptsGroup = Tabs.Info:AddRightGroupbox("Scripts", "package")
+ScriptsGroup:AddLabel(colorizeText("Included in this hub", COLOR_GRAY), true)
+ScriptsGroup:AddLabel(colorizeText(SCRIPT_NAME, COLOR_BLUE), true)
+
+local FeaturesGroup = Tabs.Info:AddRightGroupbox("Features", "list")
+FeaturesGroup:AddLabel(colorizeText("Auto Farm Dungeons", COLOR_BLUE), true)
+FeaturesGroup:AddLabel(colorizeText("Auto Open Chest", COLOR_ORANGE), true)
+FeaturesGroup:AddLabel(colorizeText("Auto Equip / Buy / Attribute", COLOR_GREEN), true)
+FeaturesGroup:AddLabel(colorizeText("Auto Rebirth / Train / Click", COLOR_GRAY), true)
+
+-- ============ SOCIALS ============
+
+local function onJoinDiscord()
+    copyToClipboard(DISCORD_INVITE, "Copied Discord invite to clipboard")
+end
+
+local function onCopyRscripts()
+    copyToClipboard(RSCRIPTS_LINK, "Copied Rscripts profile to clipboard")
+end
+
+local SocialsGroup = Tabs.Info:AddRightGroupbox("Socials", "link")
+SocialsGroup:AddButton({ Text = "Discord", Func = onJoinDiscord })
+SocialsGroup:AddButton({ Text = "Rscripts", Func = onCopyRscripts })
+
+local HubInfoGroup = Tabs.Info:AddLeftGroupbox("Ouroboros Hub", "sparkles")
+HubInfoGroup:AddLabel("Every script in the hub is keyless. No key systems, no checkpoints, no linkvertise.", true)
+HubInfoGroup:AddLabel("The Discord has ready made configs, dupe methods, giveaways, and early access to new scripts.", true)
+HubInfoGroup:AddLabel("Requests get taken seriously. A lot of what is in this script started as a Discord message.", true)
+HubInfoGroup:AddButton({ Text = "Copy Discord Invite", Func = onJoinDiscord })
+
+-- ============ DONATIONS ============
+
+local DONATION = {
+    LTC       = { address = "LSZPqKSsD1x6QXea2H8JS17nXMLnmtew3w", color = "#345d9d" },
+    BTC       = { address = "bc1qwc9exvcn3ykjqnsa0t9gakuccr494ljjuuqj99", color = "#f7931a" },
+    ETH       = { address = "0xaE95A405D007a6F858E5d35714111B075fEFb40a", color = "#627eea" },
+    USDT      = { address = "0xaE95A405D007a6F858E5d35714111B075fEFb40a", color = "#26a17b" },
+    SOL       = { address = "Hq5jPHKDKjyHhccc6UULcbYTK6aKBBbTDmHNRXGKBKGp", color = "#14f195" },
+    PayPal    = { address = "https://paypal.me/TheTruckerGOD", color = "#0070ba" },
+    Venmo     = { address = "https://venmo.com/u/miserablemusic", color = "#008cff" },
+}
+
+local DonationsGroup = Tabs.Info:AddRightGroupbox("Donations", "heart")
+DonationsGroup:AddLabel(colorizeText("All donations are optional but appreciated.", COLOR_ORANGE), true)
+DonationsGroup:AddLabel(colorizeText("If you donate you get a special role, just PING after you donate.", COLOR_GREEN), true)
+DonationsGroup:AddDivider()
+
+local function addDonationEntry(key, displayName, label)
+    DonationsGroup:AddLabel(colorizeText(displayName, DONATION[key].color), true)
+    DonationsGroup:AddButton({
+        Text = "Copy " .. label,
+        Func = function()
+            copyToClipboard(DONATION[key].address, "Copied " .. label)
+        end
+    })
+end
+
+addDonationEntry("LTC", "LTC / Litecoin", "Litecoin Address")
+addDonationEntry("BTC", "BTC / Bitcoin", "Bitcoin Address")
+addDonationEntry("ETH", "ETH / Ethereum", "Ethereum Address")
+addDonationEntry("USDT", "USDT", "USDT Address")
+addDonationEntry("SOL", "Solana", "Solana Address")
+addDonationEntry("PayPal", "PayPal", "PayPal Link")
+addDonationEntry("Venmo", "Venmo", "Venmo Link")
+
+DonationsGroup:AddDivider()
+DonationsGroup:AddLabel(colorizeText("Don't have any of the listed currencies but still wanna donate?", COLOR_GRAY), true)
+DonationsGroup:AddLabel(colorizeText("DM me and we'll work something out.", COLOR_BLUE), true)
+
+-- ============ FAQ ============
+
+local FaqGroup = Tabs.Info:AddRightGroupbox("FAQ", "circle-help")
+FaqGroup:AddLabel("Where do I get a good config?", true)
+FaqGroup:AddLabel("Join the Discord, the config channel has configs shared for every script.", true)
+FaqGroup:AddLabel("How do I import / export configs?", true)
+FaqGroup:AddLabel("Join the Discord, the guide is pinned and people share config links daily.", true)
+FaqGroup:AddLabel("How do I report bugs?", true)
+FaqGroup:AddLabel("Join the Discord and post it in the bugs channel.", true)
+FaqGroup:AddLabel("How do I make suggestions?", true)
+FaqGroup:AddLabel("Join the Discord and drop it in suggestions, most of them get added.", true)
+FaqGroup:AddLabel("How do I get help or updates?", true)
+FaqGroup:AddLabel("Join the Discord, updates and support are posted there first.", true)
+
+-- ============ DISCORD BUTTON IN EVERY TAB ============
+
+local function addDiscordButtons(tab)
+    local group = tab:AddLeftGroupbox("Discord")
+    group:AddButton({ Text = "Join Discord to Make Money", Func = onJoinDiscord })
+    group:AddButton({ Text = "Join Discord for Keyless Scripts", Func = onJoinDiscord })
+end
+
+for _, tab in pairs(Tabs) do
+    if tab ~= Tabs.Main and tab ~= Tabs.Info then
+        addDiscordButtons(tab)
+    end
+end
+
+-- ============ FARM TAB ============
+
+local DungeonFarmGroup = Tabs.Farm:AddLeftGroupbox("Dungeon Farm", "swords")
+DungeonFarmGroup:AddToggle("AutoFarmDungeons", { Text = "Auto Farm Dungeons", Default = false })
+DungeonFarmGroup:AddToggle("AutoFarmSelected", { Text = "Auto Farm Selected Dungeon", Default = false })
+
+local stageDropdownValues = {}
+for i = 1, MAX_DUNGEON_STAGE do
+    stageDropdownValues[i] = tostring(i)
+end
+DungeonFarmGroup:AddDropdown("SelectedStage", {
+    Values = stageDropdownValues,
+    Default = "1",
+    Multi = false
+})
+
+local ChestsGroup = Tabs.Farm:AddRightGroupbox("Chests", "gift")
+ChestsGroup:AddToggle("AutoOpenChest", { Text = "Auto Open Chest", Default = false })
+
+ChestSpawnedEvent.OnClientEvent:Connect(function(chestId)
+    if type(chestId) == "number" then
+        trackedChests[chestId] = true
+    end
+end)
+
+task.spawn(autoFarmLoop)
+task.spawn(autoOpenChestLoop)
+
+-- ============ PROGRESS TAB ============
+
+local WeaponsGroup = Tabs.Progress:AddLeftGroupbox("Weapons", "sword")
+WeaponsGroup:AddToggle("AutoBuyWeapons", { Text = "Auto Buy Weapons", Default = false })
+
+local EquipmentGroup = Tabs.Progress:AddRightGroupbox("Equipment", "shirt")
+EquipmentGroup:AddToggle("AutoEquipBest", { Text = "Auto Equip Best Equipment", Default = false })
+
+local AttributesGroup = Tabs.Progress:AddLeftGroupbox("Attributes", "star")
+AttributesGroup:AddToggle("AutoAttribute", { Text = "Auto Attribute", Default = false })
+AttributesGroup:AddDropdown("AttributeStat", {
+    Values = { "Attack", "Defense", "Health" },
+    Default = "Attack",
+    Multi = false
+})
+
+local RebirthGroup = Tabs.Progress:AddRightGroupbox("Rebirth", "rotate-ccw")
+RebirthGroup:AddToggle("AutoRebirth", { Text = "Auto Rebirth", Default = false })
+
+local AutoClickGroup = Tabs.Progress:AddRightGroupbox("Auto Click", "mouse-pointer-click")
+AutoClickGroup:AddToggle("AutoClick", { Text = "Auto Click", Default = false })
+
+local AutoTrainGroup = Tabs.Progress:AddLeftGroupbox("Auto Train", "dumbbell")
+AutoTrainGroup:AddToggle("AutoTrain", { Text = "Auto Train", Default = false })
+
+task.spawn(autoBuyWeaponLoop)
+task.spawn(autoEquipLoop)
+task.spawn(autoAttributeLoop)
+task.spawn(autoRebirthLoop)
+task.spawn(autoClickLoop)
+task.spawn(autoTrainLoop)
+
+Toggles.AutoClick:OnChanged(setAutoClickMode)
+
+-- ============ PLAYER TAB ============
+
+local MovementGroup = Tabs.Player:AddLeftGroupbox("Movement", "footprints")
+MovementGroup:AddToggle("WalkSpeedEnabled", { Text = "WalkSpeed", Default = false })
+MovementGroup:AddSlider("WalkSpeed", {
+    Text = "WalkSpeed Amount",
+    Default = 32,
+    Min = 16,
+    Max = 250,
+    Rounding = 0
+})
+MovementGroup:AddToggle("InfJump", { Text = "Infinite Jump", Default = false })
+MovementGroup:AddToggle("NoClip", { Text = "NoClip", Default = false })
+MovementGroup:AddToggle("AntiGameplayPause", { Text = "No Gameplay Paused", Default = true })
+
+local FlyGroup = Tabs.Player:AddRightGroupbox("Fly", "feather")
+FlyGroup:AddToggle("Fly", { Text = "Fly", Default = false })
+FlyGroup:AddSlider("FlySpeed", {
+    Text = "Fly Speed",
+    Default = 60,
+    Min = 10,
+    Max = 400,
+    Rounding = 0
+})
+
+-- ============ MOVEMENT LOGIC ============
+
+local function disableFly()
+    if not Toggles.Fly.Value then
+        local humanoid = getHumanoid()
+        if humanoid then humanoid.PlatformStand = false end
+    end
+end
+
+local function disableWalkSpeed()
+    if not Toggles.WalkSpeedEnabled.Value then
+        local humanoid = getHumanoid()
+        if humanoid then humanoid.WalkSpeed = 16 end
+    end
+end
+
+Toggles.Fly:OnChanged(disableFly)
+Toggles.WalkSpeedEnabled:OnChanged(disableWalkSpeed)
+
+RunService.RenderStepped:Connect(function(deltaTime)
+    if Library.Unloaded then return end
+
+    if Toggles.WalkSpeedEnabled and Toggles.WalkSpeedEnabled.Value then
+        local humanoid = getHumanoid()
+        if humanoid then humanoid.WalkSpeed = Options.WalkSpeed.Value end
+    end
+
+    if Toggles.Fly and Toggles.Fly.Value then
+        local rootPart = getHumanoidRootPart()
+        local humanoid = getHumanoid()
+        if rootPart and humanoid then
+            humanoid.PlatformStand = true
+            local direction = Vector3.zero
+            if UserInputService:IsKeyDown(Enum.KeyCode.W) then direction = direction + workspace.CurrentCamera.CFrame.LookVector end
+            if UserInputService:IsKeyDown(Enum.KeyCode.S) then direction = direction - workspace.CurrentCamera.CFrame.LookVector end
+            if UserInputService:IsKeyDown(Enum.KeyCode.A) then direction = direction - workspace.CurrentCamera.CFrame.RightVector end
+            if UserInputService:IsKeyDown(Enum.KeyCode.D) then direction = direction + workspace.CurrentCamera.CFrame.RightVector end
+            if UserInputService:IsKeyDown(Enum.KeyCode.Space) then direction = direction + Vector3.new(0, 1, 0) end
+            if UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then direction = direction - Vector3.new(0, 1, 0) end
+            rootPart.Velocity = Vector3.zero
+            if direction.Magnitude > 0 then
+                rootPart.CFrame = rootPart.CFrame + direction.Unit * Options.FlySpeed.Value * deltaTime
+            end
+        end
+    end
+end)
+
+RunService.Stepped:Connect(function()
+    if Library.Unloaded then return end
+    if Toggles.NoClip and Toggles.NoClip.Value then
+        local character = LocalPlayer.Character
+        if character then
+            for _, descendant in ipairs(character:GetDescendants()) do
+                if descendant:IsA("BasePart") and descendant.CanCollide then
+                    descendant.CanCollide = false
+                end
+            end
+        end
+    end
+end)
+
+UserInputService.JumpRequest:Connect(function()
+    if Library.Unloaded then return end
+    if Toggles.InfJump and Toggles.InfJump.Value then
+        local humanoid = getHumanoid()
+        if humanoid then
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+        end
+    end
+end)
+
+Toggles.AntiGameplayPause:OnChanged(setGameplayPaused)
+task.spawn(antiGameplayPauseLoop)
+
+-- ============ INPUT TRACKING ============
+
+UserInputService.InputBegan:Connect(function(input)
+    lastInputTime = tick()
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement
+    or input.UserInputType == Enum.UserInputType.Gamepad1 then
+        lastInputTime = tick()
+    end
+end)
+
+pcall(function()
+    for _, connection in ipairs(getconnections(LocalPlayer.Idled)) do
+        pcall(function() connection:Disable() end)
+    end
+end)
+
+task.spawn(antiAfkLoop)
+
+-- ============ SETTINGS TAB ============
+
+local MenuGroup = Tabs.Settings:AddLeftGroupbox("Menu", "settings")
+Library.ToggleKeybind = Options.MenuKeybind
+MenuGroup:AddLabel("Menu bind"):AddKeyPicker("MenuKeybind", {
+    Default = "RightShift",
+    NoUI = true,
+    Text = "Menu keybind"
+})
+
+MenuGroup:AddToggle("AntiAfk", { Text = "Anti-AFK", Default = true })
+
+local function onUnload()
+    Library:Unload()
+end
+
+MenuGroup:AddButton("Unload", onUnload)
+
+-- ============ THEME & SAVE MANAGER ============
+
+ThemeManager:SetLibrary(Library)
+ThemeManager:SetFolder("OuroborosHub")
+ThemeManager:SaveDefault("Linoria")
+ThemeManager:ApplyToTab(Tabs.Settings)
+ThemeManager:LoadDefault()
+
+SaveManager:SetLibrary(Library)
+SaveManager:IgnoreThemeSettings()
+SaveManager:SetIgnoreIndexes({ "MenuKeybind", "SaveManager_ImportSource" })
+SaveManager:SetFolder("OuroborosHub/AnimeLootUpgrade")
+
+local ConfigSection = SaveManager:BuildConfigSection(Tabs.Settings)
+
+local function onExportConfigToClipboard()
+    local success, encoded = pcall(HttpService.JSONEncode, HttpService, exportConfigToTable())
+    if not success then
+        Library:Notify("Failed to encode the config")
+        return
+    end
+    local clipboardFunc = setclipboard or toclipboard
+    if type(clipboardFunc) ~= "function" or not pcall(clipboardFunc, encoded) then
+        Library:Notify("Your executor does not support copying to the clipboard")
+        return
+    end
+    Library:Notify("Config copied to clipboard", 6)
+end
+
+local function onImportConfigFromClipboardText()
+    local rawText = tostring(Options.SaveManager_ImportSource.Value or "")
+    local trimmed = rawText:match("^%s*(.-)%s*$")
+    if trimmed == "" then
+        Library:Notify("Paste an exported config into the box first")
+        return
+    end
+    local success, decoded = pcall(HttpService.JSONDecode, HttpService, trimmed)
+    if not success or type(decoded) ~= "table" or type(decoded.objects) ~= "table" then
+        Library:Notify("That is not a valid exported config")
+        return
+    end
+    local appliedCount = 0
+    for _, entry in ipairs(decoded.objects) do
+        if applySerializedObject(entry) then
+            appliedCount += 1
+        end
+    end
+    if appliedCount == 0 then
+        Library:Notify("No settings in that config matched this script")
+        return
+    end
+    Options.SaveManager_ImportSource:SetValue("")
+    Library:Notify(("Imported %d setting%s"):format(appliedCount, appliedCount == 1 and "" or "s"), 6)
+end
+
+ConfigSection:AddDivider()
+ConfigSection:AddInput("SaveManager_ImportSource", {
+    Text = "Paste exported config here",
+    Finished = true,
+    AllowEmpty = true
+})
+ConfigSection:AddButton("Export Config to Clipboard", onExportConfigToClipboard)
+ConfigSection:AddButton("Import Config from Clipboard Text", onImportConfigFromClipboardTex)
+
+SaveManager:LoadAutoloadConfig()
+
+-- ============ UNLOAD HANDLER ============
+
+Library:OnUnload(function()
+    setGameplayPaused(false)
+    if connectionInputBegan then connectionInputBegan:Disconnect() end
+    if connectionInputChanged then connectionInputChanged:Disconnect() end
+    pcall(function() AutoClickSetModeEvent:FireServer("Off") end)
+    print("Unloaded!")
+end)
