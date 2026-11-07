@@ -1,22 +1,34 @@
---[[ 
-    FIXED BY ZOR
-    - Removed dead DNS (boggle.stole-your.creditcard) from Line 6
-    - Modernized spawn/wait to task.spawn/task.wait
-    - Cleaned string text
-]]
+-- ============================================
+-- STEP 1: PASTE LIBRARY KAMU DI SINI
+-- (paste dari `local Players = game:GetService("Players")` 
+--  sampai `end` sebelum `return Sibah2xZcu_Library`)
+-- HAPUS baris terakhir: `return Sibah2xZcu_Library`
+-- ============================================
 
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
+
+-- ============================================
+-- STEP 2: MAIN SCRIPT — paste di bawah library
+-- ============================================
+local Players          = game:GetService("Players")
+local player           = Players.LocalPlayer
 local UserInputService = game:GetService("UserInputService")
-local ScreenGui = Instance.new("ScreenGui")
-local Frame = Instance.new("Frame")
-local KeyInput = Instance.new("TextBox")
-local SubmitButton = Instance.new("TextButton")
-local DiscordButton = Instance.new("TextButton")
-local StatusLabel = Instance.new("TextLabel")
 
--- GUI Setup
+-- CLEAN OLD GUI
+local old = player:WaitForChild("PlayerGui"):FindFirstChild("KopdesHub_KeySystem")
+if old then old:Destroy() end
+
+-- KEY SYSTEM GUI
+local ScreenGui    = Instance.new("ScreenGui")
+local Frame        = Instance.new("Frame")
+local KeyInput     = Instance.new("TextBox")
+local SubmitButton = Instance.new("TextButton")
+local DiscordButton= Instance.new("TextButton")
+local StatusLabel  = Instance.new("TextLabel")
+
+ScreenGui.Name = "KopdesHub_KeySystem"
+ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = player:WaitForChild("PlayerGui")
+
 Frame.Parent = ScreenGui
 Frame.Size = UDim2.new(0, 300, 0, 250)
 Frame.Position = UDim2.new(0.5, -150, 0.5, -125)
@@ -25,7 +37,6 @@ Frame.BorderSizePixel = 0
 Frame.BackgroundTransparency = 0.2
 Frame.ClipsDescendants = true
 
--- Rounded Corners
 local UICorner = Instance.new("UICorner")
 UICorner.CornerRadius = UDim.new(0, 12)
 UICorner.Parent = Frame
@@ -38,10 +49,7 @@ KeyInput.PlaceholderText = "Enter Key"
 KeyInput.TextColor3 = Color3.new(1, 1, 1)
 KeyInput.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
 KeyInput.BorderSizePixel = 0
-
-local KeyInputCorner = Instance.new("UICorner")
-KeyInputCorner.CornerRadius = UDim.new(0, 8)
-KeyInputCorner.Parent = KeyInput
+Instance.new("UICorner", KeyInput).CornerRadius = UDim.new(0, 8)
 
 SubmitButton.Parent = Frame
 SubmitButton.Size = UDim2.new(1, -20, 0, 50)
@@ -50,10 +58,7 @@ SubmitButton.Text = "Submit"
 SubmitButton.BackgroundColor3 = Color3.new(0.2, 0.6, 0.2)
 SubmitButton.TextColor3 = Color3.new(1, 1, 1)
 SubmitButton.BorderSizePixel = 0
-
-local SubmitButtonCorner = Instance.new("UICorner")
-SubmitButtonCorner.CornerRadius = UDim.new(0, 8)
-SubmitButtonCorner.Parent = SubmitButton
+Instance.new("UICorner", SubmitButton).CornerRadius = UDim.new(0, 8)
 
 DiscordButton.Parent = Frame
 DiscordButton.Size = UDim2.new(1, -20, 0, 50)
@@ -62,10 +67,7 @@ DiscordButton.Text = "Get Key"
 DiscordButton.BackgroundColor3 = Color3.new(0.2, 0.4, 0.8)
 DiscordButton.TextColor3 = Color3.new(1, 1, 1)
 DiscordButton.BorderSizePixel = 0
-
-local DiscordButtonCorner = Instance.new("UICorner")
-DiscordButtonCorner.CornerRadius = UDim.new(0, 8)
-DiscordButtonCorner.Parent = DiscordButton
+Instance.new("UICorner", DiscordButton).CornerRadius = UDim.new(0, 8)
 
 StatusLabel.Parent = Frame
 StatusLabel.Size = UDim2.new(1, -20, 0, 30)
@@ -74,354 +76,181 @@ StatusLabel.TextColor3 = Color3.new(1, 1, 1)
 StatusLabel.BackgroundTransparency = 1
 StatusLabel.Text = ""
 
--- Key Logic
+-- KEY LOGIC
 local correctKey = "rellahiscool"
 
--- Function to run the main script
 local function runMainScript()
     print("rizz")
-    local player = game.Players.LocalPlayer
+    local p = game.Players.LocalPlayer
 
-    if player then
-        local function sayInChat(message)
-            local chatService = game:GetService("Chat")
-            chatService:Chat(player.Character.Head, message, Enum.ChatColor.White)
-        end
-        sayInChat("Script Loading!")
+    if p and p.Character and p.Character:FindFirstChild("Head") then
+        local chatService = game:GetService("Chat")
+        chatService:Chat(p.Character.Head, "Script Loading!", Enum.ChatColor.White)
     else
-        warn("LocalPlayer not found")
+        warn("LocalPlayer or Head not found — skipping chat")
     end
 
-    -- Load Fluent
-    local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
-    
-    function Init()
-        Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+    -- CREATE WINDOW (Sibah2xZcu_Library)
+    local Window = Sibah2xZcu_Library:CreateWindow({
+        Title       = "KopdesHub",
+        Description = "by rellah  ·  cracked by boggle.cc team",
+        "Tab Width" = 120,
+        SizeUi      = UDim2.fromOffset(580, 460),
+        Keybind     = Enum.KeyCode.LeftControl,
+        Icon        = "rbxthumb://type=Asset&id=132281476392315&w=420&h=420",
+        isVerified  = true,
+    })
+
+    Window:Notify("Script Loaded! discord.gg/Fc23Qprk2B", 10)
+
+    -- TABS
+    local MainTab        = Window:CreateTab({ Name = "Main",        Icon = "rbxassetid://4483345998" })
+    local PlayerModsTab  = Window:CreateTab({ Name = "Player Mods", Icon = "rbxassetid://4483345998" })
+    local CredTab        = Window:CreateTab({ Name = "Credits",     Icon = "rbxassetid://4483345998" })
+    local PlayersTab     = Window:CreateTab({ Name = "Players",     Icon = "rbxassetid://4483345998" })
+
+    -- SECTIONS (open = true)
+    local MainSec        = MainTab:AddSection("Teleports", true)
+    local PlayerModsSec  = PlayerModsTab:AddSection("Mods", true)
+    local CredSec        = CredTab:AddSection("Credits", true)
+    local PlayersSec     = PlayersTab:AddSection("Teleport to Player", true)
+
+    -- ============ MAIN TAB ============
+    MainSec:AddButton({
+        Title   = "TP to Japan Lobby",
+        Content = "Teleport to Japan Spawn",
+        Callback = function()
+            local c = game.Players.LocalPlayer.Character
+            if c and c:FindFirstChild("HumanoidRootPart") then
+                c.HumanoidRootPart.CFrame = CFrame.new(-4.103, -295.5, -36.644)
+            end
+        end
+    })
+
+    MainSec:AddButton({
+        Title   = "TP to American Lobby",
+        Content = "Teleport to American Spawn",
+        Callback = function()
+            local c = game.Players.LocalPlayer.Character
+            if c and c:FindFirstChild("HumanoidRootPart") then
+                c.HumanoidRootPart.CFrame = CFrame.new(15.000, -295.5, 46.505)
+            end
+        end
+    })
+
+    -- Helper: island positions
+    local function GetIslandPositions()
+        local pos = { A = nil, B = nil, C = nil }
+        for _, v in pairs(workspace:GetChildren()) do
+            if v:IsA("Model") and v.Name == "Island" then
+                local flag = v:FindFirstChild("Flag")
+                local post = flag and flag:FindFirstChild("Post")
+                local code = v:FindFirstChild("IslandCode")
+                if post and post:IsA("BasePart") and code and code:IsA("StringValue") then
+                    if code.Value == "A" then pos.A = post.Position
+                    elseif code.Value == "B" then pos.B = post.Position
+                    elseif code.Value == "C" then pos.C = post.Position end
+                end
+            end
+        end
+        return pos
     end
-    function Test()
-        print(Fluent.Options)
+
+    local function TPIsland(key)
+        local c = game.Players.LocalPlayer.Character
+        if not c or not c:FindFirstChild("HumanoidRootPart") then return end
+        local pos = GetIslandPositions()
+        if pos[key] then
+            c.HumanoidRootPart.CFrame = CFrame.new(pos[key].X, pos[key].Y, pos[key].Z)
+        else
+            Window:Notify("Island " .. key .. " not found", 3)
+        end
     end
-    
-    Init()
-    Test()
 
-    local Window = Fluent:CreateWindow({
-        Title = "Naval Warfare | " .. Fluent.Version,
-        SubTitle = "by rellah || cracked by the boggle.cc team .gg/Fc23Qprk2B",
-        TabWidth = 160,
-        Size = UDim2.fromOffset(580, 460),
-        Acrylic = true,
-        Theme = "Dark",
-        MinimizeKey = Enum.KeyCode.LeftControl
-    })
+    MainSec:AddButton({ Title = "TP to Island A", Content = "TP to Island A", Callback = function() TPIsland("A") end })
+    MainSec:AddButton({ Title = "TP to Island B", Content = "TP to Island B", Callback = function() TPIsland("B") end })
+    MainSec:AddButton({ Title = "TP to Island C", Content = "TP to Island C", Callback = function() TPIsland("C") end })
 
-    local Options = Fluent.Options
-
-    Fluent:Notify({
-        Title = "Script Loaded!",
-        Content = "discord.gg/Fc23Qprk2B",
-        SubContent = " ",
-        Duration = 10
-    })
-
-    local Tabs = {
-        Main = Window:AddTab({ Title = "Main", Icon = "rbxassetid://4483345998" }),
-        PlayerMods = Window:AddTab({ Title = "Player Mods", Icon = "rbxassetid://4483345998" }),
-        Cred = Window:AddTab({ Title = "Credits", Icon = "rbxassetid://4483345998" })
-    }
-
-    local MainTab = Tabs.Main
-    local PlayerModsTab = Tabs.PlayerMods
-    local CredTab = Tabs.Cred
-
-    MainTab:AddButton({
-        Title = "TP to Japan Lobby",
-        Description = "Teleport to the Japan Spawn Area",
-        Callback = function()
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-4.103087425231934, -295.5, -36.644065856933594)
-        end
-    })
-
-    MainTab:AddButton({
-        Title = "TP to American Lobby",
-        Description = "Teleport to the American Spawn Area",
-        Callback = function()
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(15.000070571899414, -295.5, 46.504608154296875)
-        end
-    })
-
-    MainTab:AddButton({
-        Title = "TP to Island C",
-        Description = " ",
-        Callback = function()
-            local Players = game:GetService("Players")
-            local LocalPlayer = Players.LocalPlayer
-            local Workspace = game:GetService("Workspace")
-            local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-            LocalPlayer.CharacterAdded:Connect(function(character) Character = character end)
-
-            local IslandPositions = {
-                IslandA = { X = nil, Y = nil, Z = nil },
-                IslandB = { X = nil, Y = nil, Z = nil },
-                IslandC = { X = nil, Y = nil, Z = nil },
-            }
-
-            local function SetIslandPositions()
-                for _, v in pairs(Workspace:GetChildren()) do
-                    if v:IsA("Model") and v.Name == "Island" then
-                        local flag = v:FindFirstChild("Flag")
-                        if flag then
-                            local post = flag:FindFirstChild("Post")
-                            if post and post:IsA("BasePart") then
-                                local position = post.Position
-                                local islandCode = v:FindFirstChild("IslandCode")
-                                if islandCode and islandCode:IsA("StringValue") then
-                                    if islandCode.Value == "A" then
-                                        IslandPositions.IslandA.X, IslandPositions.IslandA.Y, IslandPositions.IslandA.Z = position.X, position.Y, position.Z
-                                    elseif islandCode.Value == "B" then
-                                        IslandPositions.IslandB.X, IslandPositions.IslandB.Y, IslandPositions.IslandB.Z = position.X, position.Y, position.Z
-                                    elseif islandCode.Value == "C" then
-                                        IslandPositions.IslandC.X, IslandPositions.IslandC.Y, IslandPositions.IslandC.Z = position.X, position.Y, position.Z
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-
-            task.spawn(function()
-                while task.wait(10) do
-                    SetIslandPositions()
-                end
-            end)
-
-            SetIslandPositions()
-
-            if IslandPositions.IslandC.X then
-                Character.HumanoidRootPart.CFrame = CFrame.new(IslandPositions.IslandC.X, IslandPositions.IslandC.Y, IslandPositions.IslandC.Z)
-            end
-        end
-    })
-
-    MainTab:AddButton({
-        Title = "TP to Island B",
-        Description = " ",
-        Callback = function()
-            local Players = game:GetService("Players")
-            local LocalPlayer = Players.LocalPlayer
-            local Workspace = game:GetService("Workspace")
-            local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-            LocalPlayer.CharacterAdded:Connect(function(character) Character = character end)
-
-            local IslandPositions = {
-                IslandA = { X = nil, Y = nil, Z = nil },
-                IslandB = { X = nil, Y = nil, Z = nil },
-                IslandC = { X = nil, Y = nil, Z = nil },
-            }
-
-            local function SetIslandPositions()
-                for _, v in pairs(Workspace:GetChildren()) do
-                    if v:IsA("Model") and v.Name == "Island" then
-                        local flag = v:FindFirstChild("Flag")
-                        if flag then
-                            local post = flag:FindFirstChild("Post")
-                            if post and post:IsA("BasePart") then
-                                local position = post.Position
-                                local islandCode = v:FindFirstChild("IslandCode")
-                                if islandCode and islandCode:IsA("StringValue") then
-                                    if islandCode.Value == "A" then
-                                        IslandPositions.IslandA.X, IslandPositions.IslandA.Y, IslandPositions.IslandA.Z = position.X, position.Y, position.Z
-                                    elseif islandCode.Value == "B" then
-                                        IslandPositions.IslandB.X, IslandPositions.IslandB.Y, IslandPositions.IslandB.Z = position.X, position.Y, position.Z
-                                    elseif islandCode.Value == "C" then
-                                        IslandPositions.IslandC.X, IslandPositions.IslandC.Y, IslandPositions.IslandC.Z = position.X, position.Y, position.Z
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-
-            local function TeleportToIslandB()
-                SetIslandPositions()
-                if IslandPositions.IslandB.X then
-                    Character.HumanoidRootPart.CFrame = CFrame.new(IslandPositions.IslandB.X, IslandPositions.IslandB.Y, IslandPositions.IslandB.Z)
-                end
-            end
-
-            TeleportToIslandB()
-
-            LocalPlayer.Chatted:Connect(function(message)
-                local nm = string.lower(message)
-                if nm == ";tpb" then
-                    TeleportToIslandB()
-                end
-            end)
-        end
-    })
-
-    MainTab:AddButton({
-        Title = "TP to Island A",
-        Description = " ",
-        Callback = function()
-            local Players = game:GetService("Players")
-            local LocalPlayer = Players.LocalPlayer
-            local Workspace = game:GetService("Workspace")
-            local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-            LocalPlayer.CharacterAdded:Connect(function(character) Character = character end)
-
-            local IslandPositions = {
-                IslandA = { X = nil, Y = nil, Z = nil },
-                IslandB = { X = nil, Y = nil, Z = nil },
-                IslandC = { X = nil, Y = nil, Z = nil },
-            }
-
-            local function SetIslandPositions()
-                for _, v in pairs(Workspace:GetChildren()) do
-                    if v:IsA("Model") and v.Name == "Island" then
-                        local flag = v:FindFirstChild("Flag")
-                        if flag then
-                            local post = flag:FindFirstChild("Post")
-                            if post and post:IsA("BasePart") then
-                                local position = post.Position
-                                local islandCode = v:FindFirstChild("IslandCode")
-                                if islandCode and islandCode:IsA("StringValue") then
-                                    if islandCode.Value == "A" then
-                                        IslandPositions.IslandA.X, IslandPositions.IslandA.Y, IslandPositions.IslandA.Z = position.X, position.Y, position.Z
-                                    elseif islandCode.Value == "B" then
-                                        IslandPositions.IslandB.X, IslandPositions.IslandB.Y, IslandPositions.IslandB.Z = position.X, position.Y, position.Z
-                                    elseif islandCode.Value == "C" then
-                                        IslandPositions.IslandC.X, IslandPositions.IslandC.Y, IslandPositions.IslandC.Z = position.X, position.Y, position.Z
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-
-            local function TeleportToIslandA()
-                SetIslandPositions()
-                if IslandPositions.IslandA.X then
-                    Character.HumanoidRootPart.CFrame = CFrame.new(IslandPositions.IslandA.X, IslandPositions.IslandA.Y, IslandPositions.IslandA.Z)
-                end
-            end
-
-            TeleportToIslandA()
-
-            LocalPlayer.Chatted:Connect(function(message)
-                local nm = string.lower(message)
-                if nm == ";tpa" then
-                    TeleportToIslandA()
-                end
-            end)
-        end
-    })
-
-    MainTab:AddButton({
+    MainSec:AddButton({
         Title = "TP to American Harbour",
-        Description = " ",
+        Content = "TP to USA Harbour",
         Callback = function()
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-50.992095947265625, 23.0000057220459, 8129.59423828125)
+            local c = game.Players.LocalPlayer.Character
+            if c and c:FindFirstChild("HumanoidRootPart") then
+                c.HumanoidRootPart.CFrame = CFrame.new(-50.992, 23.000, 8129.594)
+            end
         end
     })
 
-    MainTab:AddButton({
+    MainSec:AddButton({
         Title = "TP to Japan Harbour",
-        Description = " ",
+        Content = "TP to Japan Harbour",
         Callback = function()
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-150.50711059570312, 23.0000057220459, -8160.171875)
+            local c = game.Players.LocalPlayer.Character
+            if c and c:FindFirstChild("HumanoidRootPart") then
+                c.HumanoidRootPart.CFrame = CFrame.new(-150.507, 23.000, -8160.171)
+            end
         end
     })
 
-    MainTab:AddButton({
-        Title = "Load IY",
-        Description = "Executes infinite yield",
+    MainSec:AddButton({
+        Title = "Load Infinite Yield",
+        Content = "Executes IY admin",
         Callback = function()
             loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
         end
     })
 
-    CredTab:AddParagraph({
-        Title = "By rellah || cracked by the boggle.cc team",
-        Content = "cracked by the boggle.cc team .gg/Fc23Qprk2B"
-    })
-
-    PlayerModsTab:AddButton({
+    -- ============ PLAYER MODS TAB ============
+    PlayerModsSec:AddButton({
         Title = "Faster Walk",
-        Description = "Increases walk speed",
+        Content = "WalkSpeed = 32",
         Callback = function()
-            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 32
+            local c = game.Players.LocalPlayer.Character
+            if c and c:FindFirstChild("Humanoid") then
+                c.Humanoid.WalkSpeed = 32
+            end
         end
     })
 
-    local Options = Fluent.Options
-    local TabsPlayers = {
-        Main = Window:AddTab({ Title = "Players", Icon = "rbxassetid://4483345998" }),
-    }
+    PlayerModsSec:AddButton({
+        Title = "TP Tool",
+        Content = "Click to teleport",
+        Callback = function()
+            local p = game.Players.LocalPlayer
+            local TpTool = Instance.new("Tool")
+            TpTool.Name = "Teleport Tool"
+            TpTool.RequiresHandle = false
+            TpTool.Parent = p.Backpack
+            local mouse = p:GetMouse()
+            TpTool.Activated:Connect(function()
+                local char = p.Character
+                local HRP = char and char:FindFirstChild("HumanoidRootPart")
+                if not HRP then return warn("Failed to find HumanoidRootPart") end
+                HRP.CFrame = CFrame.new(mouse.Hit.X, mouse.Hit.Y + 3, mouse.Hit.Z)
+            end)
+        end
+    })
 
-    local PlayersTab = TabsPlayers.Main
-    local playerButtons = {}
-
-    local function UpdatePlayerButtons()
-        print("Updating player buttons...")
-        for playerName, button in pairs(playerButtons) do
-            local p = game.Players:FindFirstChild(playerName)
-            if not p then
-                print("Removing button for player: " .. playerName)
-                button:Destroy()
-                playerButtons[playerName] = nil
+    PlayerModsSec:AddButton({
+        Title = "GodMode (Lobby)",
+        Content = "Use in lobby",
+        Callback = function()
+            local p = game.Players.LocalPlayer
+            if p and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+                local team = p.Team and p.Team.Name or "Unknown"
+                if team == "Japan" then
+                    p.Character.HumanoidRootPart.CFrame = CFrame.new(-150.507, 23.000, -8160.171)
+                elseif team == "USA" then
+                    p.Character.HumanoidRootPart.CFrame = CFrame.new(-50.992, 23.000, 8129.594)
+                end
             end
         end
+    })
 
-        for _, p in ipairs(game.Players:GetPlayers()) do
-            if p ~= game.Players.LocalPlayer and not playerButtons[p.Name] then
-                print("Adding button for player: " .. p.Name)
-                local button = PlayersTab:AddButton({
-                    Title = p.Name,
-                    Description = "Teleport to " .. p.Name,
-                    Callback = function()
-                        local character = p.Character
-                        if character and character:FindFirstChild("HumanoidRootPart") then
-                            local targetPosition = character.HumanoidRootPart.CFrame.Position
-                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
-                        else
-                            print("Character or HumanoidRootPart not found for player: " .. p.Name)
-                        end
-                    end
-                })
-                playerButtons[p.Name] = button
-            end
-        end
-    end
-
-    UpdatePlayerButtons()
-
-    game.Players.PlayerAdded:Connect(function(p)
-        task.wait(1)
-        print("Player added: " .. p.Name)
-        UpdatePlayerButtons()
-    end)
-
-    game.Players.PlayerRemoving:Connect(function(p)
-        if playerButtons[p.Name] then
-            print("Player leaving: " .. p.Name)
-            playerButtons[p.Name]:Destroy()
-            playerButtons[p.Name] = nil
-        end
-    end)
-
-    task.spawn(function()
-        while task.wait(5) do
-            UpdatePlayerButtons()
-        end
-    end)
-
-    PlayerModsTab:AddButton({
+    PlayerModsSec:AddButton({
         Title = "OP Player GUI",
-        Description = "RPG Spam, Kill all, Rapid Fire",
+        Content = "RPG Spam / Kill All / Rapid Fire",
         Callback = function()
             local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/rvllah/gui-lib-for-nw/refs/heads/main/OP%20PlayerGUI", true))()
             local w = library:CreateWindow("Rellah's OP GUI")
@@ -429,47 +258,21 @@ local function runMainScript()
 
             local godmodeActive = false
             local function teleportPlayer()
-                if godmodeActive then
-                    local p = game.Players.LocalPlayer
-                    if p and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-                        local team = p.Team and p.Team.Name or "Unknown"
-                        print("Current Team: " .. team)
-                        if team == "Japan" then
-                            p.Character.HumanoidRootPart.CFrame = CFrame.new(-150.50711059570312, 23.0000057220459, -8160.171875)
-                        elseif team == "USA" then
-                            p.Character.HumanoidRootPart.CFrame = CFrame.new(-50.992095947265625, 23.0000057220459, 8129.59423828125)
-                        else
-                            print("Team not recognized or not found")
-                        end
-                    else
-                        print("Player or HumanoidRootPart not found")
+                if not godmodeActive then return end
+                local p = game.Players.LocalPlayer
+                if p and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+                    local team = p.Team and p.Team.Name or "Unknown"
+                    if team == "Japan" then
+                        p.Character.HumanoidRootPart.CFrame = CFrame.new(-150.507, 23.000, -8160.171)
+                    elseif team == "USA" then
+                        p.Character.HumanoidRootPart.CFrame = CFrame.new(-50.992, 23.000, 8129.594)
                     end
                 end
             end
 
             w:Button("Godmode", function()
-                print("Godmode button clicked")
                 godmodeActive = not godmodeActive
-                if godmodeActive then
-                    print("Godmode activated")
-                    teleportPlayer()
-                else
-                    print("Godmode deactivated")
-                end
-            end)
-
-            task.spawn(function()
-                while task.wait(30) do
-                    if godmodeActive then
-                        local p = game.Players.LocalPlayer
-                        if p and p.Team then
-                            local team = p.Team.Name
-                            print("Current team check: " .. team)
-                        else
-                            print("Player or team not found")
-                        end
-                    end
-                end
+                if godmodeActive then teleportPlayer() end
             end)
 
             w:Toggle("Rapid Fire (Hold E)", {flag="toggle1"})
@@ -482,16 +285,10 @@ local function runMainScript()
                             while w.flags.toggle1 do
                                 if UIS:IsKeyDown(Enum.KeyCode.E) then
                                     local tool = character:FindFirstChild("M1 Garand")
-                                    if tool then
-                                        tool:Activate()
-                                    else
-                                        print("Tool not found: M1 Garand")
-                                    end
+                                    if tool then tool:Activate() end
                                 end
                                 task.wait(0.1)
                             end
-                        else
-                            print("Humanoid not found")
                         end
                     end
                 end
@@ -503,29 +300,22 @@ local function runMainScript()
                     if w.flags.toggle3 then
                         local character = game.Players.LocalPlayer.Character
                         if character and character:FindFirstChild("Humanoid") then
-                            local localPlayerTeam = game.Players.LocalPlayer.Team
+                            local myTeam = game.Players.LocalPlayer.Team
                             for _, v in pairs(game.workspace:GetDescendants()) do
                                 if v:IsA("Humanoid") and v.Parent and v.Parent:FindFirstChild("HumanoidRootPart") then
-                                    local opponentPlayer = game.Players:GetPlayerFromCharacter(v.Parent)
-                                    if opponentPlayer and opponentPlayer.Team ~= localPlayerTeam then
-                                        local humanoidRootPart = v.Parent:FindFirstChild("HumanoidRootPart")
-                                        if humanoidRootPart then
-                                            local A_1 = "shootRifle"
-                                            local A_2 = ""
-                                            local A_3 = {humanoidRootPart}
+                                    local opp = game.Players:GetPlayerFromCharacter(v.Parent)
+                                    if opp and opp.Team ~= myTeam then
+                                        local HRP = v.Parent:FindFirstChild("HumanoidRootPart")
+                                        if HRP then
                                             local Event = game:GetService("ReplicatedStorage"):FindFirstChild("Event")
                                             if Event then
-                                                Event:FireServer(A_1, A_2, A_3)
-                                                Event:FireServer(A_1, "hit", {v})
-                                            else
-                                                print("Event not found in ReplicatedStorage")
+                                                Event:FireServer("shootRifle", "", {HRP})
+                                                Event:FireServer("shootRifle", "hit", {v})
                                             end
                                         end
                                     end
                                 end
                             end
-                        else
-                            print("Humanoid not found")
                         end
                     end
                 end
@@ -537,69 +327,72 @@ local function runMainScript()
                 while task.wait() do
                     if w.flags.toggle4 then
                         local mouse = game.Players.LocalPlayer:GetMouse()
-                        local A_2 = {[1] = mouse.Hit.p}
-                        game:GetService("ReplicatedStorage").Event:FireServer("fireRPG", A_2)
+                        local Event = game:GetService("ReplicatedStorage"):FindFirstChild("Event")
+                        if Event then
+                            Event:FireServer("fireRPG", {[1] = mouse.Hit.p})
+                        end
                     end
                 end
             end)
         end
     })
 
-    PlayerModsTab:AddButton({
-        Title = "TP Tool",
-        Description = "Click to teleport",
-        Callback = function()
-            local function giveTeleportTool(p)
-                local TpTool = Instance.new("Tool")
-                TpTool.Name = "Teleport Tool"
-                TpTool.RequiresHandle = false
-                TpTool.Parent = p.Backpack
-                
-                local mouse = p:GetMouse()
-                
-                TpTool.Activated:Connect(function()
-                    local char = p.Character or workspace:FindFirstChild(p.Name)
-                    local HRP = char and char:FindFirstChild("HumanoidRootPart")
-                    if not HRP then return warn("Failed to find HumanoidRootPart") end
-                    
-                    local targetPosition = mouse.Hit.p
-                    HRP.CFrame = CFrame.new(targetPosition.X, targetPosition.Y + 3, targetPosition.Z)
-                end)
-            end
-            
-            local p = game.Players.LocalPlayer
-            if p then 
-                giveTeleportTool(p) 
-            else 
-                warn("LocalPlayer not found") 
-            end
-        end
+    -- ============ CREDITS TAB ============
+    CredSec:AddParagraph({
+        Title   = "Cracked by boggle.cc team",
+        Content = "discord.gg/Fc23Qprk2B"
+    })
+    CredSec:AddParagraph({
+        Title   = "Original by rellah",
+        Content = "Join for updates"
     })
 
-    PlayerModsTab:AddButton({
-        Title = "GodMode",
-        Description = "Use in lobby BUGGY",
-        Callback = function()
-            local p = game.Players.LocalPlayer
-            if p and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-                local team = p.Team and p.Team.Name or "Unknown"
-                print("Current Team: " .. team)
-                if team == "Japan" then
-                    p.Character.HumanoidRootPart.CFrame = CFrame.new(-150.50711059570312, 23.0000057220459, -8160.171875)
-                elseif team == "USA" then
-                    p.Character.HumanoidRootPart.CFrame = CFrame.new(-50.992095947265625, 23.0000057220459, 8129.59423828125)
-                else
-                    print("Team not recognized or not found")
-                end
-            else
-                print("Player or HumanoidRootPart not found")
+    -- ============ PLAYERS TAB (dynamic) ============
+    local playerAdded = {}
+
+    local function UpdatePlayerButtons()
+        for _, p in ipairs(game.Players:GetPlayers()) do
+            if p ~= game.Players.LocalPlayer and not playerAdded[p.Name] then
+                playerAdded[p.Name] = true
+                local targetName = p.Name
+                PlayersSec:AddButton({
+                    Title   = targetName,
+                    Content = "Teleport to " .. targetName,
+                    Callback = function()
+                        local targetPlayer = game.Players:FindFirstChild(targetName)
+                        if targetPlayer then
+                            local char = targetPlayer.Character
+                            if char and char:FindFirstChild("HumanoidRootPart") then
+                                local localChar = game.Players.LocalPlayer.Character
+                                if localChar and localChar:FindFirstChild("HumanoidRootPart") then
+                                    localChar.HumanoidRootPart.CFrame = CFrame.new(char.HumanoidRootPart.CFrame.Position)
+                                end
+                            end
+                        else
+                            Window:Notify(targetName .. " is no longer in game", 3)
+                        end
+                    end
+                })
             end
         end
-    })
+    end
 
-    ScreenGui:Destroy()
+    UpdatePlayerButtons()
+    game.Players.PlayerAdded:Connect(function()
+        task.wait(1)
+        UpdatePlayerButtons()
+    end)
+    task.spawn(function()
+        while task.wait(5) do
+            UpdatePlayerButtons()
+        end
+    end)
+
+    -- Kill key system after success
+    if ScreenGui and ScreenGui.Parent then ScreenGui:Destroy() end
 end
 
+-- HOOK SUBMIT
 SubmitButton.MouseButton1Click:Connect(function()
     local enteredKey = KeyInput.Text
     if enteredKey == correctKey then
@@ -611,13 +404,11 @@ SubmitButton.MouseButton1Click:Connect(function()
     end
 end)
 
--- Copy Discord link 
 DiscordButton.MouseButton1Click:Connect(function()
     setclipboard("discord.gg/Fc23Qprk2B")
     DiscordButton.Text = "Discord Copied"
 end)
 
--- Focus events to manage placeholder text
 KeyInput.Focused:Connect(function()
     if KeyInput.Text == "Enter Key" then
         KeyInput.Text = ""
