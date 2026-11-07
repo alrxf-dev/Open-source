@@ -1,6 +1,8 @@
 -- ============================================
--- SCRIPT UTAMA KOPDESHUB
--- (Paste ini DI BAWAH library Sibah2xZcu_Library)
+-- KOPDESHUB V2 (FIXED & OPTIMIZED)
+-- Created by Sibah / Alrect
+-- Paste library Sibah2xZcu_Library di ATAS script ini!
+-- HAPUS baris `return Sibah2xZcu_Library` di library!
 -- ============================================
 
 local Players          = game:GetService("Players")
@@ -11,7 +13,7 @@ local UserInputService = game:GetService("UserInputService")
 local old = player:WaitForChild("PlayerGui"):FindFirstChild("KopdesHub_KeySystem")
 if old then old:Destroy() end
 
--- KEY SYSTEM GUI
+-- ============ KEY SYSTEM GUI ============
 local ScreenGui    = Instance.new("ScreenGui")
 local Frame        = Instance.new("Frame")
 local KeyInput     = Instance.new("TextBox")
@@ -24,21 +26,26 @@ ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
 Frame.Parent = ScreenGui
-Frame.Size = UDim2.new(0, 300, 0, 250)
-Frame.Position = UDim2.new(0.5, -150, 0.5, -125)
-Frame.BackgroundColor3 = Color3.new(0.15, 0.15, 0.15)
+Frame.Size = UDim2.new(0, 300, 0, 260)
+Frame.Position = UDim2.new(0.5, -150, 0.5, -130)
+Frame.BackgroundColor3 = Color3.fromRGB(12, 13, 20)
 Frame.BorderSizePixel = 0
-Frame.BackgroundTransparency = 0.2
+Frame.BackgroundTransparency = 0.1
 Frame.ClipsDescendants = true
 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 12)
+
+-- MOBILE FIX
+local uiScale = Instance.new("UIScale")
+uiScale.Scale = (UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled) and 0.85 or 1
+uiScale.Parent = Frame
 
 KeyInput.Parent = Frame
 KeyInput.Size = UDim2.new(1, -20, 0, 50)
 KeyInput.Position = UDim2.new(0, 10, 0, 20)
 KeyInput.Text = ""
 KeyInput.PlaceholderText = "Enter Key"
-KeyInput.TextColor3 = Color3.new(1, 1, 1)
-KeyInput.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+KeyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+KeyInput.BackgroundColor3 = Color3.fromRGB(25, 28, 38)
 KeyInput.BorderSizePixel = 0
 Instance.new("UICorner", KeyInput).CornerRadius = UDim.new(0, 8)
 
@@ -46,8 +53,9 @@ SubmitButton.Parent = Frame
 SubmitButton.Size = UDim2.new(1, -20, 0, 50)
 SubmitButton.Position = UDim2.new(0, 10, 0, 80)
 SubmitButton.Text = "Submit"
-SubmitButton.BackgroundColor3 = Color3.new(0.2, 0.6, 0.2)
-SubmitButton.TextColor3 = Color3.new(1, 1, 1)
+SubmitButton.BackgroundColor3 = Color3.fromRGB(90, 220, 255)
+SubmitButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+SubmitButton.Font = Enum.Font.GothamBold
 SubmitButton.BorderSizePixel = 0
 Instance.new("UICorner", SubmitButton).CornerRadius = UDim.new(0, 8)
 
@@ -55,22 +63,29 @@ DiscordButton.Parent = Frame
 DiscordButton.Size = UDim2.new(1, -20, 0, 50)
 DiscordButton.Position = UDim2.new(0, 10, 0, 140)
 DiscordButton.Text = "Get Key"
-DiscordButton.BackgroundColor3 = Color3.new(0.2, 0.4, 0.8)
-DiscordButton.TextColor3 = Color3.new(1, 1, 1)
+DiscordButton.BackgroundColor3 = Color3.fromRGB(160, 100, 255)
+DiscordButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+DiscordButton.Font = Enum.Font.GothamBold
 DiscordButton.BorderSizePixel = 0
 Instance.new("UICorner", DiscordButton).CornerRadius = UDim.new(0, 8)
 
 StatusLabel.Parent = Frame
-StatusLabel.Size = UDim2.new(1, -20, 0, 30)
-StatusLabel.Position = UDim2.new(0, 10, 0, 110)
-StatusLabel.TextColor3 = Color3.new(1, 1, 1)
+StatusLabel.Size = UDim2.new(1, -20, 0, 25)
+StatusLabel.Position = UDim2.new(0, 10, 0, 200) -- FIXED: Tidak nabrak Discord Button lagi
+StatusLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 StatusLabel.BackgroundTransparency = 1
+StatusLabel.Font = Enum.Font.Gotham
+StatusLabel.TextSize = 13
 StatusLabel.Text = ""
 
--- KEY LOGIC
+-- ============ KEY LOGIC ============
 local correctKey = "rellahiscool"
+local isScriptLoaded = false
 
 local function runMainScript()
+    if isScriptLoaded then return end
+    isScriptLoaded = true
+    
     local p = game.Players.LocalPlayer
 
     -- Safe chat load
@@ -84,15 +99,15 @@ local function runMainScript()
     -- CREATE WINDOW
     local Window = Sibah2xZcu_Library:CreateWindow({
         Title       = "KopdesHub",
-        Description = "by rellah  ·  cracked by boggle.cc team",
-        "Tab Width" = 120,
+        Description = "Created by Sibah / Alrect",
+        ["Tab Width"] = 120, -- FIXED: Syntax error dari ChatGPT (string key wajib kurung siku)
         SizeUi      = UDim2.fromOffset(580, 460),
         Keybind     = Enum.KeyCode.LeftControl,
         Icon        = "rbxthumb://type=Asset&id=132281476392315&w=420&h=420",
         isVerified  = true,
     })
 
-    Window:Notify("Script Loaded! discord.gg/Fc23Qprk2B", 10)
+    Window:Notify("Script Loaded! Created by Sibah / Alrect", 10)
 
     -- TABS & SECTIONS
     local MainTab        = Window:CreateTab({ Name = "Main",        Icon = "rbxassetid://4483345998" })
@@ -335,19 +350,18 @@ local function runMainScript()
 
     -- ============ CREDITS TAB ============
     CredSec:AddParagraph({
-        Title   = "Cracked by boggle.cc team",
-        Content = "discord.gg/Fc23Qprk2B"
+        Title   = "Created by Sibah / Alrect",
+        Content = "KopdesHub V2"
     })
     CredSec:AddParagraph({
-        Title   = "Original by rellah",
-        Content = "Join for updates"
+        Title   = "Original Crack",
+        Content = "boggle.cc team"
     })
 
     -- ============ PLAYERS TAB ============
     local playerAdded = {}
 
     local function UpdatePlayerButtons()
-        print("Updating player buttons...")
         for _, p in ipairs(game.Players:GetPlayers()) do
             if p ~= game.Players.LocalPlayer and not playerAdded[p.Name] then
                 playerAdded[p.Name] = true
@@ -381,9 +395,19 @@ local function runMainScript()
         UpdatePlayerButtons()
     end)
 
+    -- FIXED: Memory leak state cleanup (Player Rejoin)
+    game.Players.PlayerRemoving:Connect(function(p)
+        playerAdded[p.Name] = nil
+    end)
+
+    -- FIXED: Loop Kill-switch (Anti Lag jika window ditutup)
     task.spawn(function()
         while task.wait(5) do
-            UpdatePlayerButtons()
+            if not Sibah2xZcu_Library.Unloaded then
+                UpdatePlayerButtons()
+            else
+                break -- Stop loop jika UI di-close
+            end
         end
     end)
 
@@ -391,7 +415,7 @@ local function runMainScript()
     if ScreenGui and ScreenGui.Parent then ScreenGui:Destroy() end
 end
 
--- HOOK SUBMIT
+-- ============ HOOK SUBMIT ============
 SubmitButton.MouseButton1Click:Connect(function()
     local enteredKey = KeyInput.Text
     if enteredKey == correctKey then
@@ -406,7 +430,9 @@ end)
 DiscordButton.MouseButton1Click:Connect(function()
     pcall(function()
         if setclipboard then setclipboard("discord.gg/Fc23Qprk2B")
-        elseif toclipboard then toclipboard("discord.gg/Fc23Qprk2B") end
+        elseif toclipboard then toclipboard("discord.gg/Fc23Qprk2B")
+        elseif typeof(writeclipboard) == "function" then writeclipboard("discord.gg/Fc23Qprk2B")
+        end
     end)
     DiscordButton.Text = "Discord Copied"
 end)
