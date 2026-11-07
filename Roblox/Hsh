@@ -1,14 +1,8 @@
 -- ============================================
--- STEP 1: PASTE LIBRARY KAMU DI SINI
--- (paste dari `local Players = game:GetService("Players")` 
---  sampai `end` sebelum `return Sibah2xZcu_Library`)
--- HAPUS baris terakhir: `return Sibah2xZcu_Library`
+-- SCRIPT UTAMA KOPDESHUB
+-- (Paste ini DI BAWAH library Sibah2xZcu_Library)
 -- ============================================
 
-
--- ============================================
--- STEP 2: MAIN SCRIPT — paste di bawah library
--- ============================================
 local Players          = game:GetService("Players")
 local player           = Players.LocalPlayer
 local UserInputService = game:GetService("UserInputService")
@@ -36,10 +30,7 @@ Frame.BackgroundColor3 = Color3.new(0.15, 0.15, 0.15)
 Frame.BorderSizePixel = 0
 Frame.BackgroundTransparency = 0.2
 Frame.ClipsDescendants = true
-
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 12)
-UICorner.Parent = Frame
+Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 12)
 
 KeyInput.Parent = Frame
 KeyInput.Size = UDim2.new(1, -20, 0, 50)
@@ -80,17 +71,17 @@ StatusLabel.Text = ""
 local correctKey = "rellahiscool"
 
 local function runMainScript()
-    print("rizz")
     local p = game.Players.LocalPlayer
 
+    -- Safe chat load
     if p and p.Character and p.Character:FindFirstChild("Head") then
-        local chatService = game:GetService("Chat")
-        chatService:Chat(p.Character.Head, "Script Loading!", Enum.ChatColor.White)
-    else
-        warn("LocalPlayer or Head not found — skipping chat")
+        pcall(function()
+            local chatService = game:GetService("Chat")
+            chatService:Chat(p.Character.Head, "KopdesHub Loaded!", Enum.ChatColor.White)
+        end)
     end
 
-    -- CREATE WINDOW (Sibah2xZcu_Library)
+    -- CREATE WINDOW
     local Window = Sibah2xZcu_Library:CreateWindow({
         Title       = "KopdesHub",
         Description = "by rellah  ·  cracked by boggle.cc team",
@@ -103,13 +94,12 @@ local function runMainScript()
 
     Window:Notify("Script Loaded! discord.gg/Fc23Qprk2B", 10)
 
-    -- TABS
+    -- TABS & SECTIONS
     local MainTab        = Window:CreateTab({ Name = "Main",        Icon = "rbxassetid://4483345998" })
     local PlayerModsTab  = Window:CreateTab({ Name = "Player Mods", Icon = "rbxassetid://4483345998" })
     local CredTab        = Window:CreateTab({ Name = "Credits",     Icon = "rbxassetid://4483345998" })
     local PlayersTab     = Window:CreateTab({ Name = "Players",     Icon = "rbxassetid://4483345998" })
 
-    -- SECTIONS (open = true)
     local MainSec        = MainTab:AddSection("Teleports", true)
     local PlayerModsSec  = PlayerModsTab:AddSection("Mods", true)
     local CredSec        = CredTab:AddSection("Credits", true)
@@ -138,7 +128,7 @@ local function runMainScript()
         end
     })
 
-    -- Helper: island positions
+    -- Island helper
     local function GetIslandPositions()
         local pos = { A = nil, B = nil, C = nil }
         for _, v in pairs(workspace:GetChildren()) do
@@ -197,7 +187,10 @@ local function runMainScript()
         Title = "Load Infinite Yield",
         Content = "Executes IY admin",
         Callback = function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+            if not loadstring then return Window:Notify("Executor tidak support loadstring!", 3) end
+            pcall(function()
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+            end)
         end
     })
 
@@ -252,65 +245,68 @@ local function runMainScript()
         Title = "OP Player GUI",
         Content = "RPG Spam / Kill All / Rapid Fire",
         Callback = function()
-            local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/rvllah/gui-lib-for-nw/refs/heads/main/OP%20PlayerGUI", true))()
-            local w = library:CreateWindow("Rellah's OP GUI")
-            w:Label("Use in lobby")
+            if not loadstring then return Window:Notify("Executor tidak support loadstring!", 3) end
+            pcall(function()
+                local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/rvllah/gui-lib-for-nw/refs/heads/main/OP%20PlayerGUI", true))()
+                local w = library:CreateWindow("Rellah's OP GUI")
+                w:Label("Use in lobby")
 
-            local godmodeActive = false
-            local function teleportPlayer()
-                if not godmodeActive then return end
-                local p = game.Players.LocalPlayer
-                if p and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-                    local team = p.Team and p.Team.Name or "Unknown"
-                    if team == "Japan" then
-                        p.Character.HumanoidRootPart.CFrame = CFrame.new(-150.507, 23.000, -8160.171)
-                    elseif team == "USA" then
-                        p.Character.HumanoidRootPart.CFrame = CFrame.new(-50.992, 23.000, 8129.594)
-                    end
-                end
-            end
-
-            w:Button("Godmode", function()
-                godmodeActive = not godmodeActive
-                if godmodeActive then teleportPlayer() end
-            end)
-
-            w:Toggle("Rapid Fire (Hold E)", {flag="toggle1"})
-            task.spawn(function()
-                while task.wait() do
-                    if w.flags.toggle1 then
-                        local character = game.Players.LocalPlayer.Character
-                        if character and character:FindFirstChild("Humanoid") then
-                            local UIS = game:GetService("UserInputService")
-                            while w.flags.toggle1 do
-                                if UIS:IsKeyDown(Enum.KeyCode.E) then
-                                    local tool = character:FindFirstChild("M1 Garand")
-                                    if tool then tool:Activate() end
-                                end
-                                task.wait(0.1)
-                            end
+                local godmodeActive = false
+                local function teleportPlayer()
+                    if not godmodeActive then return end
+                    local p = game.Players.LocalPlayer
+                    if p and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+                        local team = p.Team and p.Team.Name or "Unknown"
+                        if team == "Japan" then
+                            p.Character.HumanoidRootPart.CFrame = CFrame.new(-150.507, 23.000, -8160.171)
+                        elseif team == "USA" then
+                            p.Character.HumanoidRootPart.CFrame = CFrame.new(-50.992, 23.000, 8129.594)
                         end
                     end
                 end
-            end)
 
-            w:Toggle("Kill Opposite Team", {flag="toggle3"})
-            task.spawn(function()
-                while task.wait(0.1) do
-                    if w.flags.toggle3 then
-                        local character = game.Players.LocalPlayer.Character
-                        if character and character:FindFirstChild("Humanoid") then
-                            local myTeam = game.Players.LocalPlayer.Team
-                            for _, v in pairs(game.workspace:GetDescendants()) do
-                                if v:IsA("Humanoid") and v.Parent and v.Parent:FindFirstChild("HumanoidRootPart") then
-                                    local opp = game.Players:GetPlayerFromCharacter(v.Parent)
-                                    if opp and opp.Team ~= myTeam then
-                                        local HRP = v.Parent:FindFirstChild("HumanoidRootPart")
-                                        if HRP then
-                                            local Event = game:GetService("ReplicatedStorage"):FindFirstChild("Event")
-                                            if Event then
-                                                Event:FireServer("shootRifle", "", {HRP})
-                                                Event:FireServer("shootRifle", "hit", {v})
+                w:Button("Godmode", function()
+                    godmodeActive = not godmodeActive
+                    if godmodeActive then teleportPlayer() end
+                end)
+
+                w:Toggle("Rapid Fire (Hold E)", {flag="toggle1"})
+                task.spawn(function()
+                    while task.wait() do
+                        if w.flags.toggle1 then
+                            local character = game.Players.LocalPlayer.Character
+                            if character and character:FindFirstChild("Humanoid") then
+                                local UIS = game:GetService("UserInputService")
+                                while w.flags.toggle1 do
+                                    if UIS:IsKeyDown(Enum.KeyCode.E) then
+                                        local tool = character:FindFirstChild("M1 Garand")
+                                        if tool then tool:Activate() end
+                                    end
+                                    task.wait(0.1)
+                                end
+                            end
+                        end
+                    end
+                end)
+
+                w:Toggle("Kill Opposite Team", {flag="toggle3"})
+                task.spawn(function()
+                    while task.wait(0.1) do
+                        if w.flags.toggle3 then
+                            local character = game.Players.LocalPlayer.Character
+                            if character and character:FindFirstChild("Humanoid") then
+                                local myTeam = game.Players.LocalPlayer.Team
+                                for _, v in pairs(game.workspace:GetDescendants()) do
+                                    if v:IsA("Humanoid") and v.Parent and v.Parent:FindFirstChild("HumanoidRootPart") then
+                                        local opp = game.Players:GetPlayerFromCharacter(v.Parent)
+                                        if opp and opp.Team ~= myTeam then
+                                            local HRP = v.Parent:FindFirstChild("HumanoidRootPart")
+                                            if HRP then
+                                                local Event = game:GetService("ReplicatedStorage"):FindFirstChild("Event")
+                                                if Event then
+                                                    Event:FireServer("shootRifle", "", {HRP})
+                                                    Event:FireServer("shootRifle", "hit", {v})
+                                                end
                                             end
                                         end
                                     end
@@ -318,21 +314,21 @@ local function runMainScript()
                             end
                         end
                     end
-                end
-            end)
+                end)
 
-            w:Section("Must have RPG GamePass")
-            w:Toggle("Shoot RPG", {flag="toggle4"})
-            task.spawn(function()
-                while task.wait() do
-                    if w.flags.toggle4 then
-                        local mouse = game.Players.LocalPlayer:GetMouse()
-                        local Event = game:GetService("ReplicatedStorage"):FindFirstChild("Event")
-                        if Event then
-                            Event:FireServer("fireRPG", {[1] = mouse.Hit.p})
+                w:Section("Must have RPG GamePass")
+                w:Toggle("Shoot RPG", {flag="toggle4"})
+                task.spawn(function()
+                    while task.wait() do
+                        if w.flags.toggle4 then
+                            local mouse = game.Players.LocalPlayer:GetMouse()
+                            local Event = game:GetService("ReplicatedStorage"):FindFirstChild("Event")
+                            if Event then
+                                Event:FireServer("fireRPG", {[1] = mouse.Hit.p})
+                            end
                         end
                     end
-                end
+                end)
             end)
         end
     })
@@ -347,10 +343,11 @@ local function runMainScript()
         Content = "Join for updates"
     })
 
-    -- ============ PLAYERS TAB (dynamic) ============
+    -- ============ PLAYERS TAB ============
     local playerAdded = {}
 
     local function UpdatePlayerButtons()
+        print("Updating player buttons...")
         for _, p in ipairs(game.Players:GetPlayers()) do
             if p ~= game.Players.LocalPlayer and not playerAdded[p.Name] then
                 playerAdded[p.Name] = true
@@ -378,17 +375,19 @@ local function runMainScript()
     end
 
     UpdatePlayerButtons()
+
     game.Players.PlayerAdded:Connect(function()
         task.wait(1)
         UpdatePlayerButtons()
     end)
+
     task.spawn(function()
         while task.wait(5) do
             UpdatePlayerButtons()
         end
     end)
 
-    -- Kill key system after success
+    -- Kill key system
     if ScreenGui and ScreenGui.Parent then ScreenGui:Destroy() end
 end
 
@@ -405,7 +404,10 @@ SubmitButton.MouseButton1Click:Connect(function()
 end)
 
 DiscordButton.MouseButton1Click:Connect(function()
-    setclipboard("discord.gg/Fc23Qprk2B")
+    pcall(function()
+        if setclipboard then setclipboard("discord.gg/Fc23Qprk2B")
+        elseif toclipboard then toclipboard("discord.gg/Fc23Qprk2B") end
+    end)
     DiscordButton.Text = "Discord Copied"
 end)
 
