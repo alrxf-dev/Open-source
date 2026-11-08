@@ -1,452 +1,305 @@
--- ============================================
--- KOPDESHUB V2 (FIXED & OPTIMIZED)
--- Created by Sibah / Alrect
--- Paste library Sibah2xZcu_Library di ATAS script ini!
--- HAPUS baris `return Sibah2xZcu_Library` di library!
--- ============================================
-
-local Players          = game:GetService("Players")
-local player           = Players.LocalPlayer
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
 
--- CLEAN OLD GUI
-local old = player:WaitForChild("PlayerGui"):FindFirstChild("KopdesHub_KeySystem")
-if old then old:Destroy() end
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
 
--- ============ KEY SYSTEM GUI ============
-local ScreenGui    = Instance.new("ScreenGui")
-local Frame        = Instance.new("Frame")
-local KeyInput     = Instance.new("TextBox")
-local SubmitButton = Instance.new("TextButton")
-local DiscordButton= Instance.new("TextButton")
-local StatusLabel  = Instance.new("TextLabel")
+local CONFIG = {
+	WalkSpeed = {Min = 16, Max = 120, Default = 16, Step = 4},
+	JumpPower = {Min = 50, Max = 200, Default = 50, Step = 10},
+	FlySpeed = {Min = 10, Max = 150, Default = 50, Step = 10},
+}
 
-ScreenGui.Name = "KopdesHub_KeySystem"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = player:WaitForChild("PlayerGui")
+local state = {
+	walkSpeed = CONFIG.WalkSpeed.Default,
+	jumpPower = CONFIG.JumpPower.Default,
+	flySpeed = CONFIG.FlySpeed.Default,
+	noclip = false,
+	fly = false,
+	infiniteJump = false,
+}
 
-Frame.Parent = ScreenGui
-Frame.Size = UDim2.new(0, 300, 0, 260)
-Frame.Position = UDim2.new(0.5, -150, 0.5, -130)
-Frame.BackgroundColor3 = Color3.fromRGB(12, 13, 20)
-Frame.BorderSizePixel = 0
-Frame.BackgroundTransparency = 0.1
-Frame.ClipsDescendants = true
-Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 12)
+local connections = {}
+local flyBV, flyBG
 
--- MOBILE FIX
-local uiScale = Instance.new("UIScale")
-uiScale.Scale = (UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled) and 0.85 or 1
-uiScale.Parent = Frame
-
-KeyInput.Parent = Frame
-KeyInput.Size = UDim2.new(1, -20, 0, 50)
-KeyInput.Position = UDim2.new(0, 10, 0, 20)
-KeyInput.Text = ""
-KeyInput.PlaceholderText = "Enter Key"
-KeyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-KeyInput.BackgroundColor3 = Color3.fromRGB(25, 28, 38)
-KeyInput.BorderSizePixel = 0
-Instance.new("UICorner", KeyInput).CornerRadius = UDim.new(0, 8)
-
-SubmitButton.Parent = Frame
-SubmitButton.Size = UDim2.new(1, -20, 0, 50)
-SubmitButton.Position = UDim2.new(0, 10, 0, 80)
-SubmitButton.Text = "Submit"
-SubmitButton.BackgroundColor3 = Color3.fromRGB(90, 220, 255)
-SubmitButton.TextColor3 = Color3.fromRGB(0, 0, 0)
-SubmitButton.Font = Enum.Font.GothamBold
-SubmitButton.BorderSizePixel = 0
-Instance.new("UICorner", SubmitButton).CornerRadius = UDim.new(0, 8)
-
-DiscordButton.Parent = Frame
-DiscordButton.Size = UDim2.new(1, -20, 0, 50)
-DiscordButton.Position = UDim2.new(0, 10, 0, 140)
-DiscordButton.Text = "Get Key"
-DiscordButton.BackgroundColor3 = Color3.fromRGB(160, 100, 255)
-DiscordButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-DiscordButton.Font = Enum.Font.GothamBold
-DiscordButton.BorderSizePixel = 0
-Instance.new("UICorner", DiscordButton).CornerRadius = UDim.new(0, 8)
-
-StatusLabel.Parent = Frame
-StatusLabel.Size = UDim2.new(1, -20, 0, 25)
-StatusLabel.Position = UDim2.new(0, 10, 0, 200) -- FIXED: Tidak nabrak Discord Button lagi
-StatusLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-StatusLabel.BackgroundTransparency = 1
-StatusLabel.Font = Enum.Font.Gotham
-StatusLabel.TextSize = 13
-StatusLabel.Text = ""
-
--- ============ KEY LOGIC ============
-local correctKey = "rellahiscool"
-local isScriptLoaded = false
-
-local function runMainScript()
-    if isScriptLoaded then return end
-    isScriptLoaded = true
-    
-    local p = game.Players.LocalPlayer
-
-    -- Safe chat load
-    if p and p.Character and p.Character:FindFirstChild("Head") then
-        pcall(function()
-            local chatService = game:GetService("Chat")
-            chatService:Chat(p.Character.Head, "KopdesHub Loaded!", Enum.ChatColor.White)
-        end)
-    end
-
-    -- CREATE WINDOW
-    local Window = Sibah2xZcu_Library:CreateWindow({
-        Title       = "KopdesHub",
-        Description = "Created by Sibah / Alrect",
-        ["Tab Width"] = 120, -- FIXED: Syntax error dari ChatGPT (string key wajib kurung siku)
-        SizeUi      = UDim2.fromOffset(580, 460),
-        Keybind     = Enum.KeyCode.LeftControl,
-        Icon        = "rbxthumb://type=Asset&id=132281476392315&w=420&h=420",
-        isVerified  = true,
-    })
-
-    Window:Notify("Script Loaded! Created by Sibah / Alrect", 10)
-
-    -- TABS & SECTIONS
-    local MainTab        = Window:CreateTab({ Name = "Main",        Icon = "rbxassetid://4483345998" })
-    local PlayerModsTab  = Window:CreateTab({ Name = "Player Mods", Icon = "rbxassetid://4483345998" })
-    local CredTab        = Window:CreateTab({ Name = "Credits",     Icon = "rbxassetid://4483345998" })
-    local PlayersTab     = Window:CreateTab({ Name = "Players",     Icon = "rbxassetid://4483345998" })
-
-    local MainSec        = MainTab:AddSection("Teleports", true)
-    local PlayerModsSec  = PlayerModsTab:AddSection("Mods", true)
-    local CredSec        = CredTab:AddSection("Credits", true)
-    local PlayersSec     = PlayersTab:AddSection("Teleport to Player", true)
-
-    -- ============ MAIN TAB ============
-    MainSec:AddButton({
-        Title   = "TP to Japan Lobby",
-        Content = "Teleport to Japan Spawn",
-        Callback = function()
-            local c = game.Players.LocalPlayer.Character
-            if c and c:FindFirstChild("HumanoidRootPart") then
-                c.HumanoidRootPart.CFrame = CFrame.new(-4.103, -295.5, -36.644)
-            end
-        end
-    })
-
-    MainSec:AddButton({
-        Title   = "TP to American Lobby",
-        Content = "Teleport to American Spawn",
-        Callback = function()
-            local c = game.Players.LocalPlayer.Character
-            if c and c:FindFirstChild("HumanoidRootPart") then
-                c.HumanoidRootPart.CFrame = CFrame.new(15.000, -295.5, 46.505)
-            end
-        end
-    })
-
-    -- Island helper
-    local function GetIslandPositions()
-        local pos = { A = nil, B = nil, C = nil }
-        for _, v in pairs(workspace:GetChildren()) do
-            if v:IsA("Model") and v.Name == "Island" then
-                local flag = v:FindFirstChild("Flag")
-                local post = flag and flag:FindFirstChild("Post")
-                local code = v:FindFirstChild("IslandCode")
-                if post and post:IsA("BasePart") and code and code:IsA("StringValue") then
-                    if code.Value == "A" then pos.A = post.Position
-                    elseif code.Value == "B" then pos.B = post.Position
-                    elseif code.Value == "C" then pos.C = post.Position end
-                end
-            end
-        end
-        return pos
-    end
-
-    local function TPIsland(key)
-        local c = game.Players.LocalPlayer.Character
-        if not c or not c:FindFirstChild("HumanoidRootPart") then return end
-        local pos = GetIslandPositions()
-        if pos[key] then
-            c.HumanoidRootPart.CFrame = CFrame.new(pos[key].X, pos[key].Y, pos[key].Z)
-        else
-            Window:Notify("Island " .. key .. " not found", 3)
-        end
-    end
-
-    MainSec:AddButton({ Title = "TP to Island A", Content = "TP to Island A", Callback = function() TPIsland("A") end })
-    MainSec:AddButton({ Title = "TP to Island B", Content = "TP to Island B", Callback = function() TPIsland("B") end })
-    MainSec:AddButton({ Title = "TP to Island C", Content = "TP to Island C", Callback = function() TPIsland("C") end })
-
-    MainSec:AddButton({
-        Title = "TP to American Harbour",
-        Content = "TP to USA Harbour",
-        Callback = function()
-            local c = game.Players.LocalPlayer.Character
-            if c and c:FindFirstChild("HumanoidRootPart") then
-                c.HumanoidRootPart.CFrame = CFrame.new(-50.992, 23.000, 8129.594)
-            end
-        end
-    })
-
-    MainSec:AddButton({
-        Title = "TP to Japan Harbour",
-        Content = "TP to Japan Harbour",
-        Callback = function()
-            local c = game.Players.LocalPlayer.Character
-            if c and c:FindFirstChild("HumanoidRootPart") then
-                c.HumanoidRootPart.CFrame = CFrame.new(-150.507, 23.000, -8160.171)
-            end
-        end
-    })
-
-    MainSec:AddButton({
-        Title = "Load Infinite Yield",
-        Content = "Executes IY admin",
-        Callback = function()
-            if not loadstring then return Window:Notify("Executor tidak support loadstring!", 3) end
-            pcall(function()
-                loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
-            end)
-        end
-    })
-
-    -- ============ PLAYER MODS TAB ============
-    PlayerModsSec:AddButton({
-        Title = "Faster Walk",
-        Content = "WalkSpeed = 32",
-        Callback = function()
-            local c = game.Players.LocalPlayer.Character
-            if c and c:FindFirstChild("Humanoid") then
-                c.Humanoid.WalkSpeed = 32
-            end
-        end
-    })
-
-    PlayerModsSec:AddButton({
-        Title = "TP Tool",
-        Content = "Click to teleport",
-        Callback = function()
-            local p = game.Players.LocalPlayer
-            local TpTool = Instance.new("Tool")
-            TpTool.Name = "Teleport Tool"
-            TpTool.RequiresHandle = false
-            TpTool.Parent = p.Backpack
-            local mouse = p:GetMouse()
-            TpTool.Activated:Connect(function()
-                local char = p.Character
-                local HRP = char and char:FindFirstChild("HumanoidRootPart")
-                if not HRP then return warn("Failed to find HumanoidRootPart") end
-                HRP.CFrame = CFrame.new(mouse.Hit.X, mouse.Hit.Y + 3, mouse.Hit.Z)
-            end)
-        end
-    })
-
-    PlayerModsSec:AddButton({
-        Title = "GodMode (Lobby)",
-        Content = "Use in lobby",
-        Callback = function()
-            local p = game.Players.LocalPlayer
-            if p and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-                local team = p.Team and p.Team.Name or "Unknown"
-                if team == "Japan" then
-                    p.Character.HumanoidRootPart.CFrame = CFrame.new(-150.507, 23.000, -8160.171)
-                elseif team == "USA" then
-                    p.Character.HumanoidRootPart.CFrame = CFrame.new(-50.992, 23.000, 8129.594)
-                end
-            end
-        end
-    })
-
-    PlayerModsSec:AddButton({
-        Title = "OP Player GUI",
-        Content = "RPG Spam / Kill All / Rapid Fire",
-        Callback = function()
-            if not loadstring then return Window:Notify("Executor tidak support loadstring!", 3) end
-            pcall(function()
-                local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/rvllah/gui-lib-for-nw/refs/heads/main/OP%20PlayerGUI", true))()
-                local w = library:CreateWindow("Rellah's OP GUI")
-                w:Label("Use in lobby")
-
-                local godmodeActive = false
-                local function teleportPlayer()
-                    if not godmodeActive then return end
-                    local p = game.Players.LocalPlayer
-                    if p and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-                        local team = p.Team and p.Team.Name or "Unknown"
-                        if team == "Japan" then
-                            p.Character.HumanoidRootPart.CFrame = CFrame.new(-150.507, 23.000, -8160.171)
-                        elseif team == "USA" then
-                            p.Character.HumanoidRootPart.CFrame = CFrame.new(-50.992, 23.000, 8129.594)
-                        end
-                    end
-                end
-
-                w:Button("Godmode", function()
-                    godmodeActive = not godmodeActive
-                    if godmodeActive then teleportPlayer() end
-                end)
-
-                w:Toggle("Rapid Fire (Hold E)", {flag="toggle1"})
-                task.spawn(function()
-                    while task.wait() do
-                        if w.flags.toggle1 then
-                            local character = game.Players.LocalPlayer.Character
-                            if character and character:FindFirstChild("Humanoid") then
-                                local UIS = game:GetService("UserInputService")
-                                while w.flags.toggle1 do
-                                    if UIS:IsKeyDown(Enum.KeyCode.E) then
-                                        local tool = character:FindFirstChild("M1 Garand")
-                                        if tool then tool:Activate() end
-                                    end
-                                    task.wait(0.1)
-                                end
-                            end
-                        end
-                    end
-                end)
-
-                w:Toggle("Kill Opposite Team", {flag="toggle3"})
-                task.spawn(function()
-                    while task.wait(0.1) do
-                        if w.flags.toggle3 then
-                            local character = game.Players.LocalPlayer.Character
-                            if character and character:FindFirstChild("Humanoid") then
-                                local myTeam = game.Players.LocalPlayer.Team
-                                for _, v in pairs(game.workspace:GetDescendants()) do
-                                    if v:IsA("Humanoid") and v.Parent and v.Parent:FindFirstChild("HumanoidRootPart") then
-                                        local opp = game.Players:GetPlayerFromCharacter(v.Parent)
-                                        if opp and opp.Team ~= myTeam then
-                                            local HRP = v.Parent:FindFirstChild("HumanoidRootPart")
-                                            if HRP then
-                                                local Event = game:GetService("ReplicatedStorage"):FindFirstChild("Event")
-                                                if Event then
-                                                    Event:FireServer("shootRifle", "", {HRP})
-                                                    Event:FireServer("shootRifle", "hit", {v})
-                                                end
-                                            end
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end)
-
-                w:Section("Must have RPG GamePass")
-                w:Toggle("Shoot RPG", {flag="toggle4"})
-                task.spawn(function()
-                    while task.wait() do
-                        if w.flags.toggle4 then
-                            local mouse = game.Players.LocalPlayer:GetMouse()
-                            local Event = game:GetService("ReplicatedStorage"):FindFirstChild("Event")
-                            if Event then
-                                Event:FireServer("fireRPG", {[1] = mouse.Hit.p})
-                            end
-                        end
-                    end
-                end)
-            end)
-        end
-    })
-
-    -- ============ CREDITS TAB ============
-    CredSec:AddParagraph({
-        Title   = "Created by Sibah / Alrect",
-        Content = "KopdesHub V2"
-    })
-    CredSec:AddParagraph({
-        Title   = "Original Crack",
-        Content = "boggle.cc team"
-    })
-
-    -- ============ PLAYERS TAB ============
-    local playerAdded = {}
-
-    local function UpdatePlayerButtons()
-        for _, p in ipairs(game.Players:GetPlayers()) do
-            if p ~= game.Players.LocalPlayer and not playerAdded[p.Name] then
-                playerAdded[p.Name] = true
-                local targetName = p.Name
-                PlayersSec:AddButton({
-                    Title   = targetName,
-                    Content = "Teleport to " .. targetName,
-                    Callback = function()
-                        local targetPlayer = game.Players:FindFirstChild(targetName)
-                        if targetPlayer then
-                            local char = targetPlayer.Character
-                            if char and char:FindFirstChild("HumanoidRootPart") then
-                                local localChar = game.Players.LocalPlayer.Character
-                                if localChar and localChar:FindFirstChild("HumanoidRootPart") then
-                                    localChar.HumanoidRootPart.CFrame = CFrame.new(char.HumanoidRootPart.CFrame.Position)
-                                end
-                            end
-                        else
-                            Window:Notify(targetName .. " is no longer in game", 3)
-                        end
-                    end
-                })
-            end
-        end
-    end
-
-    UpdatePlayerButtons()
-
-    game.Players.PlayerAdded:Connect(function()
-        task.wait(1)
-        UpdatePlayerButtons()
-    end)
-
-    -- FIXED: Memory leak state cleanup (Player Rejoin)
-    game.Players.PlayerRemoving:Connect(function(p)
-        playerAdded[p.Name] = nil
-    end)
-
-    -- FIXED: Loop Kill-switch (Anti Lag jika window ditutup)
-    task.spawn(function()
-        while task.wait(5) do
-            if not Sibah2xZcu_Library.Unloaded then
-                UpdatePlayerButtons()
-            else
-                break -- Stop loop jika UI di-close
-            end
-        end
-    end)
-
-    -- Kill key system
-    if ScreenGui and ScreenGui.Parent then ScreenGui:Destroy() end
+local function getHumanoid()
+	local char = player.Character
+	return char and char:FindFirstChildOfClass("Humanoid")
 end
 
--- ============ HOOK SUBMIT ============
-SubmitButton.MouseButton1Click:Connect(function()
-    local enteredKey = KeyInput.Text
-    if enteredKey == correctKey then
-        StatusLabel.Text = "Key accepted! Running script..."
-        task.wait(1)
-        runMainScript()
-    else
-        StatusLabel.Text = "Incorrect key. Try again."
-    end
+local function getRoot()
+	local char = player.Character
+	return char and char:FindFirstChild("HumanoidRootPart")
+end
+
+local function applyStats()
+	local hum = getHumanoid()
+	if hum then
+		hum.WalkSpeed = state.walkSpeed
+		hum.JumpPower = state.jumpPower
+		hum.UseJumpPower = true
+	end
+end
+
+local function setNoclip(on)
+	state.noclip = on
+end
+
+local function stopFly()
+	state.fly = false
+	if flyBV then flyBV:Destroy() flyBV = nil end
+	if flyBG then flyBG:Destroy() flyBG = nil end
+	local hum = getHumanoid()
+	if hum then hum.PlatformStand = false end
+end
+
+local function startFly()
+	local root = getRoot()
+	local hum = getHumanoid()
+	if not root or not hum then return end
+	state.fly = true
+	hum.PlatformStand = true
+	flyBV = Instance.new("BodyVelocity")
+	flyBV.MaxForce = Vector3.new(1e5, 1e5, 1e5)
+	flyBV.Velocity = Vector3.zero
+	flyBV.Parent = root
+	flyBG = Instance.new("BodyGyro")
+	flyBG.MaxTorque = Vector3.new(1e5, 1e5, 1e5)
+	flyBG.P = 1e4
+	flyBG.CFrame = root.CFrame
+	flyBG.Parent = root
+end
+
+RunService.Stepped:Connect(function()
+	local char = player.Character
+	if not char then return end
+	if state.noclip then
+		for _, part in ipairs(char:GetDescendants()) do
+			if part:IsA("BasePart") and part.CanCollide then
+				part.CanCollide = false
+			end
+		end
+	end
 end)
 
-DiscordButton.MouseButton1Click:Connect(function()
-    pcall(function()
-        if setclipboard then setclipboard("discord.gg/Fc23Qprk2B")
-        elseif toclipboard then toclipboard("discord.gg/Fc23Qprk2B")
-        elseif typeof(writeclipboard) == "function" then writeclipboard("discord.gg/Fc23Qprk2B")
-        end
-    end)
-    DiscordButton.Text = "Discord Copied"
+RunService.RenderStepped:Connect(function()
+	if not state.fly or not flyBV then return end
+	local cam = workspace.CurrentCamera
+	local move = Vector3.zero
+	if UserInputService:IsKeyDown(Enum.KeyCode.W) then move += cam.CFrame.LookVector end
+	if UserInputService:IsKeyDown(Enum.KeyCode.S) then move -= cam.CFrame.LookVector end
+	if UserInputService:IsKeyDown(Enum.KeyCode.D) then move += cam.CFrame.RightVector end
+	if UserInputService:IsKeyDown(Enum.KeyCode.A) then move -= cam.CFrame.RightVector end
+	if UserInputService:IsKeyDown(Enum.KeyCode.Space) then move += Vector3.yAxis end
+	if UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then move -= Vector3.yAxis end
+	if move.Magnitude > 0 then move = move.Unit * state.flySpeed end
+	flyBV.Velocity = move
+	flyBG.CFrame = cam.CFrame
 end)
 
-KeyInput.Focused:Connect(function()
-    if KeyInput.Text == "Enter Key" then
-        KeyInput.Text = ""
-        KeyInput.TextColor3 = Color3.new(1, 1, 1)
-    end
+UserInputService.JumpRequest:Connect(function()
+	if not state.infiniteJump then return end
+	local hum = getHumanoid()
+	if hum then hum:ChangeState(Enum.HumanoidStateType.Jumping) end
 end)
 
-KeyInput.FocusLost:Connect(function()
-    if KeyInput.Text == "" then
-        KeyInput.Text = "Enter Key"
-        KeyInput.TextColor3 = Color3.new(0.5, 0.5, 0.5)
-    end
-end)
+local function build()
+	local gui = Instance.new("ScreenGui")
+	gui.Name = "SkeuoPanel"
+	gui.ResetOnSpawn = false
+	gui.Parent = playerGui
+
+	local main = Instance.new("Frame")
+	main.Size = UDim2.fromOffset(300, 380)
+	main.Position = UDim2.new(0.5, -150, 0.5, -190)
+	main.BackgroundColor3 = Color3.fromRGB(58, 62, 70)
+	main.BorderSizePixel = 0
+	main.Parent = gui
+	Instance.new("UICorner", main).CornerRadius = UDim.new(0, 14)
+
+	local mainStroke = Instance.new("UIStroke", main)
+	mainStroke.Color = Color3.fromRGB(20, 22, 26)
+	mainStroke.Thickness = 2
+
+	local grad = Instance.new("UIGradient", main)
+	grad.Rotation = 90
+	grad.Color = ColorSequence.new(Color3.fromRGB(78, 84, 94), Color3.fromRGB(38, 41, 48))
+
+	local shadow = Instance.new("Frame")
+	shadow.Size = UDim2.new(1, 6, 1, 6)
+	shadow.Position = UDim2.fromOffset(3, 5)
+	shadow.BackgroundColor3 = Color3.new(0, 0, 0)
+	shadow.BackgroundTransparency = 0.6
+	shadow.BorderSizePixel = 0
+	shadow.ZIndex = 0
+	shadow.Parent = main
+	Instance.new("UICorner", shadow).CornerRadius = UDim.new(0, 14)
+
+	local title = Instance.new("TextLabel")
+	title.Size = UDim2.new(1, 0, 0, 44)
+	title.BackgroundTransparency = 1
+	title.Font = Enum.Font.GothamBlack
+	title.Text = "CONTROL PANEL"
+	title.TextColor3 = Color3.fromRGB(220, 225, 232)
+	title.TextSize = 17
+	title.Parent = main
+
+	local content = Instance.new("Frame")
+	content.Position = UDim2.fromOffset(14, 52)
+	content.Size = UDim2.new(1, -28, 1, -66)
+	content.BackgroundTransparency = 1
+	content.Parent = main
+
+	local layout = Instance.new("UIListLayout", content)
+	layout.Padding = UDim.new(0, 10)
+	layout.SortOrder = Enum.SortOrder.LayoutOrder
+
+	local function makeRecessed(parent, height)
+		local f = Instance.new("Frame")
+		f.Size = UDim2.new(1, 0, 0, height)
+		f.BackgroundColor3 = Color3.fromRGB(30, 32, 37)
+		f.BorderSizePixel = 0
+		f.Parent = parent
+		Instance.new("UICorner", f).CornerRadius = UDim.new(0, 8)
+		local s = Instance.new("UIStroke", f)
+		s.Color = Color3.fromRGB(12, 13, 16)
+		s.Thickness = 1
+		return f
+	end
+
+	local function makeSlider(label, cfg, key, onChange)
+		local box = makeRecessed(content, 58)
+		local lbl = Instance.new("TextLabel")
+		lbl.Size = UDim2.new(1, -16, 0, 20)
+		lbl.Position = UDim2.fromOffset(8, 6)
+		lbl.BackgroundTransparency = 1
+		lbl.Font = Enum.Font.GothamBold
+		lbl.TextColor3 = Color3.fromRGB(190, 196, 204)
+		lbl.TextSize = 13
+		lbl.TextXAlignment = Enum.TextXAlignment.Left
+		lbl.Parent = box
+
+		local track = Instance.new("Frame")
+		track.Size = UDim2.new(1, -16, 0, 8)
+		track.Position = UDim2.new(0, 8, 0, 36)
+		track.BackgroundColor3 = Color3.fromRGB(18, 19, 22)
+		track.BorderSizePixel = 0
+		track.Parent = box
+		Instance.new("UICorner", track).CornerRadius = UDim.new(1, 0)
+
+		local fill = Instance.new("Frame")
+		fill.BackgroundColor3 = Color3.fromRGB(120, 180, 255)
+		fill.BorderSizePixel = 0
+		fill.Parent = track
+		Instance.new("UICorner", fill).CornerRadius = UDim.new(1, 0)
+
+		local knob = Instance.new("Frame")
+		knob.Size = UDim2.fromOffset(16, 16)
+		knob.AnchorPoint = Vector2.new(0.5, 0.5)
+		knob.BackgroundColor3 = Color3.fromRGB(225, 230, 238)
+		knob.BorderSizePixel = 0
+		knob.Parent = track
+		Instance.new("UICorner", knob).CornerRadius = UDim.new(1, 0)
+
+		local function setValue(v)
+			v = math.clamp(math.floor(v + 0.5), cfg.Min, cfg.Max)
+			local ratio = (v - cfg.Min) / (cfg.Max - cfg.Min)
+			fill.Size = UDim2.new(ratio, 0, 1, 0)
+			knob.Position = UDim2.new(ratio, 0, 0.5, 0)
+			lbl.Text = label .. ": " .. v
+			state[key] = v
+			onChange(v)
+		end
+
+		local dragging = false
+		track.InputBegan:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+				dragging = true
+			end
+		end)
+		UserInputService.InputEnded:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+				dragging = false
+			end
+		end)
+		UserInputService.InputChanged:Connect(function(input)
+			if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+				local ratio = math.clamp((input.Position.X - track.AbsolutePosition.X) / track.AbsoluteSize.X, 0, 1)
+				setValue(cfg.Min + ratio * (cfg.Max - cfg.Min))
+			end
+		end)
+
+		setValue(state[key])
+		return setValue
+	end
+
+	local function makeToggle(label, key, onChange)
+		local btn = Instance.new("TextButton")
+		btn.Size = UDim2.new(1, 0, 0, 40)
+		btn.BackgroundColor3 = Color3.fromRGB(70, 76, 86)
+		btn.BorderSizePixel = 0
+		btn.AutoButtonColor = false
+		btn.Font = Enum.Font.GothamBold
+		btn.TextSize = 14
+		btn.TextColor3 = Color3.fromRGB(230, 234, 240)
+		btn.Parent = content
+		Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
+		local bs = Instance.new("UIStroke", btn)
+		bs.Color = Color3.fromRGB(14, 15, 18)
+		bs.Thickness = 1
+
+		local function refresh()
+			local on = state[key]
+			btn.Text = label .. (on and "  [ON]" or "  [OFF]")
+			btn.BackgroundColor3 = on and Color3.fromRGB(60, 120, 180) or Color3.fromRGB(70, 76, 86)
+		end
+
+		btn.Activated:Connect(function()
+			state[key] = not state[key]
+			refresh()
+			onChange(state[key])
+		end)
+		refresh()
+	end
+
+	local setWalk = makeSlider("WalkSpeed", CONFIG.WalkSpeed, "walkSpeed", function(v)
+		local hum = getHumanoid()
+		if hum then hum.WalkSpeed = v end
+	end)
+
+	makeSlider("JumpPower", CONFIG.JumpPower, "jumpPower", function(v)
+		local hum = getHumanoid()
+		if hum then hum.JumpPower = v end
+	end)
+
+	makeToggle("Noclip", "noclip", setNoclip)
+
+	makeToggle("Fly", "fly", function(on)
+		if on then startFly() else stopFly() end
+	end)
+
+	makeToggle("Infinite Jump", "infiniteJump", function() end)
+
+	player.CharacterAdded:Connect(function(char)
+		local hum = char:WaitForChild("Humanoid")
+		hum.WalkSpeed = state.walkSpeed
+		hum.JumpPower = state.jumpPower
+		hum.UseJumpPower = true
+		if state.fly then
+			state.fly = false
+			startFly()
+		end
+	end)
+
+	local toggleKey = Enum.KeyCode.RightShift
+	UserInputService.InputBegan:Connect(function(input, gp)
+		if gp then return end
+		if input.KeyCode == toggleKey then
+			gui.Enabled = not gui.Enabled
+		end
+	end)
+end
+
+build()
